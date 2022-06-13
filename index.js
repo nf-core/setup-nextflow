@@ -90,6 +90,9 @@ async function run() {
   try {
     const version = core.getInput("version");
     release = release_data(version, octokit);
+    core.info(
+      `Input version '${version}' resolved to Nextflow ${release.name}`
+    );
   } catch (e) {
     core.setFailed(
       `Could not retrieve Nextflow release matching ${version}.\n${e.message}`
@@ -101,6 +104,7 @@ async function run() {
   try {
     const get_all = core.getBooleanInput("all");
     url = nextflow_bin_url(release, get_all);
+    core.info(`Preparing to download from ${url}`);
   } catch (e) {
     core.setFailed(`Could not parse the download URL\n${e.message}`);
   }
@@ -121,6 +125,7 @@ async function run() {
     );
 
     core.addPath(nf_path);
+    core.info(`Downloaded \`nextflow\` to ${nf_path} and added to PATH`);
   } catch (e) {
     core.setFailed(e.message);
   }
