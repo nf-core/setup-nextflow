@@ -124,7 +124,7 @@ async function run() {
       }
     );
 
-    core.addPath(nf_path);
+    core.addPath(temp_install_dir);
     core.info(`Downloaded \`nextflow\` to ${nf_path} and added to PATH`);
   } catch (e) {
     core.setFailed(e.message);
