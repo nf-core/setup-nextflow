@@ -5,6 +5,7 @@ const io = require("@actions/io");
 const retry = require("async-retry");
 const semver = require("semver");
 const tc = require("@actions/tool-cache");
+const { relative } = require("path");
 
 const NEXTFLOW_REPO = { owner: "nextflow-io", repo: "nextflow" };
 
@@ -91,7 +92,7 @@ async function install_nextflow(url, version) {
   const nf_path = `${temp_install_dir}/nextflow`;
 
   io.mv(nf_dl_path, nf_path);
-  fs.chmod(nf_path, "0711");
+  fs.chmodSync(nf_path, "0711");
 
   return temp_install_dir;
 }
@@ -101,6 +102,8 @@ async function run() {
   const token = core.getInput("token");
   const version = core.getInput("version");
   const get_all = core.getBooleanInput("all");
+
+  let resolved_version = "";
 
   // Setup the API
   let octokit = {};
@@ -116,6 +119,7 @@ async function run() {
   let release = {};
   try {
     release = await release_data(version, octokit);
+    resolved_version = release.tag_name;
     core.info(
       `Input version '${version}' resolved to Nextflow ${release.name}`
     );
@@ -136,13 +140,17 @@ async function run() {
   try {
     // Download Nextflow and add it to path
     let nf_path = "";
-    nf_path = tc.find("nextflow", version);
+    nf_path = tc.find("nextflow", resolved_version);
 
     if (!nf_path) {
-      core.debug(`Could not find Nextflow ${version} in cache`);
-      const nf_install_path = await install_nextflow(url, version);
+      core.debug(`Could not find Nextflow ${resolved_version} in cache`);
+      const nf_install_path = await install_nextflow(url, resolved_version);
 
-      nf_path = await tc.cacheDir(nf_install_path, "nextflow", version);
+      nf_path = await tc.cacheDir(
+        nf_install_path,
+        "nextflow",
+        resolved_version
+      );
       core.debug(`Added Nextflow to cache: ${nf_path}`);
 
       io.rmRF(nf_install_path);
