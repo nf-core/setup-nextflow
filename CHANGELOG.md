@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.0.1] - 2022-06-13
+
+### Fixed
+
+- JavaScript now compiled for appropriate use as GitHub action
+
 ## [1.0.0] - 2022-06-13
 
 ### Added
@@ -15,5 +21,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - GitHub Actions workflow to test Nextflow installation and downstream usage
 - Documentation and license files
 
-[unreleased]: https://github.com/MillironX/setup-nextflow/compare/v1.0.0...HEAD
+[unreleased]: https://github.com/MillironX/setup-nextflow/compare/v1.0.1...HEAD
+[1.0.1]: https://github.com/MillironX/setup-nextflow/compare/v1.0.0...v1.0.1
 [1.0.0]: https://github.com/MillironX/setup-nextflow/releases/tag/v1.0.0
