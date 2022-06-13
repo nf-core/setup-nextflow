@@ -1,4 +1,5 @@
 const core = require("@actions/core");
+const exec = require("@actions/exec")
 const fs = require("fs");
 const github = require("@actions/github");
 const io = require("@actions/io");
@@ -162,6 +163,13 @@ async function run() {
     core.info(`Downloaded \`nextflow\` to ${nf_path} and added to PATH`);
   } catch (e) {
     core.setFailed(e.message);
+  }
+
+  // Run Nextflow so it downloads its dependencies
+  try {
+    const nf_exit_code = await exec.exec("nextflow", ["help"])
+  } catch (e) {
+    core.warning("Nextflow appears to have installed correctly, but an error was thrown while running it.")
   }
 }
 
