@@ -89,7 +89,7 @@ async function run() {
   let release = {};
   try {
     const version = core.getInput("version");
-    release = release_data(version, octokit);
+    release = await release_data(version, octokit);
     core.info(
       `Input version '${version}' resolved to Nextflow ${release.name}`
     );
