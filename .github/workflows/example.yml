@@ -30,10 +30,10 @@ jobs:
         with:
           node-version: 16
           cache: "npm"
+          token: ${{ secrets.GITHUB_TOKEN }}
       - run: npm install
       - uses: ./
         with:
           version: ${{ matrix.nextflow_version }}
           all: ${{ matrix.all_distribution }}
-          token: $${{ secrets.TOKEN }}
       - run: nextflow -v
