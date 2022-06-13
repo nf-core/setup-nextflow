@@ -88,8 +88,9 @@ async function install_nextflow(url, version) {
   );
 
   const temp_install_dir = fs.mkdtempSync(`nxf-${version}`);
+  const nf_path = `${temp_install_dir}/nextflow`;
 
-  const nf_path = await io.mv(nf_dl_path, `${temp_install_dir}/nextflow`);
+  io.mv(nf_dl_path, nf_path);
   fs.chmod(nf_path, "+x");
 
   return temp_install_dir;
