@@ -35,5 +35,4 @@ jobs:
         with:
           version: ${{ matrix.nextflow_version }}
           all: ${{ matrix.all_distribution }}
-          token: $${{ secrets.TOKEN }}
       - run: nextflow -v
