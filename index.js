@@ -1,9 +1,10 @@
 const core = require("@actions/core");
+const fs = require("fs");
 const github = require("@actions/github");
+const io = require("@actions/io");
+const retry = require("async-retry");
 const semver = require("semver");
 const tc = require("@actions/tool-cache");
-const fs = require("fs");
-const retry = require("async-retry");
 
 const NEXTFLOW_REPO = { owner: "nextflow-io", repo: "nextflow" };
 
@@ -73,11 +74,38 @@ function nextflow_bin_url(release, get_all) {
   return dl_asset.browser_download_url;
 }
 
+async function install_nextflow(url, version) {
+  core.debug(`Downloading Nextflow from ${url}`);
+  const nf_dl_path = await retry(
+    async (bail) => {
+      return await tc.downloadTool(url);
+    },
+    {
+      onRetry: (err) => {
+        core.debug(`Download of ${url} failed, trying again. Error ${err}`);
+      },
+    }
+  );
+
+  const temp_install_dir = fs.mkdtempSync(`nxf-${version}`);
+
+  const nf_path = await io.mv(nf_path, `${temp_install_dir}/nextflow`, {
+    force: true,
+  });
+  fs.chmod(nf_path, "+x");
+
+  return temp_install_dir;
+}
+
 async function run() {
+  // Read in the arguments
+  const token = core.getInput("token");
+  const version = core.getInput("version");
+  const get_all = core.getBooleanInput("all");
+
   // Setup the API
   let octokit = {};
   try {
-    const token = core.getInput("token");
     octokit = github.getOctokit(token);
   } catch (e) {
     core.setFailed(
@@ -88,7 +116,6 @@ async function run() {
   // Get the release info for the desired release
   let release = {};
   try {
-    const version = core.getInput("version");
     release = await release_data(version, octokit);
     core.info(
       `Input version '${version}' resolved to Nextflow ${release.name}`
@@ -102,29 +129,30 @@ async function run() {
   // Get the download url for the desired release
   let url = "";
   try {
-    const get_all = core.getBooleanInput("all");
     url = nextflow_bin_url(release, get_all);
     core.info(`Preparing to download from ${url}`);
   } catch (e) {
     core.setFailed(`Could not parse the download URL\n${e.message}`);
   }
-
-  // Download Nextflow and add it to path
-  let nf_path = "";
   try {
-    const temp_install_dir = fs.mkdtempSync(`nextflow`);
-    nf_path = await retry(
-      async (bail) => {
-        return await tc.downloadTool(url, `${temp_install_dir}/nextflow`);
-      },
-      {
-        onRetry: (err) => {
-          core.debug(`Download of ${url} failed, trying again. Error: ${err}`);
-        },
-      }
-    );
+    // Download Nextflow and add it to path
+    let nf_path = "";
+    nf_path = tc.find("nextflow", version);
 
-    core.addPath(temp_install_dir);
+    if (!nf_path) {
+      core.debug(`Could not find Nextflow ${version} in cache`);
+      const nf_install_path = await install_nextflow(url, version);
+
+      nf_path = await tc.cacheDir(nf_install_path, "nextflow", version);
+      core.debug(`Added Nextflow to cache: ${nf_path}`);
+
+      io.rmRF(nf_install_path);
+    } else {
+      core.debug(`Using cached version of Nextflow: ${nf_path}`);
+    }
+
+    core.addPath(nf_path);
+
     core.info(`Downloaded \`nextflow\` to ${nf_path} and added to PATH`);
   } catch (e) {
     core.setFailed(e.message);
