@@ -5,7 +5,6 @@ const io = require("@actions/io");
 const retry = require("async-retry");
 const semver = require("semver");
 const tc = require("@actions/tool-cache");
-const { relative } = require("path");
 
 const NEXTFLOW_REPO = { owner: "nextflow-io", repo: "nextflow" };
 
@@ -91,7 +90,7 @@ async function install_nextflow(url, version) {
   const temp_install_dir = fs.mkdtempSync(`nxf-${version}`);
   const nf_path = `${temp_install_dir}/nextflow`;
 
-  io.mv(nf_dl_path, nf_path);
+  fs.renameSync(nf_dl_path, nf_path);
   fs.chmodSync(nf_path, "0711");
 
   return temp_install_dir;
@@ -153,7 +152,7 @@ async function run() {
       );
       core.debug(`Added Nextflow to cache: ${nf_path}`);
 
-      io.rmRF(nf_install_path);
+      fs.rmdirSync(nf_install_path, { recursive: true });
     } else {
       core.debug(`Using cached version of Nextflow: ${nf_path}`);
     }
