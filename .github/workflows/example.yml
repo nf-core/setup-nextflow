@@ -1,0 +1,38 @@
+name: Example builds
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    strategy:
+      fail-fast: false
+      matrix:
+        nextflow_version:
+          - "21.10.3"
+          - "22.04"
+          - "22.03.1-edge"
+          - "latest"
+          - "latest-stable"
+          - "latest-edge"
+          - "latest-everything"
+        all_distribution:
+          - true
+          - false
+
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 16
+          cache: "npm"
+      - run: npm install
+      - uses: ./
+        with:
+          version: ${{ matrix.nextflow_version }}
+          all: ${{ matrix.all_distribution }}
+      - run: nextflow -v
