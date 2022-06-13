@@ -91,7 +91,7 @@ async function install_nextflow(url, version) {
   const nf_path = `${temp_install_dir}/nextflow`;
 
   io.mv(nf_dl_path, nf_path);
-  fs.chmod(nf_path, "+x");
+  fs.chmod(nf_path, "0711");
 
   return temp_install_dir;
 }
