@@ -30,7 +30,6 @@ jobs:
         with:
           node-version: 16
           cache: "npm"
-          token: ${{ secrets.GITHUB_TOKEN }}
       - run: npm install
       - uses: ./
         with:
