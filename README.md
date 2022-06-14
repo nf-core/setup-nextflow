@@ -3,7 +3,7 @@
 [![Testing](https://github.com/MillironX/setup-nextflow/actions/workflows/example.yml/badge.svg)](https://github.com/MillironX/setup-nextflow/actions/workflows/example.yml)
 [![MIT License](https://img.shields.io/github/license/MillironX/setup-nextflow?logo=opensourceinitiative)](https://github.com/MillironX/setup-nextflow/blob/master/LICENSE)
 [![GitHub tag (latest by date)](https://img.shields.io/github/v/tag/MillironX/setup-nextflow?logo=github)](https://github.com/MillironX/setup-nextflow/releases/latest)
-[![Get from GitHub Actions](https://img.shields.io/static/v1?label=actions&message=marketplace&color=green&logo=githubactions)](https://github.com/marketplace/setup-nextflow)
+[![Get from GitHub Actions](https://img.shields.io/static/v1?label=actions&message=marketplace&color=green&logo=githubactions)](https://github.com/marketplace/actions/setup-nextflow)
 
 An action to install [Nextflow](https://nextflow.io) into a GitHub Actions workflow and make it available for subsequent steps.
 
@@ -68,7 +68,7 @@ A boolean deciding whether to download the "all versions" distribution of Nextfl
 This action locates the releases based upon the GitHub API, and requires an access token. The default token provided with all GitHub actions should be sufficient for all use cases on GitHub. Valid reasons to change this:
 
 - GitHub Enterprise server (and only under some configurations)
-- Testing workflows locally with https://github.com/nektos/act
+- Testing workflows locally with [act](https://github.com/nektos/act)
 
 ## Outputs
 
