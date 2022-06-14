@@ -17,19 +17,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - uses: actions/setup-java@v3
-        with:
-          distribution: "temurin"
-          java-version: "11"
       - uses: MillironX/setup-nextflow@v1
-        with:
-          version: "21.10"
-          all: false
-          token: ${{ secrets.GITHUB_TOKEN }}
-      - run: nextflow help
+      - run: nextflow run ${GITHUB_WORKSPACE}
 ```
 
 ## Inputs
+
+All inputs are optional! :sunglasses: By default, this action will install the [latest stable release](https://nextflow.io/docs/latest/getstarted.html#stable-edge-releases) of Nextflow. You can optionally pick a different version, or choose to install all versions.
 
 ### `version`
 
@@ -49,15 +43,15 @@ There are three (technically four) aliases to assist in choosing up-to-date Next
 
 - `version: latest-stable` (alias `version: latest`)
 
-    This will download the latest _stable_ release of Nextflow.
+  This will download the latest _stable_ release of Nextflow.
 
 - `version: latest-edge`
 
-    This will download the latest _edge_ release of Nextflow. Note that edge releases may be _older_ than the latest stable release. See https://github.com/nextflow-io/nextflow/issues/2467
+  This will download the latest _edge_ release of Nextflow. Note that edge releases may be _older_ than the latest stable release. See https://github.com/nextflow-io/nextflow/issues/2467
 
 - `version: latest-everything`
 
-     This will download the latest release of Nextflow, regardless of stable/edge status.
+  This will download the latest release of Nextflow, regardless of stable/edge status.
 
 ### `all`
 
@@ -69,7 +63,12 @@ A boolean deciding whether to download the "all versions" distribution of Nextfl
 
 > **default: `${{ secrets.GITHUB_TOKEN }}`**
 
-This action locates the releases based upon the GitHub API, and requires an access token. The default token provided with all GitHub actions should be sufficient for all use cases.
+> **:warning: This really shouldn't be changed. If you think this will fix a workflow problem, triple-check everything else first. :warning:**
+
+This action locates the releases based upon the GitHub API, and requires an access token. The default token provided with all GitHub actions should be sufficient for all use cases on GitHub. Valid reasons to change this:
+
+- GitHub Enterprise server (and only under some configurations)
+- Testing workflows locally with https://github.com/nektos/act
 
 ## Outputs
 
