@@ -30,7 +30,8 @@ jobs:
         with:
           node-version: 16
           cache: "npm"
-      - run: npm install
+      - run: npm i -g @vercel/ncc
+      - run: npm ci && npm run build
       - uses: ./
         with:
           version: ${{ matrix.nextflow_version }}
