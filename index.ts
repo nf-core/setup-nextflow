@@ -1,11 +1,10 @@
-const core = require("@actions/core");
-const exec = require("@actions/exec")
-const fs = require("fs");
-const github = require("@actions/github");
-const io = require("@actions/io");
-const retry = require("async-retry");
-const semver = require("semver");
-const tc = require("@actions/tool-cache");
+import * as core from "@actions/core";
+import * as exec from "@actions/exec";
+import * as fs from "fs";
+import * as github from "@actions/github";
+import * as tc from "@actions/tool-cache";
+import retry = require("async-retry");
+import semver = require("semver");
 
 const NEXTFLOW_REPO = { owner: "nextflow-io", repo: "nextflow" };
 
