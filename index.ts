@@ -24,7 +24,7 @@ async function latest_stable_release_data(ok) {
 
 async function release_data(version, ok) {
   // Setup tag-based filtering
-  filter = (r) => {
+  let filter = (r) => {
     return semver.satisfies(r.tag_name, version, true);
   };
 
@@ -43,7 +43,7 @@ async function release_data(version, ok) {
     } else {
       // This is special: passing 'latest' or 'latest-stable' allows us to use
       // the latest stable GitHub release direct from the API
-      stable_release = await latest_stable_release_data(ok);
+      const stable_release = await latest_stable_release_data(ok);
       return stable_release;
     }
   }
@@ -51,7 +51,7 @@ async function release_data(version, ok) {
   // Get all the releases
   const all_releases = await all_nf_releases(ok);
 
-  matching_releases = all_releases.filter(filter);
+  let matching_releases = all_releases.filter(filter);
 
   matching_releases.sort(function (x, y) {
     semver.compare(x.tag_name, y.tag_name, true);
@@ -115,7 +115,7 @@ async function run() {
   }
 
   // Get the release info for the desired release
-  let release = {};
+  let release: any = {};
   try {
     release = await release_data(version, octokit);
     resolved_version = release.tag_name;
