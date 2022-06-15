@@ -108,7 +108,7 @@ async function run() {
   let octokit = {};
   try {
     octokit = github.getOctokit(token);
-  } catch (e) {
+  } catch (e: any) {
     core.setFailed(
       `Could not authenticate to GitHub Releases API with provided token\n${e.message}`
     );
@@ -122,7 +122,7 @@ async function run() {
     core.info(
       `Input version '${version}' resolved to Nextflow ${release.name}`
     );
-  } catch (e) {
+  } catch (e: any) {
     core.setFailed(
       `Could not retrieve Nextflow release matching ${version}.\n${e.message}`
     );
@@ -133,7 +133,7 @@ async function run() {
   try {
     url = nextflow_bin_url(release, get_all);
     core.info(`Preparing to download from ${url}`);
-  } catch (e) {
+  } catch (e: any) {
     core.setFailed(`Could not parse the download URL\n${e.message}`);
   }
   try {
@@ -160,14 +160,14 @@ async function run() {
     core.addPath(nf_path);
 
     core.info(`Downloaded \`nextflow\` to ${nf_path} and added to PATH`);
-  } catch (e) {
+  } catch (e: any) {
     core.setFailed(e.message);
   }
 
   // Run Nextflow so it downloads its dependencies
   try {
     const nf_exit_code = await exec.exec("nextflow", ["help"])
-  } catch (e) {
+  } catch (e: any) {
     core.warning("Nextflow appears to have installed correctly, but an error was thrown while running it.")
   }
 }
