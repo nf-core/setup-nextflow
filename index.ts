@@ -97,6 +97,9 @@ async function install_nextflow(url, version) {
 }
 
 async function run() {
+  // Set environment variables
+  core.exportVariable("CAPSULE_LOG", "none");
+
   // Read in the arguments
   const token = core.getInput("token");
   const version = core.getInput("version");
