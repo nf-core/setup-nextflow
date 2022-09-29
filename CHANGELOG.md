@@ -7,6 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.2.0] - 2022-10-29
+
+## Added
+
+- `CAPSULE_LOG` is now set to 'none' for less verbose setup logs (#1/#2)
+
+## Fixed
+
+- Release list now paginates the API to find old versions of Nextflow (#3)
+
 ## [1.1.0] - 2022-06-15
 
 ### Changed
@@ -27,7 +37,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - GitHub Actions workflow to test Nextflow installation and downstream usage
 - Documentation and license files
 
-[unreleased]: https://github.com/MillironX/setup-nextflow/compare/v1.1.0...HEAD
+[unreleased]: https://github.com/MillironX/setup-nextflow/compare/v1.2.0...HEAD
+[1.2.0]: https://github.com/MillironX/setup-nextflow/compare/v1.1.1...v1.2.0
 [1.1.0]: https://github.com/MillironX/setup-nextflow/compare/v1.0.1...v1.1.0
 [1.0.1]: https://github.com/MillironX/setup-nextflow/compare/v1.0.0...v1.0.1
 [1.0.0]: https://github.com/MillironX/setup-nextflow/releases/tag/v1.0.0
