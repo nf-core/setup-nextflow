@@ -9,9 +9,11 @@ import semver = require("semver");
 const NEXTFLOW_REPO = { owner: "nextflow-io", repo: "nextflow" };
 
 async function all_nf_releases(ok) {
-  const { data: releases } = await ok.rest.repos.listReleases(NEXTFLOW_REPO);
-
-  return releases;
+  return await ok.paginate(
+    ok.rest.repos.listReleases,
+    NEXTFLOW_REPO,
+    (response) => response.data
+  );
 }
 
 async function latest_stable_release_data(ok) {
