@@ -1,8 +1,8 @@
 # Setup Nextflow for GitHub Actions
 
-[![Testing](https://github.com/MillironX/setup-nextflow/actions/workflows/example.yml/badge.svg)](https://github.com/MillironX/setup-nextflow/actions/workflows/example.yml)
-[![MIT License](https://img.shields.io/github/license/MillironX/setup-nextflow?logo=opensourceinitiative)](https://github.com/MillironX/setup-nextflow/blob/master/LICENSE)
-[![GitHub tag (latest by date)](https://img.shields.io/github/v/tag/MillironX/setup-nextflow?logo=github)](https://github.com/MillironX/setup-nextflow/releases/latest)
+[![Testing](https://github.com/nf-core/setup-nextflow/actions/workflows/example.yml/badge.svg)](https://github.com/nf-core/setup-nextflow/actions/workflows/example.yml)
+[![MIT License](https://img.shields.io/github/license/nf-core/setup-nextflow?logo=opensourceinitiative)](https://github.com/nf-core/setup-nextflow/blob/master/LICENSE)
+[![GitHub tag (latest by date)](https://img.shields.io/github/v/tag/nf-core/setup-nextflow?logo=github)](https://github.com/nf-core/setup-nextflow/releases/latest)
 [![Get from GitHub Actions](https://img.shields.io/static/v1?label=actions&message=marketplace&color=green&logo=githubactions)](https://github.com/marketplace/actions/setup-nextflow)
 
 An action to install [Nextflow](https://nextflow.io) into a GitHub Actions workflow and make it available for subsequent steps.
@@ -17,7 +17,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - uses: MillironX/setup-nextflow@v1
+      - uses: nf-core/setup-nextflow@v1.2.0
       - run: nextflow run ${GITHUB_WORKSPACE}
 ```
 
