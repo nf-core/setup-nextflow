@@ -20,10 +20,12 @@ async function run(): Promise<void> {
   let octokit = {}
   try {
     octokit = github.getOctokit(token)
-  } catch (e) {
-    core.setFailed(
-      `Could not authenticate to GitHub Releases API with provided token\n${e.message}`
-    )
+  } catch (e: unknown) {
+    if (e instanceof Error) {
+      core.setFailed(
+        `Could not authenticate to GitHub Releases API with provided token\n${e.message}`
+      )
+    }
   }
 
   // Get the release info for the desired release
@@ -32,10 +34,12 @@ async function run(): Promise<void> {
     release = await release_data(version, octokit)
     resolved_version = release.tag_name
     core.info(`Input version '${version}' resolved to Nextflow ${release.name}`)
-  } catch (e) {
-    core.setFailed(
-      `Could not retrieve Nextflow release matching ${version}.\n${e.message}`
-    )
+  } catch (e: unknown) {
+    if (e instanceof Error) {
+      core.setFailed(
+        `Could not retrieve Nextflow release matching ${version}.\n${e.message}`
+      )
+    }
   }
 
   // Get the download url for the desired release
@@ -43,8 +47,10 @@ async function run(): Promise<void> {
   try {
     url = nextflow_bin_url(release, get_all)
     core.info(`Preparing to download from ${url}`)
-  } catch (e) {
-    core.setFailed(`Could not parse the download URL\n${e.message}`)
+  } catch (e: unknown) {
+    if (e instanceof Error) {
+      core.setFailed(`Could not parse the download URL\n${e.message}`)
+    }
   }
   try {
     // Download Nextflow and add it to path
@@ -66,17 +72,21 @@ async function run(): Promise<void> {
     core.addPath(nf_path)
 
     core.info(`Downloaded \`nextflow\` to ${nf_path} and added to PATH`)
-  } catch (e) {
-    core.setFailed(e.message)
+  } catch (e: unknown) {
+    if (e instanceof Error) {
+      core.setFailed(e.message)
+    }
   }
 
   // Run Nextflow so it downloads its dependencies
   try {
     await exec.exec('nextflow', ['help'])
-  } catch (e) {
-    core.warning(
-      'Nextflow appears to have installed correctly, but an error was thrown while running it.'
-    )
+  } catch (e: unknown) {
+    if (e instanceof Error) {
+      core.warning(
+        'Nextflow appears to have installed correctly, but an error was thrown while running it.'
+      )
+    }
   }
 }
 
