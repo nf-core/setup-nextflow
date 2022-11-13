@@ -22,7 +22,11 @@ test('lastest_stable_release_data', async t => {
   t.is(result.tag_name, 'v22.10.2')
 })
 
-test.todo('release_data')
+test('release_data', async t => {
+  const result = await functions.release_data('v22.10.2', t.context.octokit)
+  t.is(result.tag_name, 'v22.10.2')
+})
+
 test.todo('nextflow_bin_url')
 test.todo('install_nextflow')
 
