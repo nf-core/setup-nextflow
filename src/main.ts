@@ -32,8 +32,10 @@ async function run(): Promise<void> {
   let release = {}
   try {
     release = await release_data(version, octokit)
-    resolved_version = release.tag_name
-    core.info(`Input version '${version}' resolved to Nextflow ${release.name}`)
+    resolved_version = release['tag_name']
+    core.info(
+      `Input version '${version}' resolved to Nextflow ${release['name']}`
+    )
   } catch (e: unknown) {
     if (e instanceof Error) {
       core.setFailed(
