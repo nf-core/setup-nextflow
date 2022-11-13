@@ -3,9 +3,9 @@ import * as exec from '@actions/exec'
 import * as fs from 'fs'
 import * as github from '@actions/github'
 import * as tc from '@actions/tool-cache'
-import {release_data, nextflow_bin_url, install_nextflow} from './functions'
+import {install_nextflow, nextflow_bin_url, release_data} from './functions'
 
-async function run() {
+async function run(): Promise<void> {
   // Set environment variables
   core.exportVariable('CAPSULE_LOG', 'none')
 
@@ -20,19 +20,19 @@ async function run() {
   let octokit = {}
   try {
     octokit = github.getOctokit(token)
-  } catch (e: any) {
+  } catch (e) {
     core.setFailed(
       `Could not authenticate to GitHub Releases API with provided token\n${e.message}`
     )
   }
 
   // Get the release info for the desired release
-  let release: any = {}
+  let release = {}
   try {
     release = await release_data(version, octokit)
     resolved_version = release.tag_name
     core.info(`Input version '${version}' resolved to Nextflow ${release.name}`)
-  } catch (e: any) {
+  } catch (e) {
     core.setFailed(
       `Could not retrieve Nextflow release matching ${version}.\n${e.message}`
     )
@@ -43,7 +43,7 @@ async function run() {
   try {
     url = nextflow_bin_url(release, get_all)
     core.info(`Preparing to download from ${url}`)
-  } catch (e: any) {
+  } catch (e) {
     core.setFailed(`Could not parse the download URL\n${e.message}`)
   }
   try {
@@ -66,14 +66,14 @@ async function run() {
     core.addPath(nf_path)
 
     core.info(`Downloaded \`nextflow\` to ${nf_path} and added to PATH`)
-  } catch (e: any) {
+  } catch (e) {
     core.setFailed(e.message)
   }
 
   // Run Nextflow so it downloads its dependencies
   try {
-    const nf_exit_code = await exec.exec('nextflow', ['help'])
-  } catch (e: any) {
+    await exec.exec('nextflow', ['help'])
+  } catch (e) {
     core.warning(
       'Nextflow appears to have installed correctly, but an error was thrown while running it.'
     )
