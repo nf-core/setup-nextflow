@@ -13,7 +13,6 @@ jobs:
         with:
           node-version: 16
           cache: "npm"
-      - run: npm i -g @vercel/ncc
       - run: npm ci && npm run build
       - uses: JasonEtco/build-and-tag-action@v1
         env:
