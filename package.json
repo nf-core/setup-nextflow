@@ -5,10 +5,10 @@
   "main": "lib/main.js",
   "scripts": {
     "build": "tsc",
-    "format": "prettier --write '**/*'",
-    "format:check": "prettier --check '**/*'",
-    "lint": "eslint src/**/*.ts",
-    "lint:fix": "eslint --fix src/**/*.ts",
+    "format": "prettier --write '**/*.{ts,js,yml,md,json}'",
+    "format:check": "prettier --check '**/*.{ts,js,yml,md,json}'",
+    "lint": "eslint {src,test}/**/*.ts",
+    "lint:fix": "eslint --fix {src,test}/**/*.ts",
     "package": "ncc build --source-map --license LICENSE",
     "test": "ava",
     "all": "npm run build && npm run format && npm run lint && npm run package && npm test"
