@@ -16,7 +16,12 @@ test('all_nf_releases', async t => {
   t.is(typeof result, 'object')
 })
 
-test.todo('lastest_stable_release_data')
+test('lastest_stable_release_data', async t => {
+  const result = await functions.latest_stable_release_data(t.context.octokit)
+  t.is(typeof result, 'object')
+  t.is(result.tag_name, 'v22.10.2')
+})
+
 test.todo('release_data')
 test.todo('nextflow_bin_url')
 test.todo('install_nextflow')
