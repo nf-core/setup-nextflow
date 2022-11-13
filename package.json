@@ -1,8 +1,8 @@
 {
   "name": "install-nextflow-action",
   "version": "1.2.0",
-  "description": "",
   "main": "dist/index.js",
+  "description": "An action to install Nextflow into a GitHub Actions workflow and make it available for subsequent steps.",
   "scripts": {
     "format": "prettier --write '**/*.ts'",
     "format-check": "prettier --check '**/*.ts'",
@@ -10,7 +10,11 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "ncc build index.ts --license LICENSE"
   },
-  "keywords": [],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/nf-core/setup-nextflow.git"
+  },
+  "keywords": ["actions", "node", "setup"],
   "author": "nf-core",
   "license": "MIT",
   "dependencies": {
