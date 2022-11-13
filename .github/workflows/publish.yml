@@ -14,7 +14,10 @@ jobs:
           node-version: 16
           cache: 'npm'
       - run: npm ci
-      - run: npm run build
+      - run: npm run format:check
+      - run: npm run lint
+      - run: npm run test
+      - run: npm run package
       - uses: JasonEtco/build-and-tag-action@v1
         env:
           GITHUB_TOKEN: ${{ github.token }}
