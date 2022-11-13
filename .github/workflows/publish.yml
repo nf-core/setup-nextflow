@@ -12,7 +12,7 @@ jobs:
       - uses: actions/setup-node@v3
         with:
           node-version: 16
-          cache: "npm"
+          cache: 'npm'
       - run: npm ci && npm run build
       - uses: JasonEtco/build-and-tag-action@v1
         env:

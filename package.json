@@ -5,8 +5,8 @@
   "main": "lib/main.js",
   "scripts": {
     "build": "tsc",
-    "format": "prettier --write '**/*.ts'",
-    "format-check": "prettier --check '**/*.ts'",
+    "format": "prettier --write '**/*'",
+    "format-check": "prettier --check '**/*'",
     "lint": "eslint src/**/*.ts",
     "package": "ncc build --source-map --license LICENSE",
     "test": "ava",
@@ -16,16 +16,28 @@
     "type": "git",
     "url": "git+https://github.com/nf-core/setup-nextflow.git"
   },
-  "keywords": ["actions", "node", "setup"],
+  "keywords": [
+    "actions",
+    "node",
+    "setup"
+  ],
   "author": "nf-core",
   "ava": {
-    "extensions": ["ts"],
+    "extensions": [
+      "ts"
+    ],
     "rewritePaths": {
       "src/": "lib/"
     },
-    "require": ["ts-node/register/transpile-only"],
-    "files": ["test/**/*.ts"],
-    "source": ["src/**/*.ts"],
+    "require": [
+      "ts-node/register/transpile-only"
+    ],
+    "files": [
+      "test/**/*.ts"
+    ],
+    "source": [
+      "src/**/*.ts"
+    ],
     "concurrency": 1,
     "serial": true,
     "powerAssert": true
