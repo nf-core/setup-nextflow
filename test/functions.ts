@@ -1,6 +1,6 @@
 import * as functions from '../src/functions'
 import * as github from '@actions/github'
-import anyTest, {TestFn} from 'ava'
+import anyTest, {TestFn} from 'ava' // eslint-disable-line import/no-unresolved
 
 const test = anyTest as TestFn<{foo: string}>
 
