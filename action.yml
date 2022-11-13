@@ -1,22 +1,22 @@
-name: "Setup Nextflow"
-description: "Install Nextflow and add it to the PATH"
-author: "nf-core"
+name: 'Setup Nextflow'
+description: 'Install Nextflow and add it to the PATH'
+author: 'nf-core'
 inputs:
   version:
-    description: "The Nextflow version to download (if necessary) and use. Example: 21.10.3"
+    description: 'The Nextflow version to download (if necessary) and use. Example: 21.10.3'
     required: false
-    default: "latest-stable"
+    default: 'latest-stable'
   all:
     description: "Whether to install every Nextflow release via the '-all' distribution."
     required: false
     default: false
   token:
-    description: "GitHub token to access the GitHub Releases API. The default token should be sufficient for all use cases."
+    description: 'GitHub token to access the GitHub Releases API. The default token should be sufficient for all use cases.'
     required: false
     default: ${{ github.token }}
 runs:
-  using: "node16"
-  main: "dist/index.js"
+  using: 'node16'
+  main: 'dist/index.js'
 branding:
-  icon: "shuffle"
-  color: "green"
+  icon: 'shuffle'
+  color: 'green'
