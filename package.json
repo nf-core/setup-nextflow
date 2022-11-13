@@ -8,6 +8,7 @@
     "format": "prettier --write '**/*'",
     "format-check": "prettier --check '**/*'",
     "lint": "eslint src/**/*.ts",
+    "lint:fix": "eslint --fix src/**/*.ts",
     "package": "ncc build --source-map --license LICENSE",
     "test": "ava",
     "all": "npm run build && npm run format && npm run lint && npm run package && npm test"
