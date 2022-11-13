@@ -8,7 +8,7 @@
     "build": "ncc build index.ts --license LICENSE"
   },
   "keywords": [],
-  "author": "",
+  "author": "nf-core",
   "license": "MIT",
   "dependencies": {
     "@actions/core": "^1.8.2",
