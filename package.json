@@ -4,6 +4,9 @@
   "description": "",
   "main": "dist/index.js",
   "scripts": {
+    "format": "prettier --write '**/*.ts'",
+    "format-check": "prettier --check '**/*.ts'",
+    "lint": "eslint src/**/*.ts",
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "ncc build index.ts --license LICENSE"
   },
@@ -24,7 +27,13 @@
     "@types/async-retry": "^1.4.5",
     "@types/node": "^18.11.0",
     "@types/semver": "^7.3.13",
+    "@typescript-eslint/parser": "^5.42.1",
     "@vercel/ncc": "^0.34.0",
+    "eslint": "^8.27.0",
+    "eslint-config-prettier": "^8.5.0",
+    "eslint-plugin-github": "^4.4.1",
+    "eslint-plugin-jest": "^27.1.5",
+    "prettier": "^2.7.1",
     "typescript": "^4.7.3"
   }
 }
