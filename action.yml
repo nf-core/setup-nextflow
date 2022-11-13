@@ -1,6 +1,6 @@
 name: "Setup Nextflow"
 description: "Install Nextflow and add it to the PATH"
-author: "Thomas A. Christensen II"
+author: "nf-core"
 inputs:
   version:
     description: "The Nextflow version to download (if necessary) and use. Example: 21.10.3"
