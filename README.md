@@ -73,3 +73,20 @@ This action locates the releases based upon the GitHub API, and requires an acce
 ## Outputs
 
 There are no outputs from this action.
+
+## Why was this action made?
+
+[Slack link](https://nfcore.slack.com/archives/CE56GDKN0/p1655210460795839)
+
+You may be asking, why not just a few yaml lines?
+
+```yaml
+- name: Install Nextflow
+  env:
+    NXF_VER: ${{ matrix.NXF_VER }}
+  run: |
+    wget -qO- get.nextflow.io | bash
+    sudo mv nextflow /usr/local/bin/
+```
+
+The versioning. From the Nextflow install script you can't get `latest-edge` or `latest-everything` for example.
