@@ -2,9 +2,9 @@ import * as core from '@actions/core'
 import * as exec from '@actions/exec'
 import * as fs from 'fs'
 import * as github from '@actions/github'
-import {GitHub} from '@actions/github/lib/utils'
+import { GitHub } from '@actions/github/lib/utils'
 import * as tc from '@actions/tool-cache'
-import {install_nextflow, nextflow_bin_url, release_data} from './functions'
+import { install_nextflow, nextflow_bin_url, release_data } from './functions'
 
 async function run(): Promise<void> {
   // Set environment variables
@@ -69,7 +69,7 @@ async function run(): Promise<void> {
       nf_path = await tc.cacheDir(nf_install_path, 'nextflow', resolved_version)
       core.debug(`Added Nextflow to cache: ${nf_path}`)
 
-      fs.rmdirSync(nf_install_path, {recursive: true})
+      fs.rmdirSync(nf_install_path, { recursive: true })
     } else {
       core.debug(`Using cached version of Nextflow: ${nf_path}`)
     }
