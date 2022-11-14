@@ -1,4 +1,5 @@
 import * as functions from '../src/functions'
+import {getToken} from './utils'
 import * as github from '@actions/github'
 import anyTest, {TestFn} from 'ava' // eslint-disable-line import/no-unresolved
 
@@ -24,23 +25,5 @@ test('lastest_stable_release_data', async t => {
   t.is(result['tag_name'], 'v22.10.2')
 })
 
-test('release_data', async t => {
-  const result = await functions.release_data('v22.10.2', t.context['octokit'])
-  t.is(result['tag_name'], 'v22.10.2')
-})
-
 test.todo('nextflow_bin_url')
 test.todo('install_nextflow')
-
-function getToken(first: boolean): string {
-  const token = process.env['GITHUB_TOKEN'] || ''
-  if (!token && first) {
-    /* eslint-disable-next-line no-console */
-    console.warn(
-      'Skipping GitHub tests. Set $GITHUB_TOKEN to run REST client and GraphQL client tests'
-    )
-    first = false
-  }
-
-  return token
-}

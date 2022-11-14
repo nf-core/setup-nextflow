@@ -39,6 +39,10 @@
     "source": [
       "src/**/*.ts"
     ],
+    "files": [
+      "test/**/*.ts",
+      "!test/utils.ts"
+    ],
     "concurrency": 1,
     "serial": true,
     "powerAssert": true
