@@ -34,14 +34,11 @@
       "ts-node/register/transpile-only"
     ],
     "files": [
-      "test/**/*.ts"
+      "test/**/*.ts",
+      "!test/utils.ts"
     ],
     "source": [
       "src/**/*.ts"
-    ],
-    "files": [
-      "test/**/*.ts",
-      "!test/utils.ts"
     ],
     "concurrency": 1,
     "serial": true,
@@ -71,6 +68,7 @@
     "eslint-plugin-ava": "^13.2.0",
     "eslint-plugin-github": "^4.4.1",
     "eslint-plugin-jest": "^27.1.5",
+    "eslint-plugin-simple-import-sort": "^8.0.0",
     "prettier": "^2.7.1",
     "ts-node": "^10.9.1",
     "typescript": "^4.7.3"

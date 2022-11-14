@@ -1,8 +1,8 @@
 import * as core from '@actions/core'
-import * as fs from 'fs'
-import * as tc from '@actions/tool-cache'
 import { GitHub } from '@actions/github/lib/utils'
+import * as tc from '@actions/tool-cache'
 import retry from 'async-retry'
+import * as fs from 'fs'
 import semver from 'semver'
 
 const NEXTFLOW_REPO = { owner: 'nextflow-io', repo: 'nextflow' }
