@@ -10,7 +10,7 @@ const NEXTFLOW_REPO = {owner: 'nextflow-io', repo: 'nextflow'}
 // HACK Private but I want to test this
 export async function all_nf_releases(
   ok: InstanceType<typeof GitHub>
-): Promise<object> {
+): Promise<object[]> {
   return await ok.paginate(
     ok.rest.repos.listReleases,
     NEXTFLOW_REPO,
@@ -60,13 +60,13 @@ export async function release_data(
   }
 
   // Get all the releases
-  const all_releases = await all_nf_releases(ok)
+  const all_releases: object[] = await all_nf_releases(ok)
 
-  // FIXME Ignore
   const matching_releases = all_releases.filter(filter)
 
-  matching_releases.sort(function (x, y) {
-    semver.compare(x.tag_name, y.tag_name, true)
+  matching_releases.sort((x, y) => {
+    // HACK IDK why the value flip is necessary with the return
+    return semver.compare(x['tag_name'], y['tag_name'], true) * -1
   })
 
   return matching_releases[0]
