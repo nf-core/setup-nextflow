@@ -1,15 +1,18 @@
 import * as github from '@actions/github'
 import {release_data} from '../src/functions'
 import {getToken} from './utils'
+import {GitHub} from '@actions/github/lib/utils'
 import anyTest, {TestFn} from 'ava' // eslint-disable-line import/no-unresolved
 
-const test = anyTest as TestFn<{foo: string}>
+const test = anyTest as TestFn<{
+  token: string
+  octokit: InstanceType<typeof GitHub>
+}>
 
 test.before(t => {
   const first = true
   const current_token = getToken(first)
-  t.context = {token: current_token}
-  t.context = {octokit: github.getOctokit(current_token)}
+  t.context = {token: current_token, octokit: github.getOctokit(current_token)}
 })
 
 const macro = test.macro(async (t, version: string, expected: string) => {
