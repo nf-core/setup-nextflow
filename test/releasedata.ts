@@ -1,8 +1,9 @@
 import * as github from '@actions/github'
-import { release_data } from '../src/functions'
-import { getToken } from './utils'
 import { GitHub } from '@actions/github/lib/utils'
 import anyTest, { TestFn } from 'ava' // eslint-disable-line import/no-unresolved
+
+import { release_data } from '../src/functions'
+import { getToken } from './utils'
 
 const test = anyTest as TestFn<{
   token: string

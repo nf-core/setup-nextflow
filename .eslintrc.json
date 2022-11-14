@@ -1,5 +1,5 @@
 {
-  "plugins": ["ava", "@typescript-eslint"],
+  "plugins": ["ava", "@typescript-eslint", "simple-import-sort"],
   "extends": ["plugin:github/recommended", "plugin:ava/recommended"],
   "parser": "@typescript-eslint/parser",
   "parserOptions": {
@@ -8,6 +8,8 @@
     "project": "./tsconfig.json"
   },
   "rules": {
+    "simple-import-sort/imports": "error",
+    "simple-import-sort/exports": "error",
     "i18n-text/no-en": "off",
     "eslint-comments/no-use": "off",
     "import/no-namespace": "off",
@@ -49,7 +51,7 @@
     "@typescript-eslint/require-array-sort-compare": "error",
     "@typescript-eslint/restrict-plus-operands": "error",
     "semi": "off",
-    "sort-imports": "warn",
+    "sort-imports": "off",
     "@typescript-eslint/semi": ["error", "never"],
     "@typescript-eslint/type-annotation-spacing": "error",
     "@typescript-eslint/unbound-method": "error"
