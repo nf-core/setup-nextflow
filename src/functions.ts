@@ -1,11 +1,11 @@
 import * as core from '@actions/core'
 import * as fs from 'fs'
 import * as tc from '@actions/tool-cache'
-import {GitHub} from '@actions/github/lib/utils'
+import { GitHub } from '@actions/github/lib/utils'
 import retry from 'async-retry'
 import semver from 'semver'
 
-const NEXTFLOW_REPO = {owner: 'nextflow-io', repo: 'nextflow'}
+const NEXTFLOW_REPO = { owner: 'nextflow-io', repo: 'nextflow' }
 
 // HACK Private but I want to test this
 export async function all_nf_releases(
@@ -22,7 +22,7 @@ export async function all_nf_releases(
 export async function latest_stable_release_data(
   ok: InstanceType<typeof GitHub>
 ): Promise<object> {
-  const {data: stable_release} = await ok.rest.repos.getLatestRelease(
+  const { data: stable_release } = await ok.rest.repos.getLatestRelease(
     NEXTFLOW_REPO
   )
 
