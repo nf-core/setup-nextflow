@@ -2,8 +2,12 @@ name: Example builds
 
 on:
   push:
+    branches:
+      - master
   pull_request:
   workflow_dispatch:
+  release:
+    types: [published]
 
 jobs:
   test:
