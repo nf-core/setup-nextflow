@@ -1,11 +1,11 @@
-import * as core from '@actions/core'
-import { GitHub } from '@actions/github/lib/utils'
-import * as tc from '@actions/tool-cache'
-import retry from 'async-retry'
-import * as fs from 'fs'
-import semver from 'semver'
+import * as core from "@actions/core"
+import { GitHub } from "@actions/github/lib/utils"
+import * as tc from "@actions/tool-cache"
+import retry from "async-retry"
+import * as fs from "fs"
+import semver from "semver"
 
-const NEXTFLOW_REPO = { owner: 'nextflow-io', repo: 'nextflow' }
+const NEXTFLOW_REPO = { owner: "nextflow-io", repo: "nextflow" }
 
 // HACK Private but I want to test this
 export async function all_nf_releases(
@@ -35,21 +35,21 @@ export async function release_data(
 ): Promise<object> {
   // Setup tag-based filtering
   let filter = (r: object): boolean => {
-    return semver.satisfies(r['tag_name'], version, true)
+    return semver.satisfies(r["tag_name"], version, true)
   }
 
   // Check if the user passed a 'latest*' tag, and override filtering
   // accordingly
-  if (version.includes('latest')) {
-    if (version.includes('-everything')) {
+  if (version.includes("latest")) {
+    if (version.includes("-everything")) {
       // No filtering
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       filter = (r: object) => {
         return true
       }
-    } else if (version.includes('-edge')) {
+    } else if (version.includes("-edge")) {
       filter = r => {
-        return r['tag_name'].endsWith('-edge')
+        return r["tag_name"].endsWith("-edge")
       }
     } else {
       // This is special: passing 'latest' or 'latest-stable' allows us to use
@@ -66,19 +66,19 @@ export async function release_data(
 
   matching_releases.sort((x, y) => {
     // HACK IDK why the value flip is necessary with the return
-    return semver.compare(x['tag_name'], y['tag_name'], true) * -1
+    return semver.compare(x["tag_name"], y["tag_name"], true) * -1
   })
 
   return matching_releases[0]
 }
 
 export function nextflow_bin_url(release: object, get_all: boolean): string {
-  const release_assets = release['assets']
+  const release_assets = release["assets"]
   const all_asset = release_assets.filter((a: object) => {
-    return a['browser_download_url'].endsWith('-all')
+    return a["browser_download_url"].endsWith("-all")
   })[0]
   const regular_asset = release_assets.filter((a: object) => {
-    return a['name'] === 'nextflow'
+    return a["name"] === "nextflow"
   })[0]
 
   const dl_asset = get_all ? all_asset : regular_asset
@@ -107,7 +107,7 @@ export async function install_nextflow(
   const nf_path = `${temp_install_dir}/nextflow`
 
   fs.renameSync(nf_dl_path, nf_path)
-  fs.chmodSync(nf_path, '0711')
+  fs.chmodSync(nf_path, "0711")
 
   return temp_install_dir
 }

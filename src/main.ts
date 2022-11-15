@@ -1,22 +1,22 @@
-import * as core from '@actions/core'
-import * as exec from '@actions/exec'
-import * as github from '@actions/github'
-import { GitHub } from '@actions/github/lib/utils'
-import * as tc from '@actions/tool-cache'
-import * as fs from 'fs'
+import * as core from "@actions/core"
+import * as exec from "@actions/exec"
+import * as github from "@actions/github"
+import { GitHub } from "@actions/github/lib/utils"
+import * as tc from "@actions/tool-cache"
+import * as fs from "fs"
 
-import { install_nextflow, nextflow_bin_url, release_data } from './functions'
+import { install_nextflow, nextflow_bin_url, release_data } from "./functions"
 
 async function run(): Promise<void> {
   // Set environment variables
-  core.exportVariable('CAPSULE_LOG', 'none')
+  core.exportVariable("CAPSULE_LOG", "none")
 
   // Read in the arguments
-  const token = core.getInput('token')
-  const version = core.getInput('version')
-  const get_all = core.getBooleanInput('all')
+  const token = core.getInput("token")
+  const version = core.getInput("version")
+  const get_all = core.getBooleanInput("all")
 
-  let resolved_version = ''
+  let resolved_version = ""
 
   // Setup the API
   let octokit: InstanceType<typeof GitHub> | undefined
@@ -36,9 +36,9 @@ async function run(): Promise<void> {
     if (octokit !== undefined) {
       release = await release_data(version, octokit)
     }
-    resolved_version = release['tag_name']
+    resolved_version = release["tag_name"]
     core.info(
-      `Input version '${version}' resolved to Nextflow ${release['name']}`
+      `Input version '${version}' resolved to Nextflow ${release["name"]}`
     )
   } catch (e: unknown) {
     if (e instanceof Error) {
@@ -49,7 +49,7 @@ async function run(): Promise<void> {
   }
 
   // Get the download url for the desired release
-  let url = ''
+  let url = ""
   try {
     url = nextflow_bin_url(release, get_all)
     core.info(`Preparing to download from ${url}`)
@@ -60,14 +60,14 @@ async function run(): Promise<void> {
   }
   try {
     // Download Nextflow and add it to path
-    let nf_path = ''
-    nf_path = tc.find('nextflow', resolved_version)
+    let nf_path = ""
+    nf_path = tc.find("nextflow", resolved_version)
 
     if (!nf_path) {
       core.debug(`Could not find Nextflow ${resolved_version} in cache`)
       const nf_install_path = await install_nextflow(url, resolved_version)
 
-      nf_path = await tc.cacheDir(nf_install_path, 'nextflow', resolved_version)
+      nf_path = await tc.cacheDir(nf_install_path, "nextflow", resolved_version)
       core.debug(`Added Nextflow to cache: ${nf_path}`)
 
       fs.rmdirSync(nf_install_path, { recursive: true })
@@ -86,11 +86,11 @@ async function run(): Promise<void> {
 
   // Run Nextflow so it downloads its dependencies
   try {
-    await exec.exec('nextflow', ['help'])
+    await exec.exec("nextflow", ["help"])
   } catch (e: unknown) {
     if (e instanceof Error) {
       core.warning(
-        'Nextflow appears to have installed correctly, but an error was thrown while running it.'
+        "Nextflow appears to have installed correctly, but an error was thrown while running it."
       )
     }
   }

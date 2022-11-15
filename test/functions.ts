@@ -1,9 +1,9 @@
-import * as github from '@actions/github'
-import { GitHub } from '@actions/github/lib/utils'
-import anyTest, { TestFn } from 'ava' // eslint-disable-line import/no-unresolved
+import * as github from "@actions/github"
+import { GitHub } from "@actions/github/lib/utils"
+import anyTest, { TestFn } from "ava" // eslint-disable-line import/no-unresolved
 
-import * as functions from '../src/functions'
-import { getToken } from './utils'
+import * as functions from "../src/functions"
+import { getToken } from "./utils"
 
 const test = anyTest as TestFn<{
   token: string
@@ -19,18 +19,18 @@ test.before(t => {
   }
 })
 
-test('all_nf_releases', async t => {
-  const result = await functions.all_nf_releases(t.context['octokit'])
-  t.is(typeof result, 'object')
+test("all_nf_releases", async t => {
+  const result = await functions.all_nf_releases(t.context["octokit"])
+  t.is(typeof result, "object")
 })
 
-test('lastest_stable_release_data', async t => {
+test("lastest_stable_release_data", async t => {
   const result = await functions.latest_stable_release_data(
-    t.context['octokit']
+    t.context["octokit"]
   )
-  t.is(typeof result, 'object')
-  t.is(result['tag_name'], 'v22.10.2')
+  t.is(typeof result, "object")
+  t.is(result["tag_name"], "v22.10.2")
 })
 
-test.todo('nextflow_bin_url')
-test.todo('install_nextflow')
+test.todo("nextflow_bin_url")
+test.todo("install_nextflow")
