@@ -111,3 +111,22 @@ export async function install_nextflow(
 
   return temp_install_dir
 }
+
+export function check_cache(version: string): boolean {
+  const cleaned_version = semver.clean(version, true)
+  if (cleaned_version === null) {
+    return false
+  }
+  const resolved_version = String(cleaned_version)
+
+  const nf_path = tc.find("nextflow", resolved_version)
+  if (!nf_path) {
+    core.debug(`Could not find Nextflow ${resolved_version} in the tool cache`)
+    return false
+  } else {
+    core.debug(`Found Nextflow ${resolved_version} at path '${nf_path}'`)
+    core.debug(`Adding '${nf_path}' to PATH`)
+    core.addPath(nf_path)
+    return true
+  }
+}
