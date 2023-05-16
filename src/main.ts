@@ -4,8 +4,14 @@ import * as github from "@actions/github"
 import { GitHub } from "@actions/github/lib/utils"
 import * as tc from "@actions/tool-cache"
 import * as fs from "fs"
+import semver from "semver"
 
-import { install_nextflow, nextflow_bin_url, release_data } from "./functions"
+import {
+  check_cache,
+  install_nextflow,
+  nextflow_bin_url,
+  release_data
+} from "./functions"
 
 async function run(): Promise<void> {
   // Set environment variables
@@ -16,7 +22,10 @@ async function run(): Promise<void> {
   const version = core.getInput("version")
   const get_all = core.getBooleanInput("all")
 
-  let resolved_version = ""
+  // Check the cache for the Nextflow version that matched last time
+  if (check_cache(version)) {
+    return
+  }
 
   // Setup the API
   let octokit: InstanceType<typeof GitHub> | undefined
@@ -32,6 +41,7 @@ async function run(): Promise<void> {
 
   // Get the release info for the desired release
   let release = {}
+  let resolved_version = ""
   try {
     if (octokit !== undefined) {
       release = await release_data(version, octokit)
@@ -60,24 +70,19 @@ async function run(): Promise<void> {
   }
   try {
     // Download Nextflow and add it to path
-    let nf_path = ""
-    nf_path = tc.find("nextflow", resolved_version)
-
-    if (!nf_path) {
-      core.debug(`Could not find Nextflow ${resolved_version} in cache`)
+    if (!check_cache(resolved_version)) {
       const nf_install_path = await install_nextflow(url, resolved_version)
-
-      nf_path = await tc.cacheDir(nf_install_path, "nextflow", resolved_version)
+      const cleaned_version = String(semver.clean(resolved_version, true))
+      const nf_path = await tc.cacheDir(
+        nf_install_path,
+        "nextflow",
+        cleaned_version
+      )
+      core.addPath(nf_path)
+      core.info(`Downloaded \`nextflow\` to ${nf_path} and added to PATH`)
       core.debug(`Added Nextflow to cache: ${nf_path}`)
-
       fs.rmdirSync(nf_install_path, { recursive: true })
-    } else {
-      core.debug(`Using cached version of Nextflow: ${nf_path}`)
     }
-
-    core.addPath(nf_path)
-
-    core.info(`Downloaded \`nextflow\` to ${nf_path} and added to PATH`)
   } catch (e: unknown) {
     if (e instanceof Error) {
       core.setFailed(e.message)
