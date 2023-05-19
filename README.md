@@ -17,7 +17,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - uses: nf-core/setup-nextflow@v1.2.0
+      - uses: nf-core/setup-nextflow@v1
       - run: nextflow run ${GITHUB_WORKSPACE}
 ```
 
