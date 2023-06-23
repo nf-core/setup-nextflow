@@ -42,3 +42,21 @@ jobs:
           version: ${{ matrix.nextflow_version }}
           all: ${{ matrix.all_distribution }}
       - run: nextflow -v
+
+  test-14:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 16
+          cache: "npm"
+      - run: npm ci
+      - run: npm run build
+      - run: npm run package
+      - uses: easimon/maximize-build-space@v7
+      - uses: ./
+        with:
+          version: ${{ matrix.nextflow_version }}
+          all: ${{ matrix.all_distribution }}
+      - run: nextflow -v
