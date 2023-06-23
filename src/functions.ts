@@ -106,7 +106,13 @@ export async function install_nextflow(
   const temp_install_dir = fs.mkdtempSync(`nxf-${version}`)
   const nf_path = `${temp_install_dir}/nextflow`
 
-  fs.renameSync(nf_dl_path, nf_path)
+  try {
+    fs.renameSync(nf_dl_path, nf_path)
+  } catch (err: unknown) {
+    core.debug(`Failed to rename file: ${err}`)
+    fs.copyFileSync(nf_dl_path, nf_path)
+    fs.unlinkSync(nf_dl_path)
+  }
   fs.chmodSync(nf_path, "0711")
 
   return temp_install_dir

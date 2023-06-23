@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## Changed
+
+- If `fs.renameSync` fails (e.g. because source and destination files are on different partitions), try `fs.copySync` and `fs.unlinkSync` instead (#14).
+
 ## [1.3.0] - 2023-05-19
 
 ## Changed
