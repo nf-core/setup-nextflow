@@ -25,6 +25,6 @@ const macro = test.macro(async (t, version: string, expected: string) => {
 })
 
 test("hard version", macro, "v22.10.2", "v22.10.2")
-test("latest-stable", macro, "latest-stable", "v22.10.2")
-test("latest-edge", macro, "latest-edge", "v22.09.7-edge")
-test("latest-everything", macro, "latest-everything", "v22.10.2")
+test("latest-stable", macro, "latest-stable", "v23.04.2")
+test("latest-edge", macro, "latest-edge", "v23.06.0-edge")
+test("latest-everything", macro, "latest-everything", "v23.06.0-edge")
