@@ -3,7 +3,7 @@ import { GitHub } from "@actions/github/lib/utils"
 import anyTest, { TestFn } from "ava" // eslint-disable-line import/no-unresolved
 
 import * as functions from "../src/functions"
-import { getToken } from "./utils"
+import { getReleaseTag, getToken } from "./utils"
 
 const test = anyTest as TestFn<{
   token: string
@@ -29,7 +29,8 @@ test("lastest_stable_release_data", async t => {
     t.context["octokit"]
   )
   t.is(typeof result, "object")
-  t.is(result["tag_name"], "v23.04.2")
+  const expected = await getReleaseTag("nextflow-io/nextflow", false)
+  t.is(result["tag_name"], expected)
 })
 
 test.todo("nextflow_bin_url")

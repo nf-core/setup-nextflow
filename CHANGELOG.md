@@ -17,6 +17,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Fix release version check in unit test (#15).
 
+- Add helper function for checking the latest releases in the unit tests (#15).
+
 ## [1.3.0] - 2023-05-19
 
 ## Changed
