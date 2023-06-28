@@ -56,7 +56,4 @@ jobs:
       - run: npm run build
       - run: npm run package
       - uses: ./
-        with:
-          version: ${{ matrix.nextflow_version }}
-          all: ${{ matrix.all_distribution }}
       - run: nextflow -v
