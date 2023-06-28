@@ -29,7 +29,7 @@ test("lastest_stable_release_data", async t => {
     t.context["octokit"]
   )
   t.is(typeof result, "object")
-  t.is(result["tag_name"], "v22.10.2")
+  t.is(result["tag_name"], "v23.04.2")
 })
 
 test.todo("nextflow_bin_url")
