@@ -1,6 +1,6 @@
 {
   "name": "install-nextflow-action",
-  "version": "1.3.0",
+  "version": "1.4.0",
   "description": "An action to install Nextflow into a GitHub Actions workflow and make it available for subsequent steps.",
   "main": "lib/src/main.js",
   "scripts": {
