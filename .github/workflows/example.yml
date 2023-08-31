@@ -41,6 +41,7 @@ jobs:
         with:
           version: ${{ matrix.nextflow_version }}
           all: ${{ matrix.all_distribution }}
+          token: ${{ secrets.GITHUB_TOKEN }}
       - run: nextflow -v
 
   test-pr-14:
