@@ -43,7 +43,7 @@ jobs:
           all: ${{ matrix.all_distribution }}
       - run: nextflow -v
 
-  test-14:
+  test-pr-14:
     runs-on: ubuntu-latest
     steps:
       - uses: easimon/maximize-build-space@v7
