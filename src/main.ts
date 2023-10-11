@@ -94,9 +94,8 @@ async function run(): Promise<void> {
     await exec.exec("nextflow", ["help"])
   } catch (e: unknown) {
     if (e instanceof Error) {
-      core.warning(
-        "Nextflow appears to have installed correctly, but an error was thrown while running it."
-      )
+      // fail workflow if Nextflow run does not succeed
+      core.setFailed(`Could not run 'nextflow help'. Error: ${e.message}`)
     }
   }
 }
