@@ -10,7 +10,7 @@
     "lint": "eslint {src,test}/**/*.ts",
     "lint:fix": "eslint --fix {src,test}/**/*.ts",
     "package": "ncc build --source-map --license LICENSE",
-    "test": "ava",
+    "test": "c8 --reporter=lcov ava",
     "all": "npm run build && npm run format && npm run lint && npm run package && npm test"
   },
   "repository": {
