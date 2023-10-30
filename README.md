@@ -1,6 +1,7 @@
 # ![nf-core/setup-nextflow](docs/images/nfcore-setupnextflow_logo.png#gh-light-mode-only) ![nf-core/setup-nextflow](docs/images/nfcore-setupnextflow_logo_dark.png#gh-dark-mode-only)
 
 [![Testing](https://github.com/nf-core/setup-nextflow/actions/workflows/example.yml/badge.svg)](https://github.com/nf-core/setup-nextflow/actions/workflows/example.yml)
+[![codecov](https://codecov.io/gh/nf-core/setup-nextflow/branch/master/graph/badge.svg)](https://codecov.io/gh/nf-core/setup-nextflow)
 [![MIT License](https://img.shields.io/github/license/nf-core/setup-nextflow?logo=opensourceinitiative)](https://github.com/nf-core/setup-nextflow/blob/master/LICENSE)
 [![GitHub tag (latest by date)](https://img.shields.io/github/v/tag/nf-core/setup-nextflow?logo=github)](https://github.com/nf-core/setup-nextflow/releases/latest)
 [![Get from GitHub Actions](https://img.shields.io/static/v1?label=actions&message=marketplace&color=green&logo=githubactions)](https://github.com/marketplace/actions/setup-nextflow)
