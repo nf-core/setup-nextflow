@@ -9,6 +9,21 @@ export type NextflowRelease = {
 }
 
 /**
+ * Converts the raw OctoKit data into a structured NextflowRelease
+ * @param data A "release" data struct from OctoKit
+ * @returns `data` converted into a `NextflowRelease`
+ */
+export function nextflow_release(data: object): NextflowRelease {
+  const nf_release: NextflowRelease = {
+    versionNumber: data["tag_name"],
+    isEdge: data["prerelease"],
+    binaryURL: nextflow_bin_url(data, false),
+    allBinaryURL: nextflow_bin_url(data, true)
+  }
+  return nf_release
+}
+
+/**
  * Gets the download URL of a Nextflow binary
  * @param release A "release" data struct from OctoKit
  * @param get_all Whether to return the url for the "all" variant of Nextflow
