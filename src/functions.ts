@@ -72,20 +72,6 @@ export async function release_data(
   return matching_releases[0]
 }
 
-export function nextflow_bin_url(release: object, get_all: boolean): string {
-  const release_assets = release["assets"]
-  const all_asset = release_assets.filter((a: object) => {
-    return a["browser_download_url"].endsWith("-all")
-  })[0]
-  const regular_asset = release_assets.filter((a: object) => {
-    return a["name"] === "nextflow"
-  })[0]
-
-  const dl_asset = get_all ? all_asset : regular_asset
-
-  return dl_asset.browser_download_url
-}
-
 export async function install_nextflow(
   url: string,
   version: string
