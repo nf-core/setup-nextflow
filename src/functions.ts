@@ -4,14 +4,12 @@ import retry from "async-retry"
 import * as fs from "fs"
 import semver from "semver"
 
+import { NextflowRelease } from "./NextflowRelease"
 
-export async function release_data(
-  version: string,
-  ok: InstanceType<typeof GitHub>
-): Promise<object> {
+function tag_filter(version: string): (r: NextflowRelease) => Boolean {
   // Setup tag-based filtering
-  let filter = (r: object): boolean => {
-    return semver.satisfies(r["tag_name"], version, true)
+  let filter = (r: NextflowRelease): boolean => {
+    return semver.satisfies(r.versionNumber, version, true)
   }
 
   // Check if the user passed a 'latest*' tag, and override filtering
@@ -20,23 +18,21 @@ export async function release_data(
     if (version.includes("-everything")) {
       // No filtering
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      filter = (r: object) => {
+      filter = (r: NextflowRelease) => {
         return true
       }
     } else if (version.includes("-edge")) {
-      filter = r => {
-        return r["tag_name"].endsWith("-edge")
+      filter = (r: NextflowRelease) => {
+        return r.versionNumber.endsWith("-edge")
       }
     } else {
-      // This is special: passing 'latest' or 'latest-stable' allows us to use
-      // the latest stable GitHub release direct from the API
-      const stable_release = await latest_stable_release_data(ok)
-      return stable_release
+      filter = (r: NextflowRelease) => {
+        return !r.isEdge
+      }
     }
   }
-
-  // Get all the releases
-  const all_releases: object[] = await all_nf_releases(ok)
+  return filter
+}
 
   const matching_releases = all_releases.filter(filter)
 
