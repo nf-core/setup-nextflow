@@ -33,13 +33,11 @@ async function run(): Promise<void> {
   const releases = await pull_releases(octokit)
 
   // Get the release info for the desired release
-  let release = {}
+  let release = {} as NextflowRelease
   let resolved_version = ""
   try {
-    if (octokit !== undefined) {
-      release = await release_data(version, octokit)
-    }
-    resolved_version = release["tag_name"]
+    release = await get_nextflow_release(version, releases)
+    resolved_version = release.versionNumber
     core.info(
       `Input version '${version}' resolved to Nextflow ${release["name"]}`
     )
@@ -51,20 +49,10 @@ async function run(): Promise<void> {
     }
   }
 
-  // Get the download url for the desired release
-  let url = ""
-  try {
-    url = nextflow_bin_url(release, get_all)
-    core.info(`Preparing to download from ${url}`)
-  } catch (e: unknown) {
-    if (e instanceof Error) {
-      core.setFailed(`Could not parse the download URL\n${e.message}`)
-    }
-  }
   try {
     // Download Nextflow and add it to path
     if (!check_cache(resolved_version)) {
-      const nf_install_path = await install_nextflow(url, resolved_version)
+      const nf_install_path = await install_nextflow(release, get_all)
       const cleaned_version = String(semver.clean(resolved_version, true))
       const nf_path = await tc.cacheDir(
         nf_install_path,
