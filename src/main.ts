@@ -28,16 +28,9 @@ async function run(): Promise<void> {
   }
 
   // Setup the API
-  let octokit: InstanceType<typeof GitHub> | undefined
-  try {
-    octokit = github.getOctokit(token)
-  } catch (e: unknown) {
-    if (e instanceof Error) {
-      core.setFailed(
-        `Could not authenticate to GitHub Releases API with provided token\n${e.message}`
-      )
-    }
-  }
+  const octokit = await setup_octokit(token)
+
+  const releases = await pull_releases(octokit)
 
   // Get the release info for the desired release
   let release = {}
