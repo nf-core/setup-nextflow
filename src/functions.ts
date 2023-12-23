@@ -1,33 +1,9 @@
 import * as core from "@actions/core"
-import { GitHub } from "@actions/github/lib/utils"
 import * as tc from "@actions/tool-cache"
 import retry from "async-retry"
 import * as fs from "fs"
 import semver from "semver"
 
-const NEXTFLOW_REPO = { owner: "nextflow-io", repo: "nextflow" }
-
-// HACK Private but I want to test this
-export async function all_nf_releases(
-  ok: InstanceType<typeof GitHub>
-): Promise<object[]> {
-  return await ok.paginate(
-    ok.rest.repos.listReleases,
-    NEXTFLOW_REPO,
-    response => response.data
-  )
-}
-
-// HACK Private but I want to test this
-export async function latest_stable_release_data(
-  ok: InstanceType<typeof GitHub>
-): Promise<object> {
-  const { data: stable_release } = await ok.rest.repos.getLatestRelease(
-    NEXTFLOW_REPO
-  )
-
-  return stable_release
-}
 
 export async function release_data(
   version: string,
