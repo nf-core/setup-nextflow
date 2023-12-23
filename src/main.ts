@@ -13,7 +13,8 @@ import { NextflowRelease } from "./NextflowRelease"
 import { pull_releases, setup_octokit } from "./OctokitWrapper"
 
 async function run(): Promise<void> {
-  // Set environment variables
+  // CAPSULE_LOG leads to a bunch of boilerplate being output to the logs: turn
+  // it off
   core.exportVariable("CAPSULE_LOG", "none")
 
   // Read in the arguments
