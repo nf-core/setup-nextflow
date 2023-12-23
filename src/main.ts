@@ -1,17 +1,16 @@
 import * as core from "@actions/core"
 import * as exec from "@actions/exec"
-import * as github from "@actions/github"
-import { GitHub } from "@actions/github/lib/utils"
 import * as tc from "@actions/tool-cache"
 import * as fs from "fs"
 import semver from "semver"
 
 import {
   check_cache,
-  install_nextflow,
-  nextflow_bin_url,
-  release_data
+  get_nextflow_release,
+  install_nextflow
 } from "./functions"
+import { NextflowRelease } from "./NextflowRelease"
+import { pull_releases, setup_octokit } from "./OctokitWrapper"
 
 async function run(): Promise<void> {
   // Set environment variables
