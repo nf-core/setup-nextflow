@@ -34,11 +34,17 @@ function tag_filter(version: string): (r: NextflowRelease) => Boolean {
   return filter
 }
 
-  const matching_releases = all_releases.filter(filter)
+export async function get_nextflow_release(
+  version: string,
+  releases: NextflowRelease[]
+): Promise<NextflowRelease> {
+  // Filter the releases
+  const filter = tag_filter(version)
+  const matching_releases = releases.filter(filter)
 
   matching_releases.sort((x, y) => {
     // HACK IDK why the value flip is necessary with the return
-    return semver.compare(x["tag_name"], y["tag_name"], true) * -1
+    return semver.compare(x.versionNumber, y.versionNumber, true) * -1
   })
 
   return matching_releases[0]
