@@ -51,9 +51,12 @@ export async function get_nextflow_release(
 }
 
 export async function install_nextflow(
-  url: string,
-  version: string
+  release: NextflowRelease,
+  get_all: boolean
 ): Promise<string> {
+  const url = get_all ? release.allBinaryURL : release.binaryURL
+  const version = release.versionNumber
+
   core.debug(`Downloading Nextflow from ${url}`)
   const nf_dl_path = await retry(
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
