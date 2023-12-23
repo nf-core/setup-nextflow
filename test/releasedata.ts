@@ -2,8 +2,9 @@ import * as github from "@actions/github"
 import { GitHub } from "@actions/github/lib/utils"
 import anyTest, { TestFn } from "ava" // eslint-disable-line import/no-unresolved
 
-import { release_data } from "../src/functions"
-import { getReleaseTag, getToken } from "./utils"
+import { nextflow_bin_url } from "../src/NextflowRelease"
+import { all_nf_release_data } from "../src/OctokitWrapper"
+import { getToken } from "./utils"
 
 const test = anyTest as TestFn<{
   token: string
@@ -19,22 +20,22 @@ test.before(t => {
   }
 })
 
-const macro = test.macro(async (t, version: string) => {
-  let expected
-  if (version === "latest-stable") {
-    expected = await getReleaseTag("nextflow-io/nextflow", false)
-  } else if (version === "latest-edge") {
-    expected = await getReleaseTag("nextflow-io/nextflow", true)
-  } else if (version === "latest-everything") {
-    expected = await getReleaseTag("nextflow-io/nextflow", undefined)
-  } else {
-    expected = version
-  }
-  const result = await release_data(version, t.context["octokit"])
-  t.is(result["tag_name"], expected)
+const exists_macro = test.macro(async (t, object_name: string) => {
+  const all_releases = await all_nf_release_data(t.context.octokit)
+  const first_release = all_releases[0]
+  t.assert(first_release.hasOwnProperty(object_name))
 })
 
-test("hard version", macro, "v22.10.2")
-test("latest-stable", macro, "latest-stable")
-test("latest-edge", macro, "latest-edge")
-test("latest-everything", macro, "latest-everything")
+test("OctoKit returns tag", exists_macro, "tag_name")
+test("Octokit returns prerelease", exists_macro, "prerelease")
+test("Octokit returns assets", exists_macro, "assets")
+
+const binary_url_macro = test.macro(async (t, get_all: boolean) => {
+  const all_releases = await all_nf_release_data(t.context.octokit)
+  const first_release = all_releases[0]
+  const url = nextflow_bin_url(first_release, get_all)
+  t.notThrows(() => new URL(url))
+})
+
+test("Nextflow binary URL valid", binary_url_macro, false)
+test("Nextflow 'all' binary URL valid", binary_url_macro, true)
