@@ -39,6 +39,11 @@ export function nextflow_bin_url(release: object, get_all: boolean): string {
   })[0]
 
   const dl_asset = get_all ? all_asset : regular_asset
-
-  return dl_asset.browser_download_url
+  if (dl_asset) {
+    return dl_asset.browser_download_url
+  } else {
+    // Old pre-release versions of Nextflow didn't have an "all" variant. To
+    // avoid downstream errors, substitute the regular url here.
+    return regular_asset.browser_download_url
+  }
 }
