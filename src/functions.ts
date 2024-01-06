@@ -86,6 +86,11 @@ export async function install_nextflow(
 }
 
 export function check_cache(version: string): boolean {
+  // A 'latest*' version indicates that a cached version would be invalid until
+  // the version is resolved: abort
+  if (version.includes("latest")) {
+    return false
+  }
   const cleaned_version = semver.clean(version, true)
   if (cleaned_version === null) {
     return false
