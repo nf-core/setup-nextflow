@@ -109,3 +109,5 @@ test(
   "v23.04.3",
   edge_is_newer
 )
+
+test.todo("install_nextflow")
