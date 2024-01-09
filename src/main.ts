@@ -9,8 +9,8 @@ import {
   get_nextflow_release,
   install_nextflow
 } from "./functions"
-import { NextflowRelease } from "./NextflowRelease"
-import { pull_releases, setup_octokit } from "./OctokitWrapper"
+import { NextflowRelease } from "./nextflow-release"
+import { pull_releases, setup_octokit } from "./octokit-wrapper"
 
 async function run(): Promise<void> {
   // CAPSULE_LOG leads to a bunch of boilerplate being output to the logs: turn
