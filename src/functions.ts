@@ -4,7 +4,7 @@ import retry from "async-retry"
 import * as fs from "fs"
 import semver from "semver"
 
-import { NextflowRelease } from "./NextflowRelease"
+import { NextflowRelease } from "./nextflow-release"
 
 function tag_filter(version: string): (r: NextflowRelease) => Boolean {
   // Setup tag-based filtering
