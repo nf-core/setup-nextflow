@@ -1,7 +1,7 @@
 import test from "ava" // eslint-disable-line import/no-unresolved
 
 import * as functions from "../src/functions"
-import { NextflowRelease } from "../src/NextflowRelease"
+import { NextflowRelease } from "../src/nextflow-release"
 
 // The Nextflow releases we are going to use for testing follow a regular
 // pattern: create a mock function to bootstrap some test data without repeating

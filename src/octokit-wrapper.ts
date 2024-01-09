@@ -2,7 +2,7 @@ import * as core from "@actions/core"
 import * as github from "@actions/github"
 import { GitHub } from "@actions/github/lib/utils"
 
-import { nextflow_release, NextflowRelease } from "./NextflowRelease"
+import { nextflow_release, NextflowRelease } from "./nextflow-release"
 
 const NEXTFLOW_REPO = { owner: "nextflow-io", repo: "nextflow" }
 
