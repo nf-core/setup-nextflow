@@ -21,6 +21,8 @@ async function run(): Promise<void> {
   const token = core.getInput("token")
   const version = core.getInput("version")
   const get_all = core.getBooleanInput("all")
+  const cooldown = Number(core.getInput("cooldown"))
+  const max_retries = Number(core.getInput("max-retries"))
 
   // Check the cache for the Nextflow version that matched last time
   if (check_cache(version)) {
@@ -28,7 +30,7 @@ async function run(): Promise<void> {
   }
 
   // Setup the API
-  const octokit = await setup_octokit(token)
+  const octokit = await setup_octokit(token, cooldown, max_retries)
 
   const releases = await pull_releases(octokit)
 
