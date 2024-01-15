@@ -1,5 +1,4 @@
 import * as core from "@actions/core"
-import * as github from "@actions/github"
 import { getOctokitOptions, GitHub } from "@actions/github/lib/utils"
 import { throttling } from "@octokit/plugin-throttling"
 
