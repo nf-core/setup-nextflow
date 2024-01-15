@@ -14,6 +14,10 @@ inputs:
     description: "GitHub token to access the GitHub Releases API. The default token should be sufficient for all use cases."
     required: false
     default: ${{ github.token }}
+  cooldown:
+    description: "Time (in seconds) to wait before querying the GitHub Releases API in the case of hitting a rate limit."
+    required: false
+    default: "60"
 runs:
   using: "node16"
   main: "dist/index.js"
