@@ -1,17 +1,47 @@
 import * as core from "@actions/core"
 import * as github from "@actions/github"
-import { GitHub } from "@actions/github/lib/utils"
+import { getOctokitOptions, GitHub } from "@actions/github/lib/utils"
+import { throttling } from "@octokit/plugin-throttling"
 
 import { nextflow_release, NextflowRelease } from "./nextflow-release"
 
 const NEXTFLOW_REPO = { owner: "nextflow-io", repo: "nextflow" }
 
 export async function setup_octokit(
-  github_token: string
+  github_token: string,
+  cooldown = 60,
+  max_retries = 3
 ): Promise<InstanceType<typeof GitHub>> {
+  const throttledOctokit = GitHub.plugin(throttling)
   let octokit = {} as InstanceType<typeof GitHub>
   try {
-    octokit = github.getOctokit(github_token)
+    octokit = new throttledOctokit(
+      getOctokitOptions(github_token, {
+        throttle: {
+          onRateLimit: (retryAfter, options, ok, retryCount) => {
+            ok.log.warn(
+              `Request quota exhausted for request ${options.method} ${options.url}`
+            )
+
+            if (retryCount < max_retries) {
+              ok.log.info(`Retrying after ${retryAfter} seconds!`)
+              return true
+            }
+          },
+          onSecondaryRateLimit: (retryAfter, options, ok, retryCount) => {
+            ok.log.warn(
+              `SecondaryRateLimit detected for request ${options.method} ${options.url}`
+            )
+
+            if (retryCount < max_retries) {
+              octokit.log.info(`Retrying after ${retryAfter} seconds!`)
+              return true
+            }
+          },
+          fallbackSecondaryRateRetryAfter: cooldown
+        }
+      })
+    )
   } catch (e: unknown) {
     if (e instanceof Error) {
       core.setFailed(
