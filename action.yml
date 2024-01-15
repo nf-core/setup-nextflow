@@ -18,6 +18,10 @@ inputs:
     description: "Time (in seconds) to wait before querying the GitHub Releases API in the case of hitting a rate limit."
     required: false
     default: "60"
+  max-retries:
+    description: "The number of times that to try querying the GitHub Releases API in case of a rate-limited failure."
+    required: false
+    default: "3"
 runs:
   using: "node16"
   main: "dist/index.js"
