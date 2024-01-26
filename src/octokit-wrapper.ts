@@ -51,6 +51,40 @@ export async function setup_octokit(
   return octokit
 }
 
+export async function* release_iter(
+  octokit: InstanceType<typeof GitHub>
+): AsyncGenerator<NextflowRelease> {
+  const iterator = octokit.paginate.iterator(
+    octokit.rest.repos.listReleases,
+    NEXTFLOW_REPO
+  )
+  let item_index = 0
+  let release_items = []
+
+  /* eslint-disable-next-line @typescript-eslint/unbound-method */
+  const { next } = iterator[Symbol.asyncIterator]()
+
+  let request = await next()
+
+  return {
+    async next() {
+      if (item_index >= release_items.length) {
+        if (request.done) {
+          return { done: true }
+        }
+
+        request = await next()
+        release_items = request.value.data
+        item_index = 0
+      }
+      return {
+        value: nextflow_release(release_items[item_index++]),
+        done: false
+      }
+    }
+  }
+}
+
 export async function pull_releases(
   ok: InstanceType<typeof GitHub>
 ): Promise<NextflowRelease[]> {
