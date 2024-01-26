@@ -51,7 +51,7 @@ export async function setup_octokit(
   return octokit
 }
 
-export async function* release_iter(
+export async function* pull_releases(
   octokit: InstanceType<typeof GitHub>
 ): AsyncGenerator<NextflowRelease> {
   const iterator = octokit.paginate.iterator(
@@ -75,23 +75,6 @@ export async function* release_iter(
     }
     yield nextflow_release(release_items[item_index++])
   }
-}
-
-export async function pull_releases(
-  ok: InstanceType<typeof GitHub>
-): Promise<NextflowRelease[]> {
-  return await ok.paginate(
-    ok.rest.repos.listReleases,
-    NEXTFLOW_REPO,
-    response => {
-      const all_releases: NextflowRelease[] = []
-      const releases_data = response.data
-      for (const release_data of releases_data) {
-        all_releases.push(nextflow_release(release_data))
-      }
-      return all_releases
-    }
-  )
 }
 
 export async function pull_latest_stable_release(
