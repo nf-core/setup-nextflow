@@ -6,34 +6,6 @@ import semver from "semver"
 
 import { NextflowRelease } from "./nextflow-release"
 
-function tag_filter(version: string): (r: NextflowRelease) => Boolean {
-  // Setup tag-based filtering
-  let filter = (r: NextflowRelease): boolean => {
-    return semver.satisfies(r.versionNumber, version, true)
-  }
-
-  // Check if the user passed a 'latest*' tag, and override filtering
-  // accordingly
-  if (version.includes("latest")) {
-    if (version.includes("-everything")) {
-      // No filtering
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      filter = (r: NextflowRelease) => {
-        return true
-      }
-    } else if (version.includes("-edge")) {
-      filter = (r: NextflowRelease) => {
-        return r.versionNumber.endsWith("-edge")
-      }
-    } else {
-      filter = (r: NextflowRelease) => {
-        return !r.isEdge
-      }
-    }
-  }
-  return filter
-}
-
 async function get_latest_everything_nextflow_release(
   releases: AsyncGenerator<NextflowRelease>
 ): Promise<NextflowRelease> {
