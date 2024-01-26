@@ -23,22 +23,67 @@ test.before(t => {
   }
 })
 
-const exists_macro = test.macro(async (t, object_name: string) => {
-  const all_releases = await all_nf_release_data(t.context.octokit)
-  const first_release = all_releases[0]
-  t.assert(first_release.hasOwnProperty(object_name))
-})
+async function get_latest_release(
+  octokit: InstanceType<typeof GitHub>,
+  use_latest_api: boolean
+): Promise<NextflowRelease> {
+  if (use_latest_api) {
+    return await pull_latest_stable_release(octokit)
+  } else {
+    const all_releases = pull_releases(octokit)
+    const first_response = await all_releases.next()
+    const first_release = first_response.value
+      ? first_response.value
+      : ({} as NextflowRelease)
+    return first_release
+  }
+}
 
-test("OctoKit returns tag", exists_macro, "tag_name")
-test("Octokit returns prerelease", exists_macro, "prerelease")
-test("Octokit returns assets", exists_macro, "assets")
+const version_macro = test.macro(
+  async (t, object_name: string, use_latest_api: boolean) => {
+    const latest_release = await get_latest_release(
+      t.context.octokit,
+      use_latest_api
+    )
+    t.assert(latest_release[object_name])
+  }
+)
 
-const binary_url_macro = test.macro(async (t, get_all: boolean) => {
-  const all_releases = await all_nf_release_data(t.context.octokit)
-  const first_release = all_releases[0]
-  const url = nextflow_bin_url(first_release, get_all)
-  t.notThrows(() => new URL(url))
-})
+test(
+  "OctoKit iterator returns semver-parsable version number",
+  version_macro,
+  "versionNumber",
+  false
+)
+test(
+  "OctoKit latest API returns semver-parable version number",
+  version_macro,
+  "versionNumber",
+  true
+)
 
-test("Nextflow binary URL valid", binary_url_macro, false)
-test("Nextflow 'all' binary URL valid", binary_url_macro, true)
+const binary_url_macro = test.macro(
+  async (t, get_all: boolean, use_latest_api: boolean) => {
+    const latest_release = await get_latest_release(
+      t.context.octokit,
+      use_latest_api
+    )
+    const url = get_all ? latest_release.allBinaryURL : latest_release.binaryURL
+    t.notThrows(() => new URL(url))
+  }
+)
+
+test("Nextflow binary URL from iterator valid", binary_url_macro, false, false)
+test("Nextflow binary URL from latest API valid", binary_url_macro, false, true)
+test(
+  "Nextflow all binary URL from iterator valid",
+  binary_url_macro,
+  true,
+  false
+)
+test(
+  "Nextflow all binary URL from latest API valid",
+  binary_url_macro,
+  true,
+  true
+)
