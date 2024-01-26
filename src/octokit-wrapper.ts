@@ -52,24 +52,19 @@ export async function setup_octokit(
 }
 
 export async function pull_releases(
-  octokit: InstanceType<typeof GitHub>
-): Promise<NextflowRelease[]> {
-  const all_release_data: object[] = await all_nf_release_data(octokit)
-  const all_releases: NextflowRelease[] = []
-  for (const data of all_release_data) {
-    all_releases.push(nextflow_release(data))
-  }
-
-  return all_releases
-}
-
-export async function all_nf_release_data(
   ok: InstanceType<typeof GitHub>
-): Promise<object[]> {
+): Promise<NextflowRelease[]> {
   return await ok.paginate(
     ok.rest.repos.listReleases,
     NEXTFLOW_REPO,
-    response => response.data
+    response => {
+      const all_releases: NextflowRelease[] = []
+      const releases_data = response.data
+      for (const release_data of releases_data) {
+        all_releases.push(nextflow_release(release_data))
+      }
+      return all_releases
+    }
   )
 }
 
