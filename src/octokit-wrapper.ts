@@ -4,7 +4,14 @@ import { throttling } from "@octokit/plugin-throttling"
 
 import { nextflow_release, NextflowRelease } from "./nextflow-release"
 
-const NEXTFLOW_REPO = { owner: "nextflow-io", repo: "nextflow", per_page: 100 }
+const NEXTFLOW_REPO = {
+  owner: "nextflow-io",
+  repo: "nextflow",
+  per_page: 100,
+  headers: {
+    "x-github-api-version": "2022-11-28"
+  }
+}
 
 export async function setup_octokit(
   github_token: string,
