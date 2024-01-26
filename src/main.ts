@@ -10,7 +10,11 @@ import {
   install_nextflow
 } from "./functions"
 import { NextflowRelease } from "./nextflow-release"
-import { pull_releases, setup_octokit } from "./octokit-wrapper"
+import {
+  pull_releases,
+  pull_latest_stable_release,
+  setup_octokit
+} from "./octokit-wrapper"
 
 async function run(): Promise<void> {
   // CAPSULE_LOG leads to a bunch of boilerplate being output to the logs: turn
@@ -32,13 +36,16 @@ async function run(): Promise<void> {
   // Setup the API
   const octokit = await setup_octokit(token, cooldown, max_retries)
 
-  const releases = await pull_releases(octokit)
-
   // Get the release info for the desired release
   let release = {} as NextflowRelease
   let resolved_version = ""
   try {
-    release = await get_nextflow_release(version, releases)
+    if (version === "latest" || version === "latest-stable") {
+      release = await pull_latest_stable_release(octokit)
+    } else {
+      const releases = await pull_releases(octokit)
+      release = await get_nextflow_release(version, releases)
+    }
     resolved_version = release.versionNumber
     core.info(
       `Input version '${version}' resolved to Nextflow ${release["name"]}`
