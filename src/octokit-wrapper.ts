@@ -68,19 +68,12 @@ export async function pull_releases(
   )
 }
 
-export async function latest_stable_release_data(
+export async function pull_latest_stable_release(
   ok: InstanceType<typeof GitHub>
-): Promise<object> {
+): Promise<NextflowRelease> {
   const { data: stable_release } = await ok.rest.repos.getLatestRelease(
     NEXTFLOW_REPO
   )
 
-  return stable_release
-}
-
-export async function pull_latest_stable_release(
-  ok: InstanceType<typeof GitHub>
-): Promise<NextflowRelease> {
-  const latest_release = await latest_stable_release_data(ok)
-  return nextflow_release(latest_release)
+  return nextflow_release(stable_release)
 }
