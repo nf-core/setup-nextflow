@@ -12,8 +12,8 @@ import {
 import { NextflowRelease } from "./nextflow-release"
 import {
   pull_latest_stable_release,
-  setup_octokit,
-  release_iter
+  pull_releases,
+  setup_octokit
 } from "./octokit-wrapper"
 
 async function run(): Promise<void> {
@@ -43,7 +43,7 @@ async function run(): Promise<void> {
     if (version === "latest" || version === "latest-stable") {
       release = await pull_latest_stable_release(octokit)
     } else {
-      const release_iterator = release_iter(octokit)
+      const release_iterator = pull_releases(octokit)
       release = await get_nextflow_release(version, release_iterator)
     }
     resolved_version = release.versionNumber
