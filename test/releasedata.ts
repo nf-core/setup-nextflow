@@ -2,8 +2,11 @@ import * as github from "@actions/github"
 import { GitHub } from "@actions/github/lib/utils"
 import anyTest, { TestFn } from "ava" // eslint-disable-line import/no-unresolved
 
-import { nextflow_bin_url } from "../src/nextflow-release"
-import { all_nf_release_data } from "../src/octokit-wrapper"
+import { NextflowRelease } from "../src/nextflow-release"
+import {
+  pull_latest_stable_release,
+  pull_releases
+} from "../src/octokit-wrapper"
 import { getToken } from "./utils"
 
 const test = anyTest as TestFn<{
