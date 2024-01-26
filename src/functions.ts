@@ -34,20 +34,121 @@ function tag_filter(version: string): (r: NextflowRelease) => Boolean {
   return filter
 }
 
+async function get_latest_everything_nextflow_release(
+  releases: AsyncGenerator<NextflowRelease>
+): Promise<NextflowRelease> {
+  // Need to make sure we aren't in the edge case where a patch release is
+  // more recent chronologically than the edge release
+  let latest_release = {} as NextflowRelease
+
+  for await (const release of releases) {
+    // First iteration:
+    if (Object.keys(latest_release).length === 0) {
+      // If the most recent release is an edge release, then we have nothing to
+      // worry about, return it.
+      if (release.isEdge) {
+        return release
+      }
+      // Ok, so the most recent release is a stable release. We need to keep
+      // tabs on it
+      latest_release = release
+      continue
+    }
+
+    // A larger version number that is older than the "latest" release
+    // indicates that we've hit an edge release that is more up-to-date
+    // than a patch release. Return it.
+    if (semver.gt(release.versionNumber, latest_release.versionNumber, true)) {
+      return release
+    }
+
+    // A smaller version number that is also an edge release indicates that the
+    // chronologically most recent release is also the most up-to-date
+    if (
+      release.isEdge &&
+      semver.lt(release.versionNumber, latest_release.versionNumber, true)
+    ) {
+      return latest_release
+    }
+
+    // Once we've hit the major.minor.0 of the version that is the most recent
+    // patch, we know that we would have traversed any edge releases along the
+    // way, so check to see if we've hit that point yet.
+    const latest_release_major = semver.major(
+      latest_release.versionNumber,
+      true
+    )
+    const latest_release_minor = semver.minor(
+      latest_release.versionNumber,
+      true
+    )
+    const latest_release_minver = `${latest_release_major}.${latest_release_minor}.0`
+    if (semver.eq(release.versionNumber, latest_release_minver, true)) {
+      return latest_release
+    }
+  }
+
+  // We should never get here, but just in case
+  return {} as NextflowRelease
+}
+
+async function get_latest_edge_nextflow_release(
+  releases: AsyncGenerator<NextflowRelease>
+): Promise<NextflowRelease> {
+  // Because we don't have to worry about crossing between edge and stable
+  // releases, we can just return the first edge release we come across
+  for await (const release of releases) {
+    if (release.isEdge) {
+      return release
+    }
+  }
+
+  // We should never get here, but just in case
+  return {} as NextflowRelease
+}
+
+async function get_latest_stable_nextflow_release(
+  releases: AsyncGenerator<NextflowRelease>
+): Promise<NextflowRelease> {
+  // Because we don't have to worry about crossing between edge and stable
+  // releases, we can just return the first stable release we come across
+  for await (const release of releases) {
+    if (!release.isEdge) {
+      return release
+    }
+  }
+
+  // We should never get here, but just in case
+  return {} as NextflowRelease
+}
+
 export async function get_nextflow_release(
   version: string,
-  releases: NextflowRelease[]
+  releases: AsyncGenerator<NextflowRelease>
 ): Promise<NextflowRelease> {
-  // Filter the releases
-  const filter = tag_filter(version)
-  const matching_releases = releases.filter(filter)
+  // First, check to see if we are using a "latest-*" version system, and return
+  // early
+  if (version === "latest-everything") {
+    return await get_latest_everything_nextflow_release(releases)
+  }
+  if (version === "latest-edge") {
+    return await get_latest_edge_nextflow_release(releases)
+  }
+  if (version === "latest" || version === "latest-stable") {
+    return await get_latest_stable_nextflow_release(releases)
+  }
 
-  matching_releases.sort((x, y) => {
-    // HACK IDK why the value flip is necessary with the return
-    return semver.compare(x.versionNumber, y.versionNumber, true) * -1
-  })
+  // The releases are sent in reverse chronological order
+  // If we are sent a numbered tag, then back through the list until we find
+  // a release that fulfils the requested version number
+  for await (const release of releases) {
+    if (semver.satisfies(release.versionNumber, version, true)) {
+      return release
+    }
+  }
 
-  return matching_releases[0]
+  // We should never get here, but just in case
+  return {} as NextflowRelease
 }
 
 export async function install_nextflow(
