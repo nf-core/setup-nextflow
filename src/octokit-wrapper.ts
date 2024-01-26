@@ -65,23 +65,15 @@ export async function* release_iter(
   const { next } = iterator[Symbol.asyncIterator]()
 
   let request = await next()
+  release_items = request.value.data
 
-  return {
-    async next() {
-      if (item_index >= release_items.length) {
-        if (request.done) {
-          return { done: true }
-        }
-
-        request = await next()
-        release_items = request.value.data
-        item_index = 0
-      }
-      return {
-        value: nextflow_release(release_items[item_index++]),
-        done: false
-      }
+  while (true) {
+    if (item_index > release_items.length) {
+      request = await next()
+      release_items = request.value.data
+      item_index = 0
     }
+    yield nextflow_release(release_items[item_index++])
   }
 }
 
