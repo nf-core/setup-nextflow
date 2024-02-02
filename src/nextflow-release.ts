@@ -5,7 +5,7 @@ export type NextflowRelease = {
   version: string
   isEdge: boolean
   downloadUrl: string
-  allBinaryURL: string
+  downloadUrlAll: string
   published_at?: string
 }
 
@@ -19,7 +19,7 @@ export function nextflow_release(data: object): NextflowRelease {
     version: data["tag_name"],
     isEdge: data["prerelease"],
     downloadUrl: nextflow_bin_url(data, false),
-    allBinaryURL: nextflow_bin_url(data, true)
+    downloadUrlAll: nextflow_bin_url(data, true)
   }
   return nf_release
 }
