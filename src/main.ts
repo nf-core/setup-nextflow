@@ -46,9 +46,9 @@ async function run(): Promise<void> {
       const release_iterator = pull_releases(octokit)
       release = await get_nextflow_release(version, release_iterator)
     }
-    resolved_version = release.versionNumber
+    resolved_version = release.version
     core.info(
-      `Input version '${version}' resolved to Nextflow ${release.versionNumber}`
+      `Input version '${version}' resolved to Nextflow ${release.version}`
     )
   } catch (e: unknown) {
     if (e instanceof Error) {

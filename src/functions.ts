@@ -14,7 +14,7 @@ export async function get_nextflow_release(
   // If we are sent a numbered tag, then back through the list until we find
   // a release that fulfils the requested version number
   for await (const release of releases) {
-    if (semver.satisfies(release.versionNumber, version, true)) {
+    if (semver.satisfies(release.version, version, true)) {
       return release
     }
   }
@@ -28,7 +28,7 @@ export async function install_nextflow(
   get_all: boolean
 ): Promise<string> {
   const url = get_all ? release.allBinaryURL : release.binaryURL
-  const version = release.versionNumber
+  const version = release.version
 
   core.debug(`Downloading Nextflow from ${url}`)
   const nf_dl_path = await retry(
