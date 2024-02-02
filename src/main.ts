@@ -48,7 +48,7 @@ async function run(): Promise<void> {
     }
     resolved_version = release.versionNumber
     core.info(
-      `Input version '${version}' resolved to Nextflow ${release["name"]}`
+      `Input version '${version}' resolved to Nextflow ${release.versionNumber}`
     )
   } catch (e: unknown) {
     if (e instanceof Error) {
