@@ -2,7 +2,7 @@
  * Houses the pertinent data that GitHub exposes for each Nextflow release
  */
 export type NextflowRelease = {
-  versionNumber: string
+  version: string
   isEdge: boolean
   binaryURL: string
   allBinaryURL: string
@@ -16,7 +16,7 @@ export type NextflowRelease = {
  */
 export function nextflow_release(data: object): NextflowRelease {
   const nf_release: NextflowRelease = {
-    versionNumber: data["tag_name"],
+    version: data["tag_name"],
     isEdge: data["prerelease"],
     binaryURL: nextflow_bin_url(data, false),
     allBinaryURL: nextflow_bin_url(data, true)
