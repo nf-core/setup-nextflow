@@ -27,7 +27,7 @@ export async function install_nextflow(
   release: NextflowRelease,
   get_all: boolean
 ): Promise<string> {
-  const url = get_all ? release.allBinaryURL : release.downloadUrl
+  const url = get_all ? release.downloadUrlAll : release.downloadUrl
   const version = release.version
 
   core.debug(`Downloading Nextflow from ${url}`)
