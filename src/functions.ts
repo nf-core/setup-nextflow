@@ -96,7 +96,7 @@ async function get_latest_stable_nextflow_release(
 
 export async function get_nextflow_release(
   version: string,
-  releases: AsyncGenerator<NextflowRelease>
+  releases: NextflowRelease[] | AsyncGenerator<NextflowRelease>
 ): Promise<NextflowRelease> {
   // First, check to see if we are using a "latest-*" version system, and return
   // early
