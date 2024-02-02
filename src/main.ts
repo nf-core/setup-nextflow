@@ -11,10 +11,9 @@ import {
 } from "./functions"
 import { NextflowRelease } from "./nextflow-release"
 import {
-  pull_latest_stable_release,
-  pull_releases,
-  setup_octokit
-} from "./octokit-wrapper"
+  get_latest_nextflow_version,
+  get_nextflow_versions
+} from "./nf-core-api-wrapper"
 
 async function run(): Promise<void> {
   // CAPSULE_LOG leads to a bunch of boilerplate being output to the logs: turn
@@ -22,29 +21,25 @@ async function run(): Promise<void> {
   core.exportVariable("CAPSULE_LOG", "none")
 
   // Read in the arguments
-  const token = core.getInput("token")
   const version = core.getInput("version")
   const get_all = core.getBooleanInput("all")
-  const cooldown = Number(core.getInput("cooldown"))
-  const max_retries = Number(core.getInput("max-retries"))
 
   // Check the cache for the Nextflow version that matched last time
   if (check_cache(version)) {
     return
   }
 
-  // Setup the API
-  const octokit = await setup_octokit(token, cooldown, max_retries)
-
   // Get the release info for the desired release
   let release = {} as NextflowRelease
   let resolved_version = ""
   try {
-    if (version === "latest" || version === "latest-stable") {
-      release = await pull_latest_stable_release(octokit)
+    if (version.includes("latest")) {
+      let flavor = version.split("-")[1]
+      flavor = flavor ? flavor : "stable"
+      release = await get_latest_nextflow_version(flavor)
     } else {
-      const release_iterator = pull_releases(octokit)
-      release = await get_nextflow_release(version, release_iterator)
+      const nextflow_releases = await get_nextflow_versions()
+      release = await get_nextflow_release(version, nextflow_releases)
     }
     resolved_version = release.version
     core.info(
