@@ -6,6 +6,7 @@ export type NextflowRelease = {
   isEdge: boolean
   binaryURL: string
   allBinaryURL: string
+  published_at?: string
 }
 
 /**
