@@ -1,3 +1,2 @@
 -P ubuntu-latest=catthehacker/ubuntu:act-latest
--s GITHUB_TOKEN
 --container-architecture linux/amd64
