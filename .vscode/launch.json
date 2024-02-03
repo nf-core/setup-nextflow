@@ -1,0 +1,24 @@
+{
+  // Use IntelliSense to learn about possible attributes.
+  // Hover to view descriptions of existing attributes.
+  // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "Launch Action",
+      "program": "${workspaceFolder}/src/main.ts",
+      "preLaunchTask": "tsc: build - tsconfig.json",
+      "outFiles": ["${workspaceFolder}/lib/**/*.js"],
+      "env": {
+        "INPUT_ALL": "false",
+        "INPUT_VERSION": "latest",
+        "INPUT_TOKEN": "${env:GITHUB_TOKEN}",
+        "INPUT_COOLDOWN": "60",
+        "INPUT_MAX_RETRIES": "3",
+        "RUNNER_TEMP": "${workspaceFolder}/.tmp"
+      }
+    }
+  ]
+}
