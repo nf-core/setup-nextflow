@@ -11,7 +11,8 @@
     "lint:fix": "eslint --fix {src,test}/**/*.ts",
     "package": "ncc build --source-map --license LICENSE",
     "test": "c8 --reporter=lcov ava",
-    "all": "npm run build && npm run format && npm run lint && npm run package && npm test"
+    "all": "npm run build && npm run format && npm run lint && npm run package && npm test",
+    "prepare": "husky && husky install"
   },
   "repository": {
     "type": "git",
@@ -76,5 +77,9 @@
     "prettier": "^2.7.1",
     "ts-node": "^10.9.1",
     "typescript": "^4.7.3"
+  },
+  "lint-staged": {
+    "*.js": "eslint --cache --fix",
+    "*.{ts,js,yml,md,json}": "prettier --write"
   }
 }
