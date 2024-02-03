@@ -10,7 +10,7 @@ on:
     types: [published]
 
 jobs:
-  test:
+  example-usage:
     runs-on: ubuntu-latest
 
     strategy:
@@ -43,7 +43,7 @@ jobs:
           all: ${{ matrix.all_distribution }}
       - run: nextflow -v
 
-  test-14:
+  example-maximized-build-space:
     runs-on: ubuntu-latest
     steps:
       - uses: easimon/maximize-build-space@v7
