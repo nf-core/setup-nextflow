@@ -132,3 +132,7 @@ dist
 # Ignore built ts files
 __tests__/runner/*
 lib/**/*
+
+# Testing garbage
+.tmp
+nxf-v*
