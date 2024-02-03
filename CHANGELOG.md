@@ -20,6 +20,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Husky pre-commit hooks for linting and formatting
 - Deprecation messages to warn users of upcoming API switch
 
+### Changed
+
+- GitHub Octokit API switched to nf-core custom API
+
 ## [1.5.1] - 2024-01-30
 
 ### Changed
