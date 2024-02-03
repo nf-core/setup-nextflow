@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - CI workflow steps for better compatibility with <https://github.com/nektos/act>
 - Visual Studio Code debugging configuration
+- Husky pre-commit hooks for linting and formatting
 
 ## [1.5.1] - 2024-01-30
 
