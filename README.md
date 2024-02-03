@@ -60,17 +60,6 @@ There are three (technically four) aliases to assist in choosing up-to-date Next
 
 A boolean deciding whether to download the "all versions" distribution of Nextflow. May be useful for running tests against multiple versions downstream.
 
-### `token`
-
-> **default: `${{ secrets.GITHUB_TOKEN }}`**
-
-> **:warning: This really shouldn't be changed. If you think this will fix a workflow problem, triple-check everything else first. :warning:**
-
-This action locates the releases based upon the GitHub API, and requires an access token. The default token provided with all GitHub actions should be sufficient for all use cases on GitHub. Valid reasons to change this:
-
-- GitHub Enterprise server (and only under some configurations)
-- Testing workflows locally with [act](https://github.com/nektos/act)
-
 ## Outputs
 
 There are no outputs from this action.
