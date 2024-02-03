@@ -28,6 +28,9 @@
     "extensions": [
       "ts"
     ],
+    "environmentVariables": {
+      "RUNNER_TEMP": "./.tmp"
+    },
     "rewritePaths": {
       "src/": "lib/"
     },
