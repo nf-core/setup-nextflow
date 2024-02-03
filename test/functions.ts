@@ -1,6 +1,7 @@
-import test from "ava"
+import test from "ava" //eslint-disable-line import/no-unresolved
+import { execSync } from "child_process"
 
-import { get_nextflow_release } from "../src/functions"
+import { get_nextflow_release, install_nextflow } from "../src/functions"
 import { NextflowRelease } from "../src/nextflow-release"
 
 // The Nextflow releases we are going to use for testing follow a regular
@@ -93,3 +94,12 @@ test(
   "v21.03.0-edge",
   false
 )
+
+test("Install Nextflow", async t => {
+  const release = nf_release_gen("v23.10.1")
+  const install_dir = await install_nextflow(release, false)
+
+  const version_output = execSync(`${install_dir}/nextflow -v`).toString()
+  const version_regex = /nextflow version 23\.10\.1.*/
+  t.regex(version_output, version_regex)
+})
