@@ -37,6 +37,11 @@ jobs:
       - run: npm ci
       - run: npm run build
       - run: npm run package
+      - uses: actions/setup-java@v2
+        if: ${{ env.ACT }}
+        with:
+          java-version: 11
+          distribution: zulu
       - uses: ./
         with:
           version: ${{ matrix.nextflow_version }}
@@ -55,5 +60,10 @@ jobs:
       - run: npm ci
       - run: npm run build
       - run: npm run package
+      - uses: actions/setup-java@v2
+        if: ${{ env.ACT}}
+        with:
+          java-version: 11
+          distribution: zulu
       - uses: ./
       - run: nextflow -v
