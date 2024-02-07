@@ -1,0 +1,34 @@
+name: "Setup Nextflow"
+description: "Install Nextflow and add it to the PATH"
+author: "nf-core"
+inputs:
+  version:
+    description: "The Nextflow version to download (if necessary) and use. Example: 21.10.3"
+    required: false
+    default: "latest-stable"
+  all:
+    description: "Whether to install every Nextflow release via the '-all' distribution."
+    required: false
+    default: false
+  token:
+    description: "GitHub token to access the GitHub Releases API. The default token should be sufficient for all use cases."
+    required: false
+    default: ${{ github.token }}
+    deprecationMessage: "setup-nextflow@v2 will no longer use the GitHub API. A token will no longer be needed."
+  cooldown:
+    description: "Time (in seconds) to wait before querying the GitHub Releases API in the case of hitting a rate limit."
+    required: false
+    default: "60"
+    deprecationMessage: "setup-nextflow@v2 will no longer use the GitHub API. The cooldown will no longer apply."
+  max-retries:
+    description: "The number of times that to try querying the GitHub Releases API in case of a rate-limited failure."
+    required: false
+    default: "3"
+    deprecationMessage: "setup-nextflow@v2 will no longer use the GitHub API. The retry count will no longer apply."
+
+runs:
+  using: "node16"
+  main: "dist/index.js"
+branding:
+  icon: "shuffle"
+  color: "green"
