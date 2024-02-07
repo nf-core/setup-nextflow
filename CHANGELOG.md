@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.5.2] - 2024-02-07
+
 ### Added
 
 - CI workflow steps for better compatibility with <https://github.com/nektos/act>
@@ -81,7 +83,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - GitHub Actions workflow to test Nextflow installation and downstream usage
 - Documentation and license files
 
-[unreleased]: https://github.com/nf-core/setup-nextflow/compare/v1.5.1...HEAD
+[unreleased]: https://github.com/nf-core/setup-nextflow/compare/v1.5.2...HEAD
+[1.5.2]: https://github.com/nf-core/setup-nextflow/compare/v1.5.1...v1.5.2
 [1.5.1]: https://github.com/nf-core/setup-nextflow/compare/v1.5.0...v1.5.1
 [1.5.0]: https://github.com/nf-core/setup-nextflow/compare/v1.4.0...v1.5.0
 [1.4.0]: https://github.com/nf-core/setup-nextflow/compare/v1.3.0...v1.4.0
