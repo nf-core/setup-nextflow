@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- Upgraded GitHub Actions node version to v20
+
 ## [1.5.2] - 2024-02-07
 
 ### Added
