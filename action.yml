@@ -27,7 +27,7 @@ inputs:
     deprecationMessage: "setup-nextflow@v2 will no longer use the GitHub API. The retry count will no longer apply."
 
 runs:
-  using: "node16"
+  using: "node20"
   main: "dist/index.js"
 branding:
   icon: "shuffle"
