@@ -57,7 +57,7 @@
     "semver": "^7.3.7"
   },
   "devDependencies": {
-    "@ava/typescript": "3.0.1",
+    "@ava/typescript": "4.1.0",
     "@tsconfig/node16": "1.0.3",
     "@types/async-retry": "1.4.5",
     "@types/node": "18.11.9",
