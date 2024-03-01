@@ -75,7 +75,7 @@
     "husky": "9.0.10",
     "lint-staged": "15.2.1",
     "prettier": "2.7.1",
-    "ts-node": "10.9.1",
+    "ts-node": "10.9.2",
     "typescript": "4.7.3"
   },
   "lint-staged": {
