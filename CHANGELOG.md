@@ -7,9 +7,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.0.0] - 2024-03-01
+
+### Added
+
+- `renovate` dependency automation bot (#41)
+
 ### Changed
 
-- Upgraded GitHub Actions node version to v20
+- Upgraded GitHub Actions node version to v20 (#39)
+- GitHub Octokit API switched to nf-core custom API (#37)
+
+### Removed
+
+- Timeout controls for Octokit API (#37)
 
 ## [1.5.2] - 2024-02-07
 
@@ -19,10 +30,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Visual Studio Code debugging configuration
 - Husky pre-commit hooks for linting and formatting
 - Deprecation messages to warn users of upcoming API switch
-
-### Changed
-
-- GitHub Octokit API switched to nf-core custom API
 
 ## [1.5.1] - 2024-01-30
 
@@ -91,7 +98,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - GitHub Actions workflow to test Nextflow installation and downstream usage
 - Documentation and license files
 
-[unreleased]: https://github.com/nf-core/setup-nextflow/compare/v1.5.2...HEAD
+[unreleased]: https://github.com/nf-core/setup-nextflow/compare/v2.0.0...HEAD
+[2.0.0]: https://github.com/nf-core/setup-nextflow/compare/v1.5.2...v2.0.0
 [1.5.2]: https://github.com/nf-core/setup-nextflow/compare/v1.5.1...v1.5.2
 [1.5.1]: https://github.com/nf-core/setup-nextflow/compare/v1.5.0...v1.5.1
 [1.5.0]: https://github.com/nf-core/setup-nextflow/compare/v1.4.0...v1.5.0
