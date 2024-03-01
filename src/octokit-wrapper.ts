@@ -87,9 +87,8 @@ export async function* pull_releases(
 export async function pull_latest_stable_release(
   ok: InstanceType<typeof GitHub>
 ): Promise<NextflowRelease> {
-  const { data: stable_release } = await ok.rest.repos.getLatestRelease(
-    NEXTFLOW_REPO
-  )
+  const { data: stable_release } =
+    await ok.rest.repos.getLatestRelease(NEXTFLOW_REPO)
 
   return nextflow_release(stable_release)
 }
