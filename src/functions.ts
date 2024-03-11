@@ -48,13 +48,13 @@ export async function install_nextflow(
   )
 
   try {
-    fs.renameSync(nf_dl_path, nextflow_path)
+    fs.renameSync(nf_dl_path, path.join(nextflow_path, "nextflow"))
   } catch (err: unknown) {
     core.debug(`Failed to rename file: ${err}`)
-    fs.copyFileSync(nf_dl_path, nextflow_path)
+    fs.copyFileSync(nf_dl_path, path.join(nextflow_path, "nextflow"))
     fs.unlinkSync(nf_dl_path)
   }
-  fs.chmodSync(nextflow_path, "0711")
+  fs.chmodSync(path.join(nextflow_path, "nextflow"), "0711")
 
   return nextflow_path
 }
