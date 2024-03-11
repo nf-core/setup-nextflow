@@ -1,10 +1,15 @@
+import { restoreCache } from "@actions/cache"
 import * as core from "@actions/core"
-import * as tc from "@actions/tool-cache"
+import { downloadTool } from "@actions/tool-cache"
 import retry from "async-retry"
 import * as fs from "fs"
+import os from "os"
+import path from "path"
 import semver from "semver"
 
 import { NextflowRelease } from "./nextflow-release"
+
+const nextflow_path = path.join(os.homedir(), "nextflow")
 
 export async function get_nextflow_release(
   version: string,
@@ -28,13 +33,12 @@ export async function install_nextflow(
   get_all: boolean
 ): Promise<string> {
   const url = get_all ? release.downloadUrlAll : release.downloadUrl
-  const version = release.version
 
   core.debug(`Downloading Nextflow from ${url}`)
   const nf_dl_path = await retry(
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     async bail => {
-      return await tc.downloadTool(url)
+      return await downloadTool(url)
     },
     {
       onRetry: err => {
@@ -43,22 +47,19 @@ export async function install_nextflow(
     }
   )
 
-  const temp_install_dir = fs.mkdtempSync(`nxf-${version}`)
-  const nf_path = `${temp_install_dir}/nextflow`
-
   try {
-    fs.renameSync(nf_dl_path, nf_path)
+    fs.renameSync(nf_dl_path, nextflow_path)
   } catch (err: unknown) {
     core.debug(`Failed to rename file: ${err}`)
-    fs.copyFileSync(nf_dl_path, nf_path)
+    fs.copyFileSync(nf_dl_path, nextflow_path)
     fs.unlinkSync(nf_dl_path)
   }
-  fs.chmodSync(nf_path, "0711")
+  fs.chmodSync(nextflow_path, "0711")
 
-  return temp_install_dir
+  return nextflow_path
 }
 
-export function check_cache(version: string): boolean {
+export async function check_cache(version: string): Promise<boolean> {
   // A 'latest*' version indicates that a cached version would be invalid until
   // the version is resolved: abort
   if (version.includes("latest")) {
@@ -69,15 +70,15 @@ export function check_cache(version: string): boolean {
     return false
   }
   const resolved_version = String(cleaned_version)
-
-  const nf_path = tc.find("nextflow", resolved_version)
-  if (!nf_path) {
-    core.debug(`Could not find Nextflow ${resolved_version} in the tool cache`)
+  const key = `nextflow-${resolved_version}`
+  const restore_key = await restoreCache([nextflow_path], key, [])
+  if (!restore_key) {
+    core.debug(`Could not find Nextflow ${resolved_version} in the cache`)
     return false
   } else {
-    core.debug(`Found Nextflow ${resolved_version} at path '${nf_path}'`)
-    core.debug(`Adding '${nf_path}' to PATH`)
-    core.addPath(nf_path)
+    core.debug(`Found Nextflow ${resolved_version} from key ${restore_key}`)
+    core.debug(`Adding '${nextflow_path}' to PATH`)
+    core.addPath(nextflow_path)
     return true
   }
 }

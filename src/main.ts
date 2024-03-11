@@ -1,6 +1,6 @@
+import { saveCache } from "@actions/cache"
 import * as core from "@actions/core"
 import * as exec from "@actions/exec"
-import * as tc from "@actions/tool-cache"
 import * as fs from "fs"
 import semver from "semver"
 
@@ -25,7 +25,7 @@ async function run(): Promise<void> {
   const get_all = core.getBooleanInput("all")
 
   // Check the cache for the Nextflow version that matched last time
-  if (check_cache(version)) {
+  if (await check_cache(version)) {
     return
   }
 
@@ -56,17 +56,14 @@ async function run(): Promise<void> {
   try {
     // Download Nextflow and add it to path
     if (!check_cache(resolved_version)) {
-      const nf_install_path = await install_nextflow(release, get_all)
+      const nextflow_path = await install_nextflow(release, get_all)
       const cleaned_version = String(semver.clean(resolved_version, true))
-      const nf_path = await tc.cacheDir(
-        nf_install_path,
-        "nextflow",
-        cleaned_version
-      )
-      core.addPath(nf_path)
-      core.info(`Downloaded \`nextflow\` to ${nf_path} and added to PATH`)
-      core.debug(`Added Nextflow to cache: ${nf_path}`)
-      fs.rmdirSync(nf_install_path, { recursive: true })
+      const key = `nextflow-${cleaned_version}`
+      await saveCache([nextflow_path], key)
+      core.addPath(nextflow_path)
+      core.info(`Downloaded \`nextflow\` to ${nextflow_path} and added to PATH`)
+      core.debug(`Added Nextflow to cache: ${key}`)
+      fs.rmdirSync(nextflow_path, { recursive: true })
     }
   } catch (e: unknown) {
     if (e instanceof Error) {
