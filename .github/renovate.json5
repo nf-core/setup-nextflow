@@ -4,5 +4,13 @@
         "github>nf-core/ops//.github/renovate/default.json5",
         "config:recommended",
         "schedule:weekly"
+    ],
+    "packageRules": [
+        {
+            "matchManagers": ["npm"],
+            "automerge": true,
+            "matchUpdateTypes": ["minor", "patch", "pin", "digest"],
+            "schedule": ["before 5am daily"]
+        }
     ]
 }
