@@ -3,7 +3,8 @@
     "extends": [
         "github>nf-core/ops//.github/renovate/default.json5",
         "config:recommended",
-        "schedule:weekly"
+        "schedule:weekly",
+        ":automergeBranch"
     ],
     "packageRules": [
         {

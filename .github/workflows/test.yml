@@ -4,6 +4,8 @@ on:
   push:
     branches:
       - master
+      # https://docs.renovatebot.com/key-concepts/automerge/#branch-vs-pr-automerging
+      - "renovate/**" # branches Renovate creates
   pull_request:
   workflow_dispatch:
   release:
