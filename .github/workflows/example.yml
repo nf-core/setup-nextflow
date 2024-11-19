@@ -4,6 +4,8 @@ on:
   push:
     branches:
       - master
+      # https://docs.renovatebot.com/key-concepts/automerge/#branch-vs-pr-automerging
+      - "renovate/**" # branches Renovate creates
   pull_request:
   workflow_dispatch:
   release:
@@ -20,6 +22,7 @@ jobs:
           - "21.10.3"
           - "22.04"
           - "22.03.1-edge"
+          - "24.10.1"
           - "latest"
           - "latest-stable"
           - "latest-edge"
