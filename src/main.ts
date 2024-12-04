@@ -79,22 +79,17 @@ async function run(): Promise<void> {
     const zuluVersion = await tc.downloadTool(downloadInfo.url)
     const extractedJava = await tc.extractTar(zuluVersion)
     const cachedPath = await tc.cacheDir(extractedJava, "Java", javaVersion)
+    core.debug(`Added Java to cache: ${cachedPath}`)
 
     // Add Java to PATH
     core.addPath(`${cachedPath}/bin`)
     core.exportVariable("JAVA_HOME", cachedPath)
+    core.exportVariable(`JAVA_HOME_${javaVersion}_X64`, cachedPath)
+
+    // Run Java to check the version
+    await exec.exec("java", ["-version"])
   } catch (error) {
     if (error instanceof Error) core.setFailed(error.message)
-  }
-
-  // Run Java to check the version
-  try {
-    await exec.exec("java", ["-version"])
-  } catch (e: unknown) {
-    if (e instanceof Error) {
-      // fail workflow if Java does not succeed
-      core.setFailed(`Could not run 'java -version'. Error: ${e.message}`)
-    }
   }
 
   try {
