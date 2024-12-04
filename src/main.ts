@@ -86,6 +86,12 @@ async function run(): Promise<void> {
     core.exportVariable("JAVA_HOME", cachedPath)
     core.exportVariable(`JAVA_HOME_${javaVersion}_X64`, cachedPath)
 
+    // Print JAVA_HOME in shell to check
+    await exec.exec("echo", ["$JAVA_HOME"])
+
+    // Check location of java executable
+    await exec.exec("which", ["java"])
+
     // Run Java to check the version
     await exec.exec("java", ["-version"])
   } catch (error) {
