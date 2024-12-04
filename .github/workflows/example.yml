@@ -32,6 +32,7 @@ jobs:
           - false
 
     steps:
+      # Build the action files for this test
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
       - uses: actions/setup-node@39370e3970a6d050c480ffad4ff0ed4d3fdee5af # v4
         with:
@@ -44,6 +45,8 @@ jobs:
         working-directory: ./action
       - run: npm run package
         working-directory: ./action
+
+      # Run the action (including setup-java)
       - uses: ./
         with:
           version: ${{ matrix.nextflow_version }}
@@ -53,6 +56,7 @@ jobs:
   example-maximized-build-space:
     runs-on: ubuntu-latest
     steps:
+      # Build the action files for this test
       - uses: easimon/maximize-build-space@fc881a613ad2a34aca9c9624518214ebc21dfc0c # v10
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
       - uses: actions/setup-node@39370e3970a6d050c480ffad4ff0ed4d3fdee5af # v4
@@ -66,5 +70,7 @@ jobs:
         working-directory: ./action
       - run: npm run package
         working-directory: ./action
+
+      # Run the action (including setup-java)
       - uses: ./
       - run: nextflow -v
