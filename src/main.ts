@@ -21,8 +21,8 @@ async function run(): Promise<void> {
   core.exportVariable("CAPSULE_LOG", "none")
 
   // Read in the arguments
-  const version = core.getInput("version")
-  const get_all = core.getBooleanInput("all")
+  const version = process.env.VERSION;
+  const get_all = process.env.ALL;
 
   // Check the cache for the Nextflow version that matched last time
   if (check_cache(version)) {
