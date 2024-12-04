@@ -47,9 +47,9 @@ runs:
     - name: Install Nextflow
       shell: bash
       run: node lib/src/main.js
-      with:
-        version: ${{ inputs.version }}
-        all: ${{ inputs.all }}
+      env:
+        VERSION: ${{ inputs.version }}
+        ALL: ${{ inputs.all }}
 
 branding:
   icon: "shuffle"
