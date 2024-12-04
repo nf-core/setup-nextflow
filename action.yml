@@ -26,6 +26,10 @@ runs:
       with:
         java-version: ${{ inputs.java-version }}
         distribution: ${{ inputs.java-distribution }}
+
+    - name: Checkout setup-nextflow
+      uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+
     - name: Install Nextflow
       uses: ./action/
       with:
