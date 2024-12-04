@@ -26,7 +26,7 @@ runs:
       with:
         java-version: ${{ inputs.java-version }}
         distribution: ${{ inputs.java-distribution }}
-    - name: Run custom action
+    - name: Install Nextflow
       uses: ./action/
       with:
         version: ${{ inputs.version }}
