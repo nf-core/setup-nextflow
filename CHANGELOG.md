@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+- Don't print nextflow help output by default, only on debug mode  (#173)
+
 ## [2.1.1] - 2024-12-05
 
 - Add checkout step to main action.yml (#178)
