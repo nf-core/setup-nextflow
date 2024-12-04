@@ -54,6 +54,25 @@ async function run(): Promise<void> {
   }
 
   try {
+    // Get Java version from inputs
+    const javaVersion = core.getInput('java-version');
+
+    // Install Zulu Java
+    core.info(`Setting up Java ${javaVersion}`);
+    const zuluVersion = await tc.downloadTool(`https://cdn.azul.com/zulu/bin/zulu${javaVersion}-linux_x64.tar.gz`);
+    const extractedJava = await tc.extractTar(zuluVersion);
+    const cachedPath = await tc.cacheDir(extractedJava, 'Java', javaVersion);
+
+    // Add Java to PATH
+    core.addPath(`${cachedPath}/bin`);
+    core.exportVariable('JAVA_HOME', cachedPath);
+  } catch (e: unknown) {
+    if (e instanceof Error) {
+      core.setFailed(e.message)
+    }
+  }
+
+  try {
     // Download Nextflow and add it to path
     if (!check_cache(resolved_version)) {
       const nf_install_path = await install_nextflow(release, get_all)
