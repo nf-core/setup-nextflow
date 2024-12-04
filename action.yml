@@ -13,7 +13,7 @@ inputs:
   java-version:
     description: "The Java version to use."
     required: false
-    default: "17" # 21 suported as of Nextflow 24.05.0-edge. 11 is depreciated from 24.11.0-edge
+    default: "17" # 21 suported as of Nextflow 24.05.0-edge. 11 is deprecated from 24.11.0-edge
   java-distribution:
     description: "The Java distribution to use."
     required: false
