@@ -37,7 +37,7 @@ runs:
         ACTION_REF: ${{ github.action_ref }}
 
     - name: Install Nextflow
-      uses: ./setup-nextflow/action/
+      uses: setup-nextflow/action/
       with:
         version: ${{ inputs.version }}
         all: ${{ inputs.all }}
