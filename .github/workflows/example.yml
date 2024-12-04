@@ -38,8 +38,11 @@ jobs:
           node-version: 20
           cache: "npm"
       - run: npm ci
+        working-directory: ./action
       - run: npm run build
+        working-directory: ./action
       - run: npm run package
+        working-directory: ./action
       - uses: ./
         with:
           version: ${{ matrix.nextflow_version }}
@@ -56,7 +59,10 @@ jobs:
           node-version: 20
           cache: "npm"
       - run: npm ci
+        working-directory: ./action
       - run: npm run build
+        working-directory: ./action
       - run: npm run package
+        working-directory: ./action
       - uses: ./
       - run: nextflow -v

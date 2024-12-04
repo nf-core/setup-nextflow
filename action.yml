@@ -1,5 +1,5 @@
-name: "Setup Nextflow"
-description: "Install Nextflow and add it to the PATH"
+name: "Setup Nextflow and Java"
+description: "Install Java and Nextflow, and add it to the PATH"
 author: "nf-core"
 inputs:
   version:
@@ -27,7 +27,7 @@ runs:
         java-version: ${{ inputs.java-version }}
         distribution: ${{ inputs.java-distribution }}
     - name: Run custom action
-      uses: ./
+      uses: ./action/
       with:
         version: ${{ inputs.version }}
         all: ${{ inputs.all }}
