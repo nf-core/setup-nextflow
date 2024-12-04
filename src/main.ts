@@ -3,6 +3,7 @@ import * as exec from "@actions/exec"
 import * as tc from "@actions/tool-cache"
 import * as fs from "fs"
 import semver from "semver"
+import fetch from "node-fetch"
 
 import {
   check_cache,
@@ -55,21 +56,35 @@ async function run(): Promise<void> {
 
   try {
     // Get Java version from inputs
-    const javaVersion = core.getInput('java-version');
+    const javaVersion = core.getInput("java-version")
 
     // Install Zulu Java
-    core.info(`Setting up Java ${javaVersion}`);
-    const zuluVersion = await tc.downloadTool(`https://cdn.azul.com/zulu/bin/zulu${javaVersion}-linux_x64.tar.gz`);
-    const extractedJava = await tc.extractTar(zuluVersion);
-    const cachedPath = await tc.cacheDir(extractedJava, 'Java', javaVersion);
+    core.info(`Setting up Java ${javaVersion}`)
+
+    // Format: https://cdn.azul.com/zulu/bin/zulu17.44.53-ca-jdk17.0.8.1-linux_x64.tar.gz
+    // We should get the latest build number for the requested version
+    const downloadUrl = `https://api.azul.com/zulu/download/community/v1.0/bundles/latest/?java_version=${javaVersion}&ext=tar.gz&os=linux&arch=x64&distribution=zulu&bitness=64&release_status=ga&bundle_type=jdk`
+
+    // Get the redirect URL which contains the actual download link
+    const response = await fetch(downloadUrl)
+    if (!response.ok) {
+      throw new Error(`Failed to get download URL: ${response.statusText}`)
+    }
+    interface DownloadInfo {
+      url: string
+    }
+
+    const downloadInfo = (await response.json()) as DownloadInfo
+
+    const zuluVersion = await tc.downloadTool(downloadInfo.url)
+    const extractedJava = await tc.extractTar(zuluVersion)
+    const cachedPath = await tc.cacheDir(extractedJava, "Java", javaVersion)
 
     // Add Java to PATH
-    core.addPath(`${cachedPath}/bin`);
-    core.exportVariable('JAVA_HOME', cachedPath);
-  } catch (e: unknown) {
-    if (e instanceof Error) {
-      core.setFailed(e.message)
-    }
+    core.addPath(`${cachedPath}/bin`)
+    core.exportVariable("JAVA_HOME", cachedPath)
+  } catch (error) {
+    if (error instanceof Error) core.setFailed(error.message)
   }
 
   try {

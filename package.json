@@ -57,6 +57,7 @@
     "@actions/tool-cache": "^2.0.1",
     "@types/node": "^20.0.0",
     "async-retry": "^1.3.3",
+    "node-fetch": "^3.3.2",
     "semver": "^7.3.7"
   },
   "devDependencies": {
@@ -64,6 +65,7 @@
     "@tsconfig/node16": "16.1.3",
     "@types/async-retry": "1.4.9",
     "@types/node": "20.17.9",
+    "@types/node-fetch": "^2.6.12",
     "@types/semver": "7.5.8",
     "@typescript-eslint/eslint-plugin": "8.17.0",
     "@typescript-eslint/parser": "8.17.0",
