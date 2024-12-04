@@ -3,16 +3,34 @@ description: "Install Nextflow and add it to the PATH"
 author: "nf-core"
 inputs:
   version:
-    description: "The Nextflow version to download (if necessary) and use. Example: 21.10.3"
+    description: "The Nextflow version to download and use."
     required: false
     default: "latest-stable"
   all:
-    description: "Whether to install every Nextflow release via the '-all' distribution."
+    description: "Whether to install every Nextflow release."
     required: false
     default: false
+  java-version:
+    description: "The Java version to use."
+    required: false
+    default: "21"
+  java-distribution:
+    description: "The Java distribution to use."
+    required: false
+    default: "zulu"
 runs:
-  using: "node20"
-  main: "dist/index.js"
+  using: "composite"
+  steps:
+    - name: Setup Java
+      uses: actions/setup-java@v2
+      with:
+        java-version: ${{ inputs.java-version }}
+        distribution: ${{ inputs.java-distribution }}
+    - name: Run custom action
+      uses: ./
+      with:
+        version: ${{ inputs.version }}
+        all: ${{ inputs.all }}
 branding:
   icon: "shuffle"
   color: "green"

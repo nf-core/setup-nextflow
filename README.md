@@ -60,6 +60,18 @@ There are three (technically four) aliases to assist in choosing up-to-date Next
 
 A boolean deciding whether to download the "all versions" distribution of Nextflow. May be useful for running tests against multiple versions downstream.
 
+### `java-version`
+
+> **default: `21`**
+
+A version string to specify the version of Java to use.
+
+### `java-distribution`
+
+> **default: `zulu`**
+
+A string to specify the Java distribution to use.
+
 ## Outputs
 
 There are no outputs from this action.

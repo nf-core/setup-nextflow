@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Composite GitHub Action now includes `setup-java` action with `java-version` (default `21`) and `java-distribution` (default `zulu`) inputs
+
+### Changed
+
+- Removed `setup-java` action from `.github/workflows/example.yml` as it is now part of the composite action
+
 ## [2.0.0] - 2024-03-01
 
 ### Added
