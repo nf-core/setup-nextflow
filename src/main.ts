@@ -87,6 +87,16 @@ async function run(): Promise<void> {
     if (error instanceof Error) core.setFailed(error.message)
   }
 
+  // Run Java to check the version
+  try {
+    await exec.exec("java", ["-version"])
+  } catch (e: unknown) {
+    if (e instanceof Error) {
+      // fail workflow if Java does not succeed
+      core.setFailed(`Could not run 'java -version'. Error: ${e.message}`)
+    }
+  }
+
   try {
     // Download Nextflow and add it to path
     if (!check_cache(resolved_version)) {
