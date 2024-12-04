@@ -26,11 +26,26 @@ runs:
       with:
         java-version: ${{ inputs.java-version }}
         distribution: ${{ inputs.java-distribution }}
+
+    - uses: actions/setup-node@v4
+      with:
+        node-version: 20
+
+    - name: Install npm
+      shell: bash
+      run: npm i -g npm@10
+
+    - name: Install dependencies
+      shell: bash
+      run: npm ci
+
     - name: Install Nextflow
+      shell: bash
       run: node lib/src/main.js
       with:
         version: ${{ inputs.version }}
         all: ${{ inputs.all }}
+
 branding:
   icon: "shuffle"
   color: "green"
