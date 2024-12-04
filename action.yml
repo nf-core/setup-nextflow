@@ -29,9 +29,15 @@ runs:
 
     - name: Checkout setup-nextflow
       uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+      with:
+        repository: nf-core/setup-nextflow
+        ref: ${{ env.ACTION_REF }}
+        path: setup-nextflow
+      env:
+        ACTION_REF: ${{ github.action_ref }}
 
     - name: Install Nextflow
-      uses: ./action/
+      uses: ./setup-nextflow/action/
       with:
         version: ${{ inputs.version }}
         all: ${{ inputs.all }}
