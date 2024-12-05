@@ -6,7 +6,7 @@
 [![GitHub tag (latest by date)](https://img.shields.io/github/v/tag/nf-core/setup-nextflow?logo=github)](https://github.com/nf-core/setup-nextflow/releases/latest)
 [![Get from GitHub Actions](https://img.shields.io/static/v1?label=actions&message=marketplace&color=green&logo=githubactions)](https://github.com/marketplace/actions/setup-nextflow)
 
-An action to install [Nextflow](https://nextflow.io) into a GitHub Actions workflow and make it available for subsequent steps.
+An action to install Java and [Nextflow](https://nextflow.io) into a GitHub Actions workflow and make it available for subsequent steps.
 
 ## Quick start
 
@@ -17,30 +17,30 @@ jobs:
   example:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-      - uses: nf-core/setup-nextflow@v1
+      - uses: actions/checkout@v4
+      - uses: nf-core/setup-nextflow@v3
       - run: nextflow run ${GITHUB_WORKSPACE}
 ```
 
+> [!IMPORTANT]
+> **v3 Release Changes**
+>
+> Version 3 of this action includes breaking changes from v2:
+> * Installation of `-all` distributions is no longer possible
+> * Matching partial Nextflow version numbers no longer works (eg. `24.4`)
+>
+> If you need either of these features, please continue using v2 of the action.
+
+
 ## Inputs
 
-All inputs are optional! :sunglasses: By default, this action will install the [latest stable release](https://nextflow.io/docs/latest/getstarted.html#stable-edge-releases) of Nextflow. You can optionally pick a different version, or choose to install all versions.
+All inputs are optional! :sunglasses: By default, this action will install the [latest stable release](https://nextflow.io/docs/latest/install.html#stable-and-edge-releases) of Nextflow. You can optionally pick a different version.
 
 ### `version`
 
-> **default: `latest`**
+> **default: `latest-stable`**
 
-A version string to specify the version of Nextflow to install. This version number will try to resolve using [npm's semantic versioning](https://github.com/npm/node-semver), so
-
-- `version: 21`
-- `version: 21.10`
-- `version: 21.10.6`
-
-will all download Nextflow version 21.10.6 as of 13 June 2022. Since Nextflow does not use true semantic versioning, you should **always** specify at least the minor version (e.g. `version: 21.10`).
-
-Edge releases are resolved as pre-release, see <https://github.com/npm/node-semver#prerelease-tags> for more details. In short, in nearly all cases, passing an `-edge` release to this action will need to specify the _exact_ edge release targeted.
-
-There are three (technically four) aliases to assist in choosing up-to-date Nextflow versions.
+A version string to specify the version of Nextflow to install.
 
 - `version: latest-stable` (alias `version: latest`)
 
@@ -54,15 +54,33 @@ There are three (technically four) aliases to assist in choosing up-to-date Next
 
   This will download the latest release of Nextflow, regardless of stable/edge status.
 
-### `all`
+- `version: <string>`
 
-> **default: `false`**
+  This will attempt to download the exact version specified. For example: `version: 24.11.0-edge`
 
-A boolean deciding whether to download the "all versions" distribution of Nextflow. May be useful for running tests against multiple versions downstream.
+### `java-version`
+
+> **default: `17`**
+
+A version string to specify the version of Java to use.
+Nextflow supports Java 21 as of Nextflow `24.05.0-edge` onwards.
+Java 11 was deprecated from `24.11.0-edge` onwards.
+
+
+### `java-distribution`
+
+> **default: `zulu`**
+
+A string to specify the Java distribution to use.
+See [actions/setup-java](https://github.com/actions/setup-java?tab=readme-ov-file#supported-distributions) for more details.
 
 ## Outputs
 
-There are no outputs from this action.
+### `nextflow-version`
+
+The version of Nextflow that was installed by the action.
+This will be the full version string without `v` prefix, e.g. `24.11.0-edge`.
+
 
 ## Why was this action made?
 
