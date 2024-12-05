@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- Action now installs Java by default and can be configured via the new `java-version` and `java-distribution` inputs (#177)
+
 ## [2.0.0] - 2024-03-01
 
 ### Added
