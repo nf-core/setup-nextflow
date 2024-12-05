@@ -10,9 +10,21 @@ inputs:
     description: "Whether to install every Nextflow release via the '-all' distribution."
     required: false
     default: "false"
+  java-version:
+    description: "The Java version to install as the required dependency of Nextflow. Passed to the underlying setup-java action."
+    required: false
+    default: "17"
+  java-distribution:
+    description: "The Java distribution to install as the required dependency of Nextflow. Passed to the underlying setup-java action."
+    required: false
+    default: "zulu"
 runs:
   using: "composite"
   steps:
+    - uses: actions/setup-java@8df1039502a15bceb9433410b1a100fbe190c53b
+      with:
+        java-version: ${{ inputs.java-version }}
+        distribution: ${{ inputs.java-distribution }}
     - uses: ./subaction
       with:
         version: ${{ inputs.version }}
