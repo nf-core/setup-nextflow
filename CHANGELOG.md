@@ -116,9 +116,7 @@ Rewrite of the action to simplify maintainance and reliability:
 - GitHub Actions workflow to test Nextflow installation and downstream usage
 - Documentation and license files
 
-[unreleased]: https://github.com/nf-core/setup-nextflow/compare/v3.0.0...HEAD
-[3.0.0]: https://github.com/nf-core/setup-nextflow/compare/v2.1.4...v3.0.0
-[2.1.1 - 2.1.4]: https://github.com/nf-core/setup-nextflow/compare/v2.1.0...v2.1.4
+[unreleased]: https://github.com/nf-core/setup-nextflow/compare/v2.1.0...HEAD
 [2.1.0]: https://github.com/nf-core/setup-nextflow/compare/v2.0.0...v2.1.0
 [2.0.0]: https://github.com/nf-core/setup-nextflow/compare/v1.5.2...v2.0.0
 [1.5.2]: https://github.com/nf-core/setup-nextflow/compare/v1.5.1...v1.5.2
