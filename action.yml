@@ -1,15 +1,14 @@
 name: "Setup Nextflow"
 description: "Install Nextflow and add it to the PATH"
 author: "nf-core"
+branding:
+  icon: "shuffle"
+  color: "green"
 inputs:
   version:
     description: "The Nextflow version to download (if necessary) and use. Example: 21.10.3"
     required: false
     default: "latest-stable"
-  all:
-    description: "Whether to install every Nextflow release via the '-all' distribution."
-    required: false
-    default: "false"
   java-version:
     description: "The Java version to install as the required dependency of Nextflow. Passed to the underlying setup-java action."
     required: false
@@ -21,24 +20,26 @@ inputs:
 runs:
   using: "composite"
   steps:
-    - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
-    - uses: actions/setup-node@v4
-      with:
-        node-version: "20"
-        cache: "npm"
-    - name: Install dependencies and build
-      shell: bash
-      run: |
-        npm ci
-        npm run package
-    - uses: actions/setup-java@8df1039502a15bceb9433410b1a100fbe190c53b
+    - name: Install Java
+      uses: actions/setup-java@8df1039502a15bceb9433410b1a100fbe190c53b
       with:
         java-version: ${{ inputs.java-version }}
         distribution: ${{ inputs.java-distribution }}
-    - uses: ./subaction
-      with:
-        version: ${{ inputs.version }}
-        all: ${{ inputs.all }}
-branding:
-  icon: "shuffle"
-  color: "green"
+
+    - name: Get Nextflow version
+      id: get_nextflow_version
+      run: get_nextflow_version.sh >> $GITHUB_OUTPUT
+      shell: bash
+      env:
+        NXF_ACTION_VER: ${{ inputs.version }}
+
+    - name: Install Nextflow
+      env:
+        NXF_VER: ${{ steps.get_nextflow_version.outputs.version }}
+      run: |
+        curl -s https://get.nextflow.io | bash
+        sudo mv nextflow /usr/local/bin/
+
+        # Run nextflow info to fetch assets
+        nextflow info
+      shell: bash

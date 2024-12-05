@@ -4,8 +4,6 @@ on:
   push:
     branches:
       - master
-      # https://docs.renovatebot.com/key-concepts/automerge/#branch-vs-pr-automerging
-      - "renovate/**" # branches Renovate creates
   pull_request:
   workflow_dispatch:
   release:
@@ -27,41 +25,15 @@ jobs:
           - "latest-stable"
           - "latest-edge"
           - "latest-everything"
-        all_distribution:
-          - true
-          - false
 
     steps:
-      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
-      - uses: actions/setup-node@39370e3970a6d050c480ffad4ff0ed4d3fdee5af # v4
-        with:
-          node-version: 20
-          cache: "npm"
-      - run: npm ci
-      - run: npm run build
-      - run: npm run package
-      - uses: ./
+      - name: Checkout repo
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
+
+      - name: Run action
+        uses: ./
         with:
           version: ${{ matrix.nextflow_version }}
-          all: ${{ matrix.all_distribution }}
-      - run: nextflow -v
 
-  example-maximized-build-space:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: easimon/maximize-build-space@fc881a613ad2a34aca9c9624518214ebc21dfc0c # v10
-      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
-      - uses: actions/setup-node@39370e3970a6d050c480ffad4ff0ed4d3fdee5af # v4
-        with:
-          node-version: 20
-          cache: "npm"
-      - run: npm ci
-      - run: npm run build
-      - run: npm run package
-      - uses: actions/setup-java@8df1039502a15bceb9433410b1a100fbe190c53b # v4
-        if: ${{ env.ACT}}
-        with:
-          java-version: 11
-          distribution: zulu
-      - uses: ./
-      - run: nextflow -v
+      - name: Check Nextflow version
+        run: nextflow -v
