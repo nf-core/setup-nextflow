@@ -20,6 +20,7 @@ inputs:
 runs:
   using: "composite"
   steps:
+
     - name: Install Java
       uses: actions/setup-java@8df1039502a15bceb9433410b1a100fbe190c53b # v4.5.0
       with:
@@ -28,7 +29,7 @@ runs:
 
     - name: Get Nextflow version
       id: get_nextflow_version
-      run: get_nextflow_version.sh >> $GITHUB_OUTPUT
+      run: ${{ github.action_path }}/get_nextflow_version.sh >> $GITHUB_OUTPUT
       shell: bash
       env:
         NXF_ACTION_VER: ${{ inputs.version }}
