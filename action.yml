@@ -29,9 +29,11 @@ runs:
     - name: Install dependencies
       shell: bash
       run: npm ci
-    - name: Build
+    - name: Build and Package
       shell: bash
-      run: npm run package
+      run: |
+        npm run build
+        npm run package
     - uses: actions/setup-java@8df1039502a15bceb9433410b1a100fbe190c53b
       with:
         java-version: ${{ inputs.java-version }}
