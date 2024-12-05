@@ -17,10 +17,20 @@ jobs:
   example:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-      - uses: nf-core/setup-nextflow@v2
+      - uses: actions/checkout@v4
+      - uses: nf-core/setup-nextflow@v3
       - run: nextflow run ${GITHUB_WORKSPACE}
 ```
+
+> [!IMPORTANT]
+> **v3 Release Changes**
+>
+> Version 3 of this action includes breaking changes from v2:
+> * Installation of `-all` distributions is no longer possible
+> * Matching partial Nextflow version numbers no longer works (eg. `24.4`)
+>
+> If you need either of these features, please continue using v2 of the action.
+
 
 ## Inputs
 
@@ -28,7 +38,7 @@ All inputs are optional! :sunglasses: By default, this action will install the [
 
 ### `version`
 
-> **default: `latest`**
+> **default: `latest-stable`**
 
 A version string to specify the version of Nextflow to install.
 
@@ -53,12 +63,16 @@ A version string to specify the version of Nextflow to install.
 > **default: `17`**
 
 A version string to specify the version of Java to use.
+Nextflow supports Java 21 as of Nextflow `24.05.0-edge` onwards.
+Java 11 was deprecated from `24.11.0-edge` onwards.
+
 
 ### `java-distribution`
 
 > **default: `zulu`**
 
 A string to specify the Java distribution to use.
+See [actions/setup-java](https://github.com/actions/setup-java?tab=readme-ov-file#supported-distributions) for more details.
 
 ## Outputs
 

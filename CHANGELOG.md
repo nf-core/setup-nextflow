@@ -5,9 +5,19 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [3.0.0] - 2024-12-06
+
+Rewrite of the action to simplify maintainance and reliability:
+
+* Removed Typescript action and rewrote as a bash script
+* BREAKING: Removed support for:
+    * Installation of `-all` distributions
+    * Matching partial Nextflow version numbers (eg. `24.4`)
+
+## [2.1.1 - 2.1.4] - 2024-12-05
 
 - Add checkout step to main action.yml (#178)
+- Fixed packaging and bundling of node build files
 
 ## [2.1.0] - 2024-12-04
 
@@ -106,7 +116,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - GitHub Actions workflow to test Nextflow installation and downstream usage
 - Documentation and license files
 
-[unreleased]: https://github.com/nf-core/setup-nextflow/compare/v2.1.0...HEAD
+[unreleased]: https://github.com/nf-core/setup-nextflow/compare/v3.0.0...HEAD
+[3.0.0]: https://github.com/nf-core/setup-nextflow/compare/v2.1.4...v3.0.0
+[2.1.1 - 2.1.4]: https://github.com/nf-core/setup-nextflow/compare/v2.1.0...v2.1.4
 [2.1.0]: https://github.com/nf-core/setup-nextflow/compare/v2.0.0...v2.1.0
 [2.0.0]: https://github.com/nf-core/setup-nextflow/compare/v1.5.2...v2.0.0
 [1.5.2]: https://github.com/nf-core/setup-nextflow/compare/v1.5.1...v1.5.2
