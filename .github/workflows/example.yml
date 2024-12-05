@@ -30,9 +30,13 @@ jobs:
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
 
       - name: Run action
+        id: run-action
         uses: ./
         with:
           version: ${{ matrix.nextflow_version }}
 
       - name: Check Nextflow version
         run: nextflow -v
+
+      - name: Print Nextflow version output
+        run: echo ${{ steps.run-action.outputs.nextflow-version }}
