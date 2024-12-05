@@ -76,7 +76,11 @@ See [actions/setup-java](https://github.com/actions/setup-java?tab=readme-ov-fil
 
 ## Outputs
 
-There are no outputs from this action.
+### `nextflow-version`
+
+The version of Nextflow that was installed by the action.
+This will be the full version string without `v` prefix, e.g. `24.11.0-edge`.
+
 
 ## Why was this action made?
 

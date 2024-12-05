@@ -17,6 +17,10 @@ inputs:
     description: "The Java distribution to install as the required dependency of Nextflow. Passed to the underlying setup-java action."
     required: false
     default: "zulu"
+outputs:
+  nextflow-version:
+    description: "The version of Nextflow installed"
+    value: ${{ steps.get_nextflow_version.outputs.version }}
 runs:
   using: "composite"
   steps:
