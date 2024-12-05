@@ -22,6 +22,13 @@ runs:
   using: "composite"
   steps:
     - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+      with:
+        repository: nf-core/setup-nextflow
+        ref: ${{ env.ACTION_REF }}
+        path: setup-nextflow
+      env:
+        ACTION_REF: ${{ github.action_ref }}
+
     - uses: actions/setup-node@v4
       with:
         node-version: "20"
@@ -35,7 +42,8 @@ runs:
       with:
         java-version: ${{ inputs.java-version }}
         distribution: ${{ inputs.java-distribution }}
-    - uses: ./subaction
+    - name: Install Nextflow
+      uses: ./setup-nextflow/subaction
       with:
         version: ${{ inputs.version }}
         all: ${{ inputs.all }}
