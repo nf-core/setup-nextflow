@@ -21,7 +21,7 @@ runs:
   using: "composite"
   steps:
     - name: Install Java
-      uses: actions/setup-java@8df1039502a15bceb9433410b1a100fbe190c53b
+      uses: actions/setup-java@8df1039502a15bceb9433410b1a100fbe190c53b # v4.5.0
       with:
         java-version: ${{ inputs.java-version }}
         distribution: ${{ inputs.java-distribution }}
@@ -32,6 +32,14 @@ runs:
       shell: bash
       env:
         NXF_ACTION_VER: ${{ inputs.version }}
+
+    - name: Cache installation
+      uses: actions/cache@6849a6489940f00c2f30c0fb92c6274307ccb58a # v4.1.2
+      with:
+        key: nxf-${{ steps.get_nextflow_version.outputs.version }}
+        path: |
+          /usr/local/bin/nextflow
+          ~/.nextflow
 
     - name: Install Nextflow
       env:
