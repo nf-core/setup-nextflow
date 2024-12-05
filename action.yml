@@ -26,13 +26,10 @@ runs:
       with:
         node-version: "20"
         cache: "npm"
-    - name: Install dependencies
-      shell: bash
-      run: npm ci
-    - name: Build and Package
+    - name: Install dependencies and build
       shell: bash
       run: |
-        npm run build
+        npm ci
         npm run package
     - uses: actions/setup-java@8df1039502a15bceb9433410b1a100fbe190c53b
       with:
