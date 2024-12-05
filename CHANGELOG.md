@@ -21,6 +21,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Add checkout step to main action.yml (#178)
 
+## [2.1.1] - 2024-12-05
+
+- Add checkout step to main action.yml (#178)
+
 ## [2.1.0] - 2024-12-04
 
 ### Changed
@@ -118,7 +122,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - GitHub Actions workflow to test Nextflow installation and downstream usage
 - Documentation and license files
 
-[unreleased]: https://github.com/nf-core/setup-nextflow/compare/v2.1.0...HEAD
+[unreleased]: https://github.com/nf-core/setup-nextflow/compare/v2.1.1...HEAD
+[2.1.1]: https://github.com/nf-core/setup-nextflow/compare/v2.1.0...v2.1.1
 [2.1.0]: https://github.com/nf-core/setup-nextflow/compare/v2.0.0...v2.1.0
 [2.0.0]: https://github.com/nf-core/setup-nextflow/compare/v1.5.2...v2.0.0
 [1.5.2]: https://github.com/nf-core/setup-nextflow/compare/v1.5.1...v1.5.2
