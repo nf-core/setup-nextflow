@@ -9,6 +9,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Don't print nextflow help output by default, only on debug mode (#173)
 
+## [2.1.0] - 2024-12-04
+
+### Changed
+
+- Action now installs Java by default and can be configured via the new `java-version` and `java-distribution` inputs (#177)
+
 ## [2.0.0] - 2024-03-01
 
 ### Added
@@ -100,7 +106,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - GitHub Actions workflow to test Nextflow installation and downstream usage
 - Documentation and license files
 
-[unreleased]: https://github.com/nf-core/setup-nextflow/compare/v2.0.0...HEAD
+[unreleased]: https://github.com/nf-core/setup-nextflow/compare/v2.1.0...HEAD
+[2.1.0]: https://github.com/nf-core/setup-nextflow/compare/v2.0.0...v2.1.0
 [2.0.0]: https://github.com/nf-core/setup-nextflow/compare/v1.5.2...v2.0.0
 [1.5.2]: https://github.com/nf-core/setup-nextflow/compare/v1.5.1...v1.5.2
 [1.5.1]: https://github.com/nf-core/setup-nextflow/compare/v1.5.0...v1.5.1
