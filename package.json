@@ -1,6 +1,6 @@
 {
   "name": "install-nextflow-action",
-  "version": "2.1.0",
+  "version": "2.1.1",
   "description": "An action to install Nextflow into a GitHub Actions workflow and make it available for subsequent steps.",
   "main": "lib/src/main.js",
   "scripts": {
@@ -9,7 +9,7 @@
     "format:check": "prettier --check '**/*.{ts,js,yml,md,json}'",
     "lint": "eslint {src,test}/**/*.ts",
     "lint:fix": "eslint --fix {src,test}/**/*.ts",
-    "package": "ncc build --source-map --license LICENSE",
+    "package": "ncc build src/main.ts --source-map --license LICENSE",
     "test": "c8 --reporter=lcov ava",
     "all": "npm run build && npm run format && npm run lint && npm run package && npm test",
     "prepare": "husky && husky install"
