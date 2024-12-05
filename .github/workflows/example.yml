@@ -18,7 +18,6 @@ jobs:
       matrix:
         nextflow_version:
           - "21.10.3"
-          - "22.04"
           - "22.03.1-edge"
           - "24.10.1"
           - "latest"
