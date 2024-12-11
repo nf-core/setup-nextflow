@@ -31,7 +31,7 @@ runs:
       run: |
         npm ci
         npm run package
-    - uses: actions/setup-java@8df1039502a15bceb9433410b1a100fbe190c53b
+    - uses: actions/setup-java@7136edc5e8145b3c0b6bae8f4e62706c74e76538
       with:
         java-version: ${{ inputs.java-version }}
         distribution: ${{ inputs.java-distribution }}
