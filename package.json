@@ -76,7 +76,7 @@
     "eslint-plugin-github": "5.1.4",
     "eslint-plugin-simple-import-sort": "12.1.1",
     "husky": "9.1.7",
-    "lint-staged": "15.2.10",
+    "lint-staged": "15.2.11",
     "prettier": "3.4.2",
     "ts-node": "10.9.2",
     "typescript": "5.7.2"
