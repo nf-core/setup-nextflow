@@ -76,7 +76,10 @@ async function run(): Promise<void> {
 
   // Run Nextflow so it downloads its dependencies
   try {
-    await exec.exec("nextflow", ["help"])
+    await exec.exec("nextflow", ["help"], {
+      // set silent to true if not in debug mode
+      silent: !core.isDebug()
+    })
   } catch (e: unknown) {
     if (e instanceof Error) {
       // fail workflow if Nextflow run does not succeed
