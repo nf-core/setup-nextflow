@@ -18,6 +18,7 @@
     "type": "git",
     "url": "git+https://github.com/nf-core/setup-nextflow.git"
   },
+  "type": "commonjs",
   "keywords": [
     "actions",
     "node",
