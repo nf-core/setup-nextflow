@@ -26,7 +26,7 @@ runs:
         repository: nf-core/setup-nextflow
         ref: v2.1.4
         path: setup-nextflow
-    - uses: actions/setup-java@67aec007b3fcabe15ca665bfccc1e255dd52e30d
+    - uses: actions/setup-java@c190c18febcf6c040d80b10ea201a05a2c320263
       with:
         java-version: ${{ inputs.java-version }}
         distribution: ${{ inputs.java-distribution }}
