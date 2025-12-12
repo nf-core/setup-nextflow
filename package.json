@@ -63,7 +63,7 @@
     "@ava/typescript": "5.0.0",
     "@tsconfig/node16": "16.1.8",
     "@types/async-retry": "1.4.9",
-    "@types/node": "22.19.1",
+    "@types/node": "22.19.2",
     "@types/semver": "7.7.1",
     "@typescript-eslint/eslint-plugin": "8.48.1",
     "@typescript-eslint/parser": "8.48.1",
