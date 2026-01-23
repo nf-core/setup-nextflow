@@ -52,7 +52,7 @@
   "license": "MIT",
   "dependencies": {
     "@actions/core": "^1.8.2",
-    "@actions/exec": "^1.1.1",
+    "@actions/exec": "^2.0.0",
     "@actions/github": "^6.0.0",
     "@actions/tool-cache": "^2.0.1",
     "@types/node": "^22.0.0",
