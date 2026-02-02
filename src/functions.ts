@@ -32,13 +32,14 @@ export async function install_nextflow(
 
   core.debug(`Downloading Nextflow from ${url}`)
   const nf_dl_path = await retry(
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    async bail => {
+    async _bail => {
       return await tc.downloadTool(url)
     },
     {
       onRetry: err => {
-        core.debug(`Download of ${url} failed, trying again. Error ${err}`)
+        core.debug(
+          `Download of ${url} failed, trying again. Error ${String(err)}`
+        )
       }
     }
   )
@@ -49,7 +50,7 @@ export async function install_nextflow(
   try {
     fs.renameSync(nf_dl_path, nf_path)
   } catch (err: unknown) {
-    core.debug(`Failed to rename file: ${err}`)
+    core.debug(`Failed to rename file: ${String(err)}`)
     fs.copyFileSync(nf_dl_path, nf_path)
     fs.unlinkSync(nf_dl_path)
   }
@@ -68,7 +69,7 @@ export function check_cache(version: string): boolean {
   if (cleaned_version === null) {
     return false
   }
-  const resolved_version = String(cleaned_version)
+  const resolved_version = cleaned_version
 
   const nf_path = tc.find("nextflow", resolved_version)
   if (!nf_path) {

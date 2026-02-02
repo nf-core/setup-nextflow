@@ -5,7 +5,7 @@ import * as process from "process"
 
 // eslint-disable-next-line ava/no-skip-test
 test.skip("test runs", t => {
-  process.env["INPUT_VERSION"] = "v22.10.2"
+  process.env.INPUT_VERSION = "v22.10.2"
   const np = process.execPath
   const ip = path.join(__dirname, "..", "lib", "src", "main.js")
   const options: cp.ExecFileSyncOptions = {
