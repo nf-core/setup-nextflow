@@ -17,7 +17,7 @@ inputs:
   java-distribution:
     description: "The Java distribution to install as the required dependency of Nextflow. Passed to the underlying setup-java action."
     required: false
-    default: "zulu"
+    default: "Temurin"
 runs:
   using: "composite"
   steps:
