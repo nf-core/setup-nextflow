@@ -62,6 +62,6 @@ jobs:
         if: ${{ env.ACT}}
         with:
           java-version: 21
-          distribution: Temurin
+          distribution: temurin
       - uses: ./
       - run: nextflow -v
