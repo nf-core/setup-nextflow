@@ -21,12 +21,12 @@ inputs:
 runs:
   using: "composite"
   steps:
-    - uses: actions/checkout@85e6279cec87321a52edac9c87bce653a07cf6c2
+    - uses: actions/checkout@0c366fd6a839edf440554fa01a7085ccba70ac98
       with:
         repository: nf-core/setup-nextflow
         ref: v2.1.4
         path: setup-nextflow
-    - uses: actions/setup-java@3a4f6e1af504cf6a31855fa899c6aa5355ba6c12
+    - uses: actions/setup-java@be666c2fcd27ec809703dec50e508c2fdc7f6654
       with:
         java-version: ${{ inputs.java-version }}
         distribution: ${{ inputs.java-distribution }}

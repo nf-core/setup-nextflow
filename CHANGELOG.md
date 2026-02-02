@@ -11,6 +11,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Updated ESLint to v9
 
+### Added
+
+- Pull request template
+- Contributing documentation
+
 ## [2.1.4] - 2024-12-05
 
 - Fix ref handling in nested GitHub Actions
