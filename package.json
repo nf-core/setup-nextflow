@@ -62,7 +62,7 @@
   },
   "devDependencies": {
     "@ava/typescript": "5.0.0",
-    "@tsconfig/node18": "18.2.0",
+    "@tsconfig/node20": "20.1.9",
     "@types/async-retry": "1.4.9",
     "@types/node": "22.19.7",
     "@types/semver": "7.7.1",
