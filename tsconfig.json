@@ -9,9 +9,8 @@
     "noImplicitAny": false,
     "esModuleInterop": true,
     "sourceMap": true,
-    "lib": ["ES2022"],
-    "allowSyntheticDefaultImports": true
+    "lib": ["ES2022"]
   },
   "include": ["src/**/*", "test/**/*"],
-  "exclude": ["node_modules", "**/*.test.ts"]
+  "exclude": ["node_modules"]
 }
