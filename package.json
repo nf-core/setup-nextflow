@@ -18,7 +18,7 @@
     "type": "git",
     "url": "git+https://github.com/nf-core/setup-nextflow.git"
   },
-  "type": "commonjs",
+  "type": "module",
   "keywords": [
     "actions",
     "node",
@@ -26,36 +26,22 @@
   ],
   "author": "nf-core",
   "ava": {
-    "extensions": [
-      "ts"
-    ],
     "environmentVariables": {
       "RUNNER_TEMP": "./.tmp"
     },
-    "rewritePaths": {
-      "src/": "lib/"
-    },
-    "require": [
-      "ts-node/register/transpile-only"
-    ],
     "files": [
-      "test/**/*.ts",
-      "!test/utils.ts"
-    ],
-    "source": [
-      "src/**/*.ts"
+      "lib/test/**/*.js"
     ],
     "concurrency": 1,
     "serial": true,
-    "powerAssert": true,
     "timeout": "120s"
   },
   "license": "MIT",
   "dependencies": {
-    "@actions/core": "^1.8.2",
-    "@actions/exec": "^1.1.1",
-    "@actions/github": "^6.0.0",
-    "@actions/tool-cache": "^2.0.1",
+    "@actions/core": "^3.0.0",
+    "@actions/exec": "^3.0.0",
+    "@actions/github": "^9.0.0",
+    "@actions/tool-cache": "^4.0.0",
     "@types/node": "^22.0.0",
     "async-retry": "^1.3.3",
     "semver": "^7.3.7"
@@ -81,6 +67,7 @@
     "lint-staged": "15.5.2",
     "prettier": "3.8.1",
     "ts-node": "10.9.2",
+    "tsx": "^4.21.0",
     "typescript": "5.9.3",
     "typescript-eslint": "8.54.0"
   },

@@ -1,15 +1,16 @@
 {
   "extends": "@tsconfig/node20/tsconfig.json",
   "compilerOptions": {
-    "target": "es6",
-    "module": "commonjs",
-    "moduleResolution": "Node",
+    "target": "ES2022",
+    "module": "ESNext",
+    "moduleResolution": "bundler",
     "outDir": "./lib",
     "strict": true,
     "noImplicitAny": false,
     "esModuleInterop": true,
     "sourceMap": true,
-    "lib": ["esnext", "dom"]
+    "lib": ["ES2022"],
+    "allowSyntheticDefaultImports": true
   },
   "include": ["src/**/*", "test/**/*"],
   "exclude": ["node_modules", "**/*.test.ts"]

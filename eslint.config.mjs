@@ -10,9 +10,21 @@ export default tseslint.config(
   ...tseslint.configs.strictTypeChecked,
   ...tseslint.configs.stylisticTypeChecked,
   github.getFlatConfigs().recommended,
-  ava.configs["flat/recommended"],
   {
-    files: ["**/*.ts"],
+    files: ["test/**/*.ts"],
+    plugins: {
+      ava: ava
+    },
+    rules: {
+      // Apply AVA rules except no-ignored-test-files
+      ...ava.configs["flat/recommended"].rules,
+      // Disable this rule because we run AVA on compiled JS files (lib/test/**/*.js)
+      // while ESLint analyzes the source TypeScript files (test/**/*.ts)
+      "ava/no-ignored-test-files": "off"
+    }
+  },
+  {
+    files: ["src/**/*.ts", "test/**/*.ts"],
     plugins: {
       "simple-import-sort": simpleImportSort
     },
@@ -28,6 +40,7 @@ export default tseslint.config(
       "i18n-text/no-en": "off",
       "eslint-comments/no-use": "off",
       "import/no-namespace": "off",
+      "import/no-unresolved": "off",
       camelcase: "off",
       semi: "off",
       "sort-imports": "off",
