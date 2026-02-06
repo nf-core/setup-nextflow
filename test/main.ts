@@ -1,7 +1,11 @@
-import test from "ava" // eslint-disable-line import/no-unresolved
+import test from "ava"
 import * as cp from "child_process"
 import * as path from "path"
 import * as process from "process"
+import { fileURLToPath } from "url"
+
+const __filename = fileURLToPath(import.meta.url)
+const __dirname = path.dirname(__filename)
 
 // eslint-disable-next-line ava/no-skip-test
 test.skip("test runs", t => {

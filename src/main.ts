@@ -8,12 +8,12 @@ import {
   check_cache,
   get_nextflow_release,
   install_nextflow
-} from "./functions"
-import { NextflowRelease } from "./nextflow-release"
+} from "./functions.js"
+import { NextflowRelease } from "./nextflow-release.js"
 import {
   get_latest_nextflow_version,
   get_nextflow_versions
-} from "./nf-core-api-wrapper"
+} from "./nf-core-api-wrapper.js"
 
 async function run(): Promise<void> {
   // CAPSULE_LOG leads to a bunch of boilerplate being output to the logs: turn
