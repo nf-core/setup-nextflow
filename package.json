@@ -2,6 +2,7 @@
   "name": "install-nextflow-action",
   "version": "2.1.4",
   "description": "An action to install Nextflow into a GitHub Actions workflow and make it available for subsequent steps.",
+  "type": "module",
   "main": "lib/src/main.js",
   "scripts": {
     "build": "tsc",
