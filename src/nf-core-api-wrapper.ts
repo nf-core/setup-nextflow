@@ -3,7 +3,7 @@ import { downloadTool } from "@actions/tool-cache"
 import retry from "async-retry"
 import { readFileSync } from "fs"
 
-import { NextflowRelease } from "./nextflow-release"
+import { NextflowRelease } from "./nextflow-release.js"
 
 interface NextflowVersionsData {
   versions: unknown[]

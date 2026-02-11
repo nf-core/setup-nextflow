@@ -1,8 +1,8 @@
-import test from "ava" //eslint-disable-line import/no-unresolved
+import test from "ava"
 import { execSync } from "child_process"
 
-import { get_nextflow_release, install_nextflow } from "../src/functions"
-import { NextflowRelease } from "../src/nextflow-release"
+import { get_nextflow_release, install_nextflow } from "../src/functions.js"
+import { NextflowRelease } from "../src/nextflow-release.js"
 
 // The Nextflow releases we are going to use for testing follow a regular
 // pattern: create a mock function to bootstrap some test data without repeating

@@ -4,7 +4,7 @@ import retry from "async-retry"
 import * as fs from "fs"
 import semver from "semver"
 
-import { NextflowRelease } from "./nextflow-release"
+import { NextflowRelease } from "./nextflow-release.js"
 
 export async function get_nextflow_release(
   version: string,
