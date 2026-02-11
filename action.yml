@@ -21,22 +21,16 @@ inputs:
 runs:
   using: "composite"
   steps:
-    - uses: actions/checkout@0c366fd6a839edf440554fa01a7085ccba70ac98
-      with:
-        repository: nf-core/setup-nextflow
-        # In development: test the current commit with `${{ github.sha }}`
-        # Before release: change to version tag (e.g., v2.2.0)
-        ref: ${{ github.sha }}
-        path: setup-nextflow
     - uses: actions/setup-java@be666c2fcd27ec809703dec50e508c2fdc7f6654
       with:
         java-version: ${{ inputs.java-version }}
         distribution: ${{ inputs.java-distribution }}
     - name: Install Nextflow
-      uses: ./setup-nextflow/subaction
-      with:
-        version: ${{ inputs.version }}
-        all: ${{ inputs.all }}
+      shell: bash
+      env:
+        INPUT_VERSION: ${{ inputs.version }}
+        INPUT_ALL: ${{ inputs.all }}
+      run: node ${{ github.action_path }}/dist/index.js
 branding:
   icon: "shuffle"
   color: "green"
