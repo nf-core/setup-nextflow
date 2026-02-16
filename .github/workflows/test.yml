@@ -25,6 +25,9 @@ jobs:
       - run: npm run format:check
       - run: npm run lint
       - run: npm run package
+      - name: Check dist is up to date
+        run: |
+          git diff --exit-code dist/
       - run: npm run test
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
