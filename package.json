@@ -50,7 +50,7 @@
     "@ava/typescript": "6.0.0",
     "@tsconfig/node20": "20.1.9",
     "@types/async-retry": "1.4.9",
-    "@types/node": "22.19.7",
+    "@types/node": "22.19.11",
     "@types/semver": "7.7.1",
     "@typescript-eslint/eslint-plugin": "8.55.0",
     "@typescript-eslint/parser": "8.55.0",
