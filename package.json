@@ -48,7 +48,7 @@
   },
   "devDependencies": {
     "@ava/typescript": "6.0.0",
-    "@tsconfig/node20": "20.1.9",
+    "@tsconfig/node22": "22.0.0",
     "@types/async-retry": "1.4.9",
     "@types/node": "22.19.11",
     "@types/semver": "7.7.1",
