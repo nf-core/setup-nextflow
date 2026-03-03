@@ -21,7 +21,7 @@ inputs:
 runs:
   using: "composite"
   steps:
-    - uses: actions/setup-java@fe779bf55ef683c9413269276a7588bb9cedf07a
+    - uses: actions/setup-java@1d018f9b8b9b505bb578a83b230fabcce01af93b
       with:
         java-version: ${{ inputs.java-version }}
         distribution: ${{ inputs.java-distribution }}
