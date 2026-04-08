@@ -17,8 +17,8 @@ jobs:
   example:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-      - uses: nf-core/setup-nextflow@v1
+      - uses: actions/checkout@v6
+      - uses: nf-core/setup-nextflow@v2
       - run: nextflow run ${GITHUB_WORKSPACE}
 ```
 
@@ -69,7 +69,7 @@ Nextflow secrets to set, specified as `KEY=VALUE` pairs (one per line).
 Typically, `VALUE` will be a GitHub repository secret:
 
 ```yaml
-- uses: nf-core/setup-nextflow@v1
+- uses: nf-core/setup-nextflow@v2
   with:
     secrets: |
       MY_SECRET=${{ secrets.MY_GITHUB_SECRET }}
