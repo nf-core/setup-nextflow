@@ -86,6 +86,28 @@ async function run(): Promise<void> {
       core.setFailed(`Could not run 'nextflow help'. Error: ${e.message}`)
     }
   }
+
+  // Set Nextflow secrets
+  const secrets_input = core.getMultilineInput("secrets")
+  for (const secret of secrets_input) {
+    const eq_idx = secret.indexOf("=")
+    if (eq_idx === -1) {
+      core.warning(`Skipping invalid secret (no '=' found): ${secret}`)
+      continue
+    }
+    const key = secret.substring(0, eq_idx)
+    const value = secret.substring(eq_idx + 1)
+    core.setSecret(value)
+    try {
+      await exec.exec("nextflow", ["secrets", "set", key, value])
+    } catch (e: unknown) {
+      if (e instanceof Error) {
+        core.setFailed(
+          `Could not set Nextflow secret '${key}'. Error: ${e.message}`
+        )
+      }
+    }
+  }
 }
 
 void run()
