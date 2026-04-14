@@ -34,6 +34,7 @@ runs:
       env:
         INPUT_VERSION: ${{ inputs.version }}
         INPUT_ALL: ${{ inputs.all }}
+        INPUT_SECRETS: ${{ inputs.secrets }}
       run: node ${{ github.action_path }}/dist/index.js
 branding:
   icon: "shuffle"
