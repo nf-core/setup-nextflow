@@ -46,6 +46,28 @@ jobs:
           all: ${{ matrix.all_distribution }}
       - run: nextflow -v
 
+  example-secrets:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
+      - uses: actions/setup-node@53b83947a5a98c8d113130e565377fae1a50d02f # v6
+        with:
+          node-version: 24
+          cache: "npm"
+      - run: npm ci
+      - run: npm run build
+      - run: npm run package
+      - uses: ./
+        with:
+          version: "latest-stable"
+          secrets: |
+            MY_TEST_SECRET=hello_world
+            ANOTHER_SECRET=foo_bar
+      - name: Verify secrets were set
+        run: |
+          [[ "$(nextflow secrets get MY_TEST_SECRET)" == "hello_world" ]]
+          [[ "$(nextflow secrets get ANOTHER_SECRET)" == "foo_bar" ]]
+
   example-maximized-build-space:
     runs-on: ubuntu-latest
     steps:

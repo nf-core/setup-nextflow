@@ -18,6 +18,10 @@ inputs:
     description: "The Java distribution to install as the required dependency of Nextflow. Passed to the underlying setup-java action."
     required: false
     default: "temurin"
+  secrets:
+    description: "Nextflow secrets to set, in KEY=VALUE format (one per line). See README for usage."
+    required: false
+    default: ""
 runs:
   using: "composite"
   steps:
@@ -30,6 +34,7 @@ runs:
       env:
         INPUT_VERSION: ${{ inputs.version }}
         INPUT_ALL: ${{ inputs.all }}
+        INPUT_SECRETS: ${{ inputs.secrets }}
       run: node ${{ github.action_path }}/dist/index.js
 branding:
   icon: "shuffle"

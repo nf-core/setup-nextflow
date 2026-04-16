@@ -17,8 +17,8 @@ jobs:
   example:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-      - uses: nf-core/setup-nextflow@v1
+      - uses: actions/checkout@v6
+      - uses: nf-core/setup-nextflow@v2
       - run: nextflow run ${GITHUB_WORKSPACE}
 ```
 
@@ -59,6 +59,24 @@ There are three (technically four) aliases to assist in choosing up-to-date Next
 > **default: `false`**
 
 A boolean deciding whether to download the "all versions" distribution of Nextflow. May be useful for running tests against multiple versions downstream.
+
+### `secrets`
+
+> **default: none**
+
+Nextflow secrets to set, specified as `KEY=VALUE` pairs (one per line).
+`VALUE` will only be logged as a masked value.
+Typically, `VALUE` will be a GitHub repository secret:
+
+```yaml
+- uses: nf-core/setup-nextflow@v2
+  with:
+    secrets: |
+      MY_SECRET=${{ secrets.MY_GITHUB_SECRET }}
+      ANOTHER_SECRET=${{ secrets.ANOTHER_GITHUB_SECRET }}
+```
+
+These are equivalent to running `nextflow secrets set MY_SECRET <value>` before your workflow steps.
 
 ## Outputs
 
