@@ -5,20 +5,23 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [3.0.0] - 2024-04-17
+
+### Breaking Change
+
+- Upgraded Node.js version from 20 to 24 (#219)
 
 ### Added
 
-- Pull request template
-- Contributing documentation
 - `secrets` input to set Nextflow secrets (KEY=VALUE format, one per line) (#202)
 - Test to verify `/dist` is up-to-date
+- Pull request template
+- Contributing documentation
 
 ### Changed
 
 - Updated ESLint to v9 with flat config format
 - Migrated codebase to ES Modules (ESM)
-- Upgraded Node.js version from 20 to 24 (#219)
 - Simplified `action.yml` by flattening the composite action structure
 
 ## [2.1.4] - 2024-12-05
