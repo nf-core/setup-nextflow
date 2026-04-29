@@ -57,7 +57,7 @@
     "@vercel/ncc": "0.38.4",
     "ava": "7.0.0",
     "c8": "11.0.0",
-    "eslint": "9.39.4",
+    "eslint": "10.2.1",
     "eslint-config-prettier": "10.1.8",
     "eslint-plugin-ava": "15.1.0",
     "eslint-plugin-github": "6.0.0",
