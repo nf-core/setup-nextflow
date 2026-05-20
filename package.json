@@ -55,7 +55,7 @@
     "@typescript-eslint/eslint-plugin": "8.59.3",
     "@typescript-eslint/parser": "8.59.3",
     "@vercel/ncc": "0.38.4",
-    "ava": "7.0.0",
+    "ava": "8.0.1",
     "c8": "11.0.0",
     "eslint": "9.39.4",
     "eslint-config-prettier": "10.1.8",
