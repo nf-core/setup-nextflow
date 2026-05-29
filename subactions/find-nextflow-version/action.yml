@@ -1,0 +1,34 @@
+name: "Find compatible Nextflow version"
+description: |
+  Resolves the Nextflow version provided by the user into a version string that
+  can be used and downloaded by the installer script while also selecting an
+  appropriate Java version to install as dependency
+inputs:
+  version:
+    description: |
+      The Nextflow version string that needs to be resolved into an actual
+      version number
+    required: false
+    default: "stable"
+  java-version:
+    description: "The version of Java selected by the user"
+    required: false
+outputs:
+  nextflow-version:
+    description: "The resolved version number of Nextflow"
+    value: ${{ steps.resolver.outputs.version }}
+  java-version:
+    description: |
+      The recommended version of Java to be installed prior to installing
+      Nextflow
+    value: ${{ steps.resolver.outputs.java-version }}
+runs:
+  using: "composite"
+  steps:
+    - name: "Resolve Nextflow version number"
+      id: resolver
+      run: "entrypoint.py"
+      shell: "python"
+      env:
+        INPUT_VERSION: ${{ inputs.version }}
+        INPUT_JAVA_VERSION: ${{ inputs.java-version }}
