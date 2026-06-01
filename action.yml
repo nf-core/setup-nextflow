@@ -20,6 +20,35 @@ inputs:
     description: "Nextflow secrets to set, in KEY=VALUE format (one per line). See README for usage."
     required: false
     default: ""
+outputs:
+  version:
+    description: The version of Nextflow that has been installed
+    value: ${{ steps.install-nextflow.outputs.version }}
+  path:
+    description: The path to where the Nextflow executable has been installed
+    value: ${{ steps.install-nextflow.outputs.path }}
+  tool-cache-hit:
+    description: |
+      A boolean value to indicate an exact match was found in the tool cache
+      for this version of Nextflow
+    value: ${{ steps.install-nextflow.outputs.tool-cache-hit }}
+  cache-hit:
+    description: |
+      A boolean value to indicate an exact match was found in the JAR capsule
+      cache for this version of Nextflow
+    value: ${{ steps.install-nextflow.outputs.jar-cache-hit }}
+  java-version:
+    description: "Actual version of the Java environment that has been installed"
+    value: ${{ steps.install-java.outputs.version }}
+  java-distribution:
+    description: "Distribution of Java that has been installed"
+    value: ${{ steps.install-java.outputs.distribution }}
+  java-path:
+    description: "Path to where the Java environment has been installed (same as $JAVA_HOME)"
+    value: ${{ steps.install-java.outputs.path }}
+  java-cache-hit:
+    description: "A boolean value to indicate an exact match was found for the Java install primary key"
+    value: ${{ steps.install-java.outputs.cache-hit }}
 runs:
   using: "composite"
   steps:
