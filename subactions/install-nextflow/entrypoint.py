@@ -129,10 +129,10 @@ if cache_dir is None:
 
 # Add Nextflow to the PATH
 github_path(cache_dir)
+github_output("path", cache_dir)
 
 # Export NXF_HOME, as that is key to making the cache work
 github_env("NXF_HOME", "~/.nextflow")
-github_output("path", "~/.nextflow")
 
 # Export the canonical version of Nextflow installed
 github_output("version", stripped_version)
