@@ -1,0 +1,17 @@
+name: nf-core linting
+# This workflow is triggered on pushes and PRs to the repository.
+# It runs the pre-commit hooks server-side to ensure
+# that the code meets the nf-core guidelines.
+on:
+  pull_request:
+  release:
+    types: [published]
+
+jobs:
+  pre-commit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5
+
+      - name: Run prek
+        uses: j178/prek-action@v2
