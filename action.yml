@@ -23,7 +23,7 @@ inputs:
 runs:
   using: "composite"
   steps:
-    - uses: ./subactions/find-nextflow-version
+    - uses: ./.github/actions/find-nextflow-version
       id: find-nextflow-version
       with:
         version: ${{ inputs.version }}
@@ -34,11 +34,11 @@ runs:
       with:
         java-version: ${{ steps.find-nextflow-version.outputs.java-version }}
         distribution: ${{ inputs.java-distribution }}
-    - uses: ./subactions/install-nextflow
+    - uses: ./.github/actions/install-nextflow
       id: install-nextflow
       with:
         version: ${{ steps.find-nextflow-version.outputs.nextflow-version }}
-    - uses: ./subactions/add-secrets
+    - uses: ./.github/actions/add-secrets
       id: add-secrets
       with:
         path: ${{ steps.install-nextflow.outputs.path }}
