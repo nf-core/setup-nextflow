@@ -12,6 +12,14 @@ VERSION = os.environ["INPUT_VERSION"]
 JAVA_VERSION = os.environ.get("INPUT_JAVA_VERSION")
 
 
+def split_version(version):
+    """Splits a version string into a tuple for comparison, losing modifiers"""
+    # Modifiers are safe to remove in our case, because Nextflow does not
+    # release -edge releases within the same month as a stable release, so
+    # comparing the numbers alone will work
+    return tuple(int(x) for x in version.strip("v").strip("-edge").split("."))
+
+
 def get_latest_version_string(stable=False):
     """Get the latest Nextflow version number from the GitHub API
 
@@ -19,31 +27,33 @@ def get_latest_version_string(stable=False):
     stable -- Restrict the version to stable (i.e. not `-edge`) only (default False)
     """
     base_url = "https://api.github.com/repos/nextflow-io/nextflow/releases"
-    if stable:
-        base_url = f"{base_url}/latest"
-    query_params = urllib.parse.urlencode({"per_page": "1"})
-    full_url = f"{base_url}?{query_params}"
-    request = urllib.request.Request(full_url, method="GET")
-    request.add_header("Accept", "application/vnd.github+json")
-    request.add_header("Authorization", f"Bearer {GITHUB_TOKEN}")
-    request.add_header("X-GitHub-Api-Version", "2026-03-10")
+    request = urllib.request.Request(
+        base_url,
+        method="GET",
+        headers={
+            "Accept": "application/vnd.github+json",
+            "Authorization": f"Bearer {GITHUB_TOKEN}",
+            "X-GitHub-Api-Version": "2026-03-10",
+        },
+    )
+
     with urllib.request.urlopen(request) as response:
         j_data = json.loads(response.read().decode("utf-8"))
+
+        # Filter releases to stable if required by the user
         if stable:
-            return j_data["tag_name"]
+            releases = [
+                release["tag_name"] for release in j_data if not release["prerelease"]
+            ]
         else:
-            return j_data[0]["tag_name"]
+            releases = [release["tag_name"] for release in j_data]
+        return max(releases, key=split_version)
 
 
 def github_output(key, val):
     """Writes a key-value pair to GitHub Actions output"""
     with open(GITHUB_OUTPUT, "a") as f:
         f.write(f"{key}={val}\n")
-
-
-def split_version(version):
-    """Splits a version string into a tuple for comparison, losing modifiers"""
-    return tuple(int(x) for x in version.strip("v").strip("-edge").split("."))
 
 
 def java_version(nextflow_version):
