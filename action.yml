@@ -28,7 +28,7 @@ runs:
       with:
         version: ${{ inputs.version }}
         java-version: ${{ inputs.java-version }}
-        token: ${{ secrets.GITHUB_TOKEN }}
+        token: ${{ github.token }}
     - uses: actions/setup-java@1d018f9b8b9b505bb578a83b230fabcce01af93b
       id: install-java
       with:
