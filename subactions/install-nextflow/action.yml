@@ -1,0 +1,47 @@
+name: "Install Nextflow"
+description: |
+  Installs a specified version of Nextflow to the GitHub Actions runner tool
+  cache
+inputs:
+  version:
+    description: |
+      The fully qualified version number of the Nextflow version to install.
+      The `v` prefix is optional, but it must have all three version numbers
+      (year, month, patch) and the pre-release qualifier (`-edge`) if
+      applicable.
+    required: true
+outputs:
+  version:
+    description: |
+      The actual version of Nextflow installed without a leading `v`. This
+      value is also exported to the NXF_VER variable in the resulting
+      environment.
+    value: ${{ steps.installer.outputs.version }}
+  path:
+    description: "Path to where the Nextflow executable has been installed"
+    value: ${{ steps.installer.outputs.path }}
+  tool-cache-hit:
+    description: |
+      A boolean value to indicate an exact match was found in the tool cache
+      for this version of Nextflow
+    value: ${{ steps.installer.outputs.cache-hit }}
+  jar-cache-hit:
+    description: |
+      A boolean value to indicate an exact match was found in the JAR cache
+      for this version of Nextflow
+    value: ${{ steps.cache.outputs.cache-hit }}
+runs:
+  using: "composite"
+  steps:
+    - name: "Cache Nextflow JAR files"
+      id: cache
+      uses: actions/cache@v4
+      with:
+        key: ${{ runner.os }}-nextflow-${{ inputs.version }}
+        path: "~/.nextflow"
+    - name: "Install Nextflow"
+      id: installer
+      run: "entrypoint.py"
+      shell: "python"
+      env:
+        INPUT_VERSION: ${{ inputs.version }}
