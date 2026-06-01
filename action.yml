@@ -1,19 +1,17 @@
 name: "Setup Nextflow"
-description: "Install Nextflow and add it to the PATH"
+description: |
+  Install Nextflow and its dependencies into a GitHub Actions environment, cache
+  the installation, and add it to the PATH
 author: "nf-core"
 inputs:
   version:
     description: "The Nextflow version to download (if necessary) and use. Example: 21.10.3"
     required: false
-    default: "latest-stable"
-  all:
-    description: "Whether to install every Nextflow release via the '-all' distribution."
-    required: false
-    default: "false"
+    default: "stable"
   java-version:
     description: "The Java version to install as the required dependency of Nextflow. Passed to the underlying setup-java action."
     required: false
-    default: "17"
+    default: ""
   java-distribution:
     description: "The Java distribution to install as the required dependency of Nextflow. Passed to the underlying setup-java action."
     required: false
@@ -25,17 +23,25 @@ inputs:
 runs:
   using: "composite"
   steps:
-    - uses: actions/setup-java@1d018f9b8b9b505bb578a83b230fabcce01af93b
+    - uses: ./subactions/find-nextflow-version
+      id: find-nextflow-version
       with:
+        version: ${{ inputs.version }}
         java-version: ${{ inputs.java-version }}
+    - uses: actions/setup-java@1d018f9b8b9b505bb578a83b230fabcce01af93b
+      id: install-java
+      with:
+        java-version: ${{ steps.find-nextflow-version.outputs.java-version }}
         distribution: ${{ inputs.java-distribution }}
-    - name: Install Nextflow
-      shell: bash
-      env:
-        INPUT_VERSION: ${{ inputs.version }}
-        INPUT_ALL: ${{ inputs.all }}
-        INPUT_SECRETS: ${{ inputs.secrets }}
-      run: node ${{ github.action_path }}/dist/index.js
+    - uses: ./subactions/install-nextflow
+      id: install-nextflow
+      with:
+        version: ${{ steps.find-nextflow-version.outputs.nextflow-version }}
+    - uses: ./subactions/add-secrets
+      id: add-secrets
+      with:
+        path: ${{ steps.install-nextflow.outputs.path }}
+        secrets: ${{ inputs.secrets }}
 branding:
   icon: "shuffle"
   color: "green"
