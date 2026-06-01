@@ -13,6 +13,9 @@ inputs:
   java-version:
     description: "The version of Java selected by the user"
     required: false
+  token:
+    description: "The GITHUB_TOKEN for accessing the API"
+    required: true
 outputs:
   nextflow-version:
     description: "The resolved version number of Nextflow"
@@ -32,4 +35,4 @@ runs:
       env:
         INPUT_VERSION: ${{ inputs.version }}
         INPUT_JAVA_VERSION: ${{ inputs.java-version }}
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        GITHUB_TOKEN: ${{ inputs.token }}
