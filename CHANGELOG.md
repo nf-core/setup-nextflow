@@ -5,6 +5,30 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Added
+
+- Automatic Java version selection
+- Caching for Nextflow Java capsules
+- Action outputs
+- Pre-commit hooks powered by prek
+- Python code linting CI check
+
+### Changed
+
+- NodeJS-based actions switched to Python-based
+- `latest` and `latest-stable` version tags renamed to `stable`
+- `latest-everything` version tag renamed to `edge`
+
+### Removed
+
+- Support for `-all`/`-dist` (static distribution) distributions of Nextflow
+- The `latest-edge` version tag
+- Dependency on nf-core JSON list of Nextflow releases
+- All Javascript/Typescript configuration
+- Pre-commit hooks powered by Husky
+
 ## [3.0.0] - 2024-04-17
 
 ### Breaking Change
@@ -141,7 +165,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - GitHub Actions workflow to test Nextflow installation and downstream usage
 - Documentation and license files
 
-[unreleased]: https://github.com/nf-core/setup-nextflow/compare/v2.1.1...HEAD
+[unreleased]: https://github.com/nf-core/setup-nextflow/compare/v3.0.0...HEAD
+[3.0.0]: https://github.com/nf-core/setup-nextflow/compare/v2.1.4...v3.0.0
+[2.1.4]: https://github.com/nf-core/setup-nextflow/compare/v2.1.3...v2.1.4
+[2.1.3]: https://github.com/nf-core/setup-nextflow/compare/v2.1.2...v2.1.3
+[2.1.2]: https://github.com/nf-core/setup-nextflow/compare/v2.1.1...v2.1.2
 [2.1.1]: https://github.com/nf-core/setup-nextflow/compare/v2.1.0...v2.1.1
 [2.1.0]: https://github.com/nf-core/setup-nextflow/compare/v2.0.0...v2.1.0
 [2.0.0]: https://github.com/nf-core/setup-nextflow/compare/v1.5.2...v2.0.0
