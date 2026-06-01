@@ -10,9 +10,6 @@ inputs:
       (year, month, patch) and the pre-release qualifier (`-edge`) if
       applicable.
     required: true
-  java-home:
-    description: "The path where Java has been installed"
-    required: true
 outputs:
   version:
     description: |
@@ -48,4 +45,3 @@ runs:
       shell: "bash"
       env:
         INPUT_VERSION: ${{ inputs.version }}
-        JAVA_HOME: ${{ inputs.java-home }}

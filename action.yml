@@ -38,7 +38,6 @@ runs:
       id: install-nextflow
       with:
         version: ${{ steps.find-nextflow-version.outputs.nextflow-version }}
-        java-home: ${{ steps.install-java.outputs.path }}
     - uses: ./subactions/add-secrets
       id: add-secrets
       with:
