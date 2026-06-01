@@ -50,7 +50,7 @@ def java_version(nextflow_version):
     """Returns the Java version compatible with this version of Nextflow"""
     # If the user specified a Java version, then we will go with their judgement
     # and skip this check
-    if JAVA_VERSION is not None:
+    if JAVA_VERSION:
         return JAVA_VERSION
 
     # Based on parsing every version of Nextflow, versions v18.10.1-v24.10.6 are
