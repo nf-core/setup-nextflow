@@ -32,3 +32,4 @@ runs:
       env:
         INPUT_VERSION: ${{ inputs.version }}
         INPUT_JAVA_VERSION: ${{ inputs.java-version }}
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
