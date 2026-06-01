@@ -11,8 +11,8 @@ runs:
   using: "composite"
   steps:
     - name: "Add Nextflow secrets"
-      run: "entrypoint.py"
-      shell: "python"
+      run: "${{ github.action_path }}/entrypoint.py"
+      shell: "bash"
       env:
         INPUT_NEXTFLOW: ${{ inputs.path }}
         INPUT_SECRETS: ${{ inputs.secrets }}

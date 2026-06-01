@@ -41,7 +41,7 @@ runs:
         path: "~/.nextflow"
     - name: "Install Nextflow"
       id: installer
-      run: "entrypoint.py"
-      shell: "python"
+      run: "${{ github.action_path }}/entrypoint.py"
+      shell: "bash"
       env:
         INPUT_VERSION: ${{ inputs.version }}
