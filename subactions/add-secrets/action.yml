@@ -1,0 +1,18 @@
+name: "Add Nextflow secrets"
+description: "Adds secrets to the Nextflow install"
+inputs:
+  path:
+    description: "The path of the Nextflow install"
+    required: true
+  secrets:
+    description: "The Nextflow secrets to set"
+    required: false
+runs:
+  using: "composite"
+  steps:
+    - name: "Add Nextflow secrets"
+      run: "entrypoint.py"
+      shell: "python"
+      env:
+        INPUT_NEXTFLOW: ${{ inputs.path }}
+        INPUT_SECRETS: ${{ inputs.secrets }}
