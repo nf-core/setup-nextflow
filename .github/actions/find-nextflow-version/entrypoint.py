@@ -47,6 +47,19 @@ def get_latest_version_string(release_data, stable=False):
 
     Keyword arguments:
     stable -- Restrict the version to stable (i.e. not `-edge`) only (default False)
+
+    >>> get_latest_version_string([
+    ...     { "tag_name": "v24.10.6", "prerelease": False },
+    ...     { "tag_name": "v24.11.0-edge", "prerelease": True },
+    ... ])
+    'v24.11.0-edge'
+
+    >>> get_latest_version_string([
+    ...     { "tag_name": "v24.10.6", "prerelease": False },
+    ...     { "tag_name": "v24.11.0-edge", "prerelease": True },
+    ... ],
+    ... stable = True)
+    'v24.10.6'
     """
     # Filter releases to stable if required by the user
     if stable:
