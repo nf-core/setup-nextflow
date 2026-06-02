@@ -85,10 +85,15 @@ def java_version(nextflow_version):
     # Java 17. HOWEVER, testing reveals that the version messages within the
     # scripts are not entirely accurate on the lower bounds. Nextflow v22.04.0
     # is the earliest version that will tolerate Java 17, so we use that as the
-    # cutoff point. There has been no version of Nextflow that requires any
-    # other version of Java to this point, but when that day comes, this
-    # function will need to be updated.
-    if split_version(nextflow_version) > split_version("v22.04.0"):
+    # cutoff point. Since we seem to be on a theme of using every other Java LTS
+    # version, that would put us at Java 25 (skipping 21), which was first
+    # supported by Nextflow v25.09.0-edge. We will attempt to make this function
+    # more future-proof by installing Java 25 if the Nextflow version is high
+    # enough to support it. That brings us up-to-date on Java LTS releases, but
+    # when the LTS after next comes out, this will need to be updated.
+    if split_version(nextflow_version) > split_version("v25.09.0-edge"):
+        return "25"
+    elif split_version(nextflow_version) > split_version("v22.04.0"):
         return "17"
     else:
         return "8"
