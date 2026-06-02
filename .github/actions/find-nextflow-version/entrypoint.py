@@ -13,7 +13,20 @@ JAVA_VERSION = os.environ.get("INPUT_JAVA_VERSION")
 
 
 def split_version(version):
-    """Splits a version string into a tuple for comparison, losing modifiers"""
+    """Splits a version string into a tuple for comparison, losing modifiers
+
+    >>> split_version("18.10.1")
+    (18, 10, 1)
+
+    >>> split_version("v24.10.6")
+    (24, 10, 6)
+
+    >>> split_version("24.11.0-edge")
+    (24, 11, 0)
+
+    >>> split_version("v25.09.2-edge")
+    (25, 9, 2)
+    """
     # Modifiers are safe to remove in our case, because Nextflow does not
     # release -edge releases within the same month as a stable release, so
     # comparing the numbers alone will work
