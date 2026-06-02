@@ -20,8 +20,8 @@ jobs:
       - run: pip install coverage
       # Add files with doctests to this list as needed
       - run: |
-          coverage run --branch --source=.github/actions -m doctest \
-                      .github/actions/find-nextflow-version/entrypoint.py \
+          coverage run --branch --source=src -m doctest \
+                      src/find-nextflow-version.py \
                       -v
       - run: coverage report
       - run: coverage xml

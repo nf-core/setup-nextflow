@@ -15,7 +15,7 @@ Many thanks for taking an interest in improving nf-core/setup-nextflow.
 3. It installs and caches the version of Nextflow found in Step 1
 4. It (optionally) sets up any provided [Nextflow secrets](https://docs.seqera.io/nextflow/secrets)
 
-Steps 1, 3, and 4 are self-contained Actions with Python scripts as entrypoints. Steps 1, 2, and 3 are separated because they form a set of sequential dependencies, while Step 4 is separated to prevent leaking of secrets via the cache.
+Steps 1, 3, and 4 are self-contained Python scripts. Steps 1, 2, and 3 are separated because they form a set of sequential dependencies, while Step 4 is separated as it is a completely separate functionality.
 
 Step 1 uses the GitHub API to retrieve a list of the 30 most recent Nextflow versions to determine which should be installed. However, it only accesses the API if and only if an ambiguous tag (`stable` or `edge`) is used, and only makes 1 call. This is to help reduce API calls and avoid hitting rate limits.
 

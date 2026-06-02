@@ -31,12 +31,12 @@ outputs:
     description: |
       A boolean value to indicate an exact match was found in the tool cache
       for this version of Nextflow
-    value: ${{ steps.install-nextflow.outputs.tool-cache-hit }}
+    value: ${{ steps.install-nextflow.outputs.cache-hit }}
   cache-hit:
     description: |
       A boolean value to indicate an exact match was found in the JAR capsule
       cache for this version of Nextflow
-    value: ${{ steps.install-nextflow.outputs.jar-cache-hit }}
+    value: ${{ steps.jar-cache.outputs.cache-hit }}
   java-version:
     description: "Actual version of the Java environment that has been installed"
     value: ${{ steps.install-java.outputs.version }}
@@ -52,26 +52,37 @@ outputs:
 runs:
   using: "composite"
   steps:
-    - uses: ./.github/actions/find-nextflow-version
-      id: find-nextflow-version
-      with:
-        version: ${{ inputs.version }}
-        java-version: ${{ inputs.java-version }}
-        token: ${{ github.token }}
+    - id: find-nextflow-version
+      run: "${{ github.action_path }}/src/find-nextflow-version.py"
+      shell: "bash"
+      env:
+        INPUT_VERSION: ${{ inputs.version }}
+        INPUT_JAVA_VERSION: ${{ inputs.java-version }}
+        GITHUB_TOKEN: ${{ github.token }}
     - uses: actions/setup-java@1d018f9b8b9b505bb578a83b230fabcce01af93b
       id: install-java
       with:
         java-version: ${{ steps.find-nextflow-version.outputs.java-version }}
         distribution: ${{ inputs.java-distribution }}
-    - uses: ./.github/actions/install-nextflow
-      id: install-nextflow
+    - uses: actions/cache@v5
+      id: jar-cache
       with:
-        version: ${{ steps.find-nextflow-version.outputs.nextflow-version }}
-    - uses: ./.github/actions/add-secrets
-      id: add-secrets
-      with:
-        path: ${{ steps.install-nextflow.outputs.path }}
-        secrets: ${{ inputs.secrets }}
+        key: ${{ runner.os }}-${{ runner.arch }}-nextflow-${{ steps.find-nextflow-version.outputs.version }}
+        path: |
+          ~/.nextflow/capsule
+          ~/.nextflow/framework
+          ~/.nextflow/plugins
+    - id: install-nextflow
+      run: "${{ github.action_path }}/src/install-nextflow.py"
+      shell: "bash"
+      env:
+        INPUT_VERSION: ${{ steps.find-nextflow-version.outputs.version }}
+    - id: add-nextflow-secrets
+      run: "${{ github.action_path }}/src/add-nextflow-secrets.py"
+      shell: "bash"
+      env:
+        INPUT_NEXTFLOW: ${{ steps.install-nextflow.outputs.path }}
+        INPUT_SECRETS: ${{ inputs.secrets }}
 branding:
   icon: "shuffle"
   color: "green"
