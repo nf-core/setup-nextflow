@@ -33,12 +33,8 @@ def split_version(version):
     return tuple(int(x) for x in version.strip("v").strip("-edge").split("."))
 
 
-def get_latest_version_string(stable=False):
-    """Get the latest Nextflow version number from the GitHub API
-
-    Keyword arguments:
-    stable -- Restrict the version to stable (i.e. not `-edge`) only (default False)
-    """
+def get_nextflow_releases():
+    """Gets a dictionary of the most recent Nextflow releases from the GitHub API"""
     base_url = "https://api.github.com/repos/nextflow-io/nextflow/releases"
     request = urllib.request.Request(
         base_url,
@@ -51,16 +47,23 @@ def get_latest_version_string(stable=False):
     )
 
     with urllib.request.urlopen(request) as response:
-        j_data = json.loads(response.read().decode("utf-8"))
+        return json.loads(response.read().decode("utf-8"))
 
-        # Filter releases to stable if required by the user
-        if stable:
-            releases = [
-                release["tag_name"] for release in j_data if not release["prerelease"]
-            ]
-        else:
-            releases = [release["tag_name"] for release in j_data]
-        return max(releases, key=split_version)
+
+def get_latest_version_string(release_data, stable=False):
+    """Get the latest Nextflow version number from the GitHub API
+
+    Keyword arguments:
+    stable -- Restrict the version to stable (i.e. not `-edge`) only (default False)
+    """
+    # Filter releases to stable if required by the user
+    if stable:
+        releases = [
+            release["tag_name"] for release in release_data if not release["prerelease"]
+        ]
+    else:
+        releases = [release["tag_name"] for release in release_data]
+    return max(releases, key=split_version)
 
 
 def github_output(key, val):
@@ -101,7 +104,9 @@ def java_version(nextflow_version):
 # version
 
 if VERSION == "stable" or VERSION == "edge":
-    nv = get_latest_version_string(stable=(VERSION == "stable"))
+    nv = get_latest_version_string(
+        get_nextflow_releases(), stable=(VERSION == "stable")
+    )
 else:
     nv = VERSION
 
