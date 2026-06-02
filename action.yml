@@ -1,19 +1,17 @@
 name: "Setup Nextflow"
-description: "Install Nextflow and add it to the PATH"
+description: |
+  Install Nextflow and its dependencies into a GitHub Actions environment, cache
+  the installation, and add it to the PATH
 author: "nf-core"
 inputs:
   version:
     description: "The Nextflow version to download (if necessary) and use. Example: 21.10.3"
     required: false
-    default: "latest-stable"
-  all:
-    description: "Whether to install every Nextflow release via the '-all' distribution."
-    required: false
-    default: "false"
+    default: "stable"
   java-version:
     description: "The Java version to install as the required dependency of Nextflow. Passed to the underlying setup-java action."
     required: false
-    default: "17"
+    default: ""
   java-distribution:
     description: "The Java distribution to install as the required dependency of Nextflow. Passed to the underlying setup-java action."
     required: false
@@ -22,20 +20,69 @@ inputs:
     description: "Nextflow secrets to set, in KEY=VALUE format (one per line). See README for usage."
     required: false
     default: ""
+outputs:
+  version:
+    description: The version of Nextflow that has been installed
+    value: ${{ steps.install-nextflow.outputs.version }}
+  path:
+    description: The path to where the Nextflow executable has been installed
+    value: ${{ steps.install-nextflow.outputs.path }}
+  tool-cache-hit:
+    description: |
+      A boolean value to indicate an exact match was found in the tool cache
+      for this version of Nextflow
+    value: ${{ steps.install-nextflow.outputs.cache-hit }}
+  cache-hit:
+    description: |
+      A boolean value to indicate an exact match was found in the JAR capsule
+      cache for this version of Nextflow
+    value: ${{ steps.jar-cache.outputs.cache-hit }}
+  java-version:
+    description: "Actual version of the Java environment that has been installed"
+    value: ${{ steps.install-java.outputs.version }}
+  java-distribution:
+    description: "Distribution of Java that has been installed"
+    value: ${{ steps.install-java.outputs.distribution }}
+  java-path:
+    description: "Path to where the Java environment has been installed (same as $JAVA_HOME)"
+    value: ${{ steps.install-java.outputs.path }}
+  java-cache-hit:
+    description: "A boolean value to indicate an exact match was found for the Java install primary key"
+    value: ${{ steps.install-java.outputs.cache-hit }}
 runs:
   using: "composite"
   steps:
-    - uses: actions/setup-java@1d018f9b8b9b505bb578a83b230fabcce01af93b
-      with:
-        java-version: ${{ inputs.java-version }}
-        distribution: ${{ inputs.java-distribution }}
-    - name: Install Nextflow
-      shell: bash
+    - id: find-nextflow-version
+      run: "${{ github.action_path }}/src/find-nextflow-version.py"
+      shell: "bash"
       env:
         INPUT_VERSION: ${{ inputs.version }}
-        INPUT_ALL: ${{ inputs.all }}
+        INPUT_JAVA_VERSION: ${{ inputs.java-version }}
+        GITHUB_TOKEN: ${{ github.token }}
+    - uses: actions/setup-java@1d018f9b8b9b505bb578a83b230fabcce01af93b
+      id: install-java
+      with:
+        java-version: ${{ steps.find-nextflow-version.outputs.java-version }}
+        distribution: ${{ inputs.java-distribution }}
+    - uses: actions/cache@v5
+      id: jar-cache
+      with:
+        key: ${{ runner.os }}-${{ runner.arch }}-nextflow-${{ steps.find-nextflow-version.outputs.version }}
+        path: |
+          ~/.nextflow/capsule
+          ~/.nextflow/framework
+          ~/.nextflow/plugins
+    - id: install-nextflow
+      run: "${{ github.action_path }}/src/install-nextflow.py"
+      shell: "bash"
+      env:
+        INPUT_VERSION: ${{ steps.find-nextflow-version.outputs.version }}
+    - id: add-nextflow-secrets
+      run: "${{ github.action_path }}/src/add-nextflow-secrets.py"
+      shell: "bash"
+      env:
+        INPUT_NEXTFLOW: ${{ steps.install-nextflow.outputs.path }}
         INPUT_SECRETS: ${{ inputs.secrets }}
-      run: node ${{ github.action_path }}/dist/index.js
 branding:
   icon: "shuffle"
   color: "green"

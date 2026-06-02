@@ -19,47 +19,26 @@ jobs:
       fail-fast: false
       matrix:
         nextflow_version:
-          - "21.10.3"
-          - "22.04"
-          - "22.03.1-edge"
-          - "24.10.1"
-          - "latest"
-          - "latest-stable"
-          - "latest-edge"
-          - "latest-everything"
-        all_distribution:
-          - true
-          - false
+          - "stable"
+          - "edge"
+          - "18.10.1" # This is the oldest version we support
+          - "24.10.6" # This is on one side of the Java version switch
+          - "24.11.0-edge" # This is on the other side
 
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
-      - uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6
-        with:
-          node-version: 24
-          cache: "npm"
-      - run: npm ci
-      - run: npm run build
-      - run: npm run package
       - uses: ./
         with:
           version: ${{ matrix.nextflow_version }}
-          all: ${{ matrix.all_distribution }}
       - run: nextflow -v
 
   example-secrets:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
-      - uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6
-        with:
-          node-version: 24
-          cache: "npm"
-      - run: npm ci
-      - run: npm run build
-      - run: npm run package
       - uses: ./
         with:
-          version: "latest-stable"
+          version: "stable"
           secrets: |
             MY_TEST_SECRET=hello_world
             ANOTHER_SECRET=foo_bar
@@ -73,17 +52,5 @@ jobs:
     steps:
       - uses: easimon/maximize-build-space@fc881a613ad2a34aca9c9624518214ebc21dfc0c # v10
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
-      - uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6
-        with:
-          node-version: 24
-          cache: "npm"
-      - run: npm ci
-      - run: npm run build
-      - run: npm run package
-      - uses: actions/setup-java@be666c2fcd27ec809703dec50e508c2fdc7f6654 # v5
-        if: ${{ env.ACT}}
-        with:
-          java-version: 21
-          distribution: temurin
       - uses: ./
       - run: nextflow -v
