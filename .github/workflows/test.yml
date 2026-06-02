@@ -1,0 +1,32 @@
+name: "Run tests"
+
+on:
+  push:
+    branches:
+      - master
+      # https://docs.renovatebot.com/key-concepts/automerge/#branch-vs-pr-automerging
+      - "renovate/**" # branches Renovate creates
+  pull_request:
+  workflow_dispatch:
+  release:
+    types: [published]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
+      - uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405 # v5
+      - run: pip install coverage
+      # Add files with doctests to this list as needed
+      - run: |
+          coverage run --branch --source=.github/actions -m doctest \
+                      .github/actions/find-nextflow-version/entrypoint.py \
+                      -v
+      - run: coverage report
+      - run: coverage xml
+      - uses: codecov/codecov-action@e79a6962e0d4c0c17b229090214935d2e33f8354 # v6
+        with:
+          files: coverage.xml
+        env:
+          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}

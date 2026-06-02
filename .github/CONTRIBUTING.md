@@ -89,6 +89,20 @@ If you'd like to write some code for nf-core/setup-nextflow, the standard workfl
 
 If you're not used to this workflow with git, you can start with some [docs from GitHub](https://help.github.com/en/github/collaborating-with-issues-and-pull-requests) or even their [excellent `git` resources](https://try.github.io/).
 
+## Unit Tests
+
+Unit tests of deterministic Python functions are written using [Python doctests](https://docs.python.org/3/library/doctest.html). When adding new code, please try to consider if you can isolate the logic (`if` statements and flow) from the environment (API calls, file writes, etc.), and write doctests for the logic functions.
+
+Execute doctests with the following command for each testable script file:
+
+```bash
+python -m doctest ./path/to/script/file.py -v
+```
+
+Some files do not contain unit tests, as we do not implement stubs/mocks/etc. for testing non-deterministic code.
+
+When you create a pull request with changes, [GitHub Actions](https://github.com/features/actions) will run automatic tests. Typically, pull-requests are only fully reviewed when these tests are passing, though of course we can help out before then.
+
 ## Integration Tests
 
 A mock workflow is contained with the [workflows/example.yml](../.github/workflows/example.yml) that can be used to test the end result of the GitHub Action within a GitHub Action-like environment.
