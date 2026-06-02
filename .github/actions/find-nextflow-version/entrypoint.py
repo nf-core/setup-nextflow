@@ -79,7 +79,17 @@ def github_output(key, val):
 
 
 def java_version(nextflow_version):
-    """Returns the Java version compatible with this version of Nextflow"""
+    """Returns the Java version compatible with this version of Nextflow
+
+    >>> java_version("v25.10.1")
+    '25'
+
+    >>> java_version("v25.04.1")
+    '17'
+
+    >>> java_version("v22.04.0")
+    '8'
+    """
     # Based on parsing every version of Nextflow, versions v18.10.1-v24.10.6 are
     # compatible with Java 8, while Nextflow v24.11.0-edge and above require
     # Java 17. HOWEVER, testing reveals that the version messages within the
