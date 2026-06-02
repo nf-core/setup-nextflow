@@ -148,3 +148,10 @@ github_env("CAPSULE_LOG", "none")
 # If the cache has been hit, then this step will run instantly, as
 # the Java files will already have been restored
 subprocess.run([f"{cache_dir}/nextflow", "-version"])
+
+# Note: no `main()` function is implemented here and no doctests are written
+# here because is intentionally non-functional and non-deterministic.
+# Technically mocks and stubs could be used, but that would increase the
+# complexity of this simple action, and would only really test if our mocks and
+# stubs are working properly. In other words, I am allergic to mocks and stubs
+# after watching Gary Bernhardt's talk "Boundaries."
