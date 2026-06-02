@@ -1,15 +1,7 @@
 #!/usr/bin/env python
 import json
 import os
-import urllib.parse
 import urllib.request
-
-# Required parameters are specified with os.environ
-# JAVA_VERSION can be empty, so allow it to be None with os.environ.get
-GITHUB_TOKEN = os.environ["GITHUB_TOKEN"]
-GITHUB_OUTPUT = os.environ["GITHUB_OUTPUT"]
-VERSION = os.environ["INPUT_VERSION"]
-JAVA_VERSION = os.environ.get("INPUT_JAVA_VERSION")
 
 
 def split_version(version):
@@ -33,7 +25,7 @@ def split_version(version):
     return tuple(int(x) for x in version.strip("v").strip("-edge").split("."))
 
 
-def get_nextflow_releases():
+def get_nextflow_releases(token):
     """Gets a dictionary of the most recent Nextflow releases from the GitHub API"""
     base_url = "https://api.github.com/repos/nextflow-io/nextflow/releases"
     request = urllib.request.Request(
@@ -41,7 +33,7 @@ def get_nextflow_releases():
         method="GET",
         headers={
             "Accept": "application/vnd.github+json",
-            "Authorization": f"Bearer {GITHUB_TOKEN}",
+            "Authorization": f"Bearer {token}",
             "X-GitHub-Api-Version": "2026-03-10",
         },
     )
@@ -68,17 +60,13 @@ def get_latest_version_string(release_data, stable=False):
 
 def github_output(key, val):
     """Writes a key-value pair to GitHub Actions output"""
+    GITHUB_OUTPUT = os.environ["GITHUB_OUTPUT"]
     with open(GITHUB_OUTPUT, "a") as f:
         f.write(f"{key}={val}\n")
 
 
 def java_version(nextflow_version):
     """Returns the Java version compatible with this version of Nextflow"""
-    # If the user specified a Java version, then we will go with their judgement
-    # and skip this check
-    if JAVA_VERSION:
-        return JAVA_VERSION
-
     # Based on parsing every version of Nextflow, versions v18.10.1-v24.10.6 are
     # compatible with Java 8, while Nextflow v24.11.0-edge and above require
     # Java 17. HOWEVER, testing reveals that the version messages within the
@@ -102,14 +90,31 @@ def java_version(nextflow_version):
 # It is important to note that this version of the action drops support for the
 # all/dist versions of Nextflow, and also drops support for the "latest-edge"
 # version
+def main():
+    # Required parameters are specified with os.environ
+    # JAVA_VERSION can be empty, so allow it to be None with os.environ.get
+    GITHUB_TOKEN = os.environ["GITHUB_TOKEN"]
+    VERSION = os.environ["INPUT_VERSION"]
+    JAVA_VERSION = os.environ.get("INPUT_JAVA_VERSION")
 
-if VERSION == "stable" or VERSION == "edge":
-    nv = get_latest_version_string(
-        get_nextflow_releases(), stable=(VERSION == "stable")
-    )
-else:
-    nv = VERSION
+    if VERSION == "stable" or VERSION == "edge":
+        nv = get_latest_version_string(
+            get_nextflow_releases(GITHUB_TOKEN), stable=(VERSION == "stable")
+        )
+    else:
+        nv = VERSION
 
-jv = java_version(nv)
-github_output("version", nv)
-github_output("java-version", jv)
+    # If the user specified a Java version, then we will go with their judgement
+    # and skip this check
+    if not JAVA_VERSION:
+        jv = java_version(nv)
+    else:
+        jv = JAVA_VERSION
+
+    github_output("version", nv)
+    github_output("java-version", jv)
+
+
+# Only execute if this is being run as a script (i.e. not for doctests)
+if __name__ == "__main__":
+    main()
