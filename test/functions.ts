@@ -117,6 +117,10 @@ test("Unpadded complete version resolves without metadata", async t => {
   const release = await get_nextflow_release("26.4.0", [])
 
   t.is(release.version, "v26.04.0")
+  t.is(
+    release.downloadUrlAll,
+    "https://github.com/nextflow-io/nextflow/releases/download/v26.04.0/nextflow-26.04.0-dist"
+  )
 })
 
 test("Legacy release uses all archive", async t => {
@@ -126,6 +130,19 @@ test("Legacy release uses all archive", async t => {
     release.downloadUrlAll,
     "https://github.com/nextflow-io/nextflow/releases/download/v24.04.4/nextflow-24.04.4-all"
   )
+})
+
+test("Stable releases use dist archive from 24.10.0", async t => {
+  const release = await get_nextflow_release("24.10.0", [])
+
+  t.is(
+    release.downloadUrlAll,
+    "https://github.com/nextflow-io/nextflow/releases/download/v24.10.0/nextflow-24.10.0-dist"
+  )
+})
+
+test("Three-digit minor version is not treated as exact", t => {
+  t.false(isExactVersion("26.100.0"))
 })
 
 test("Edge releases use all archive before 24.07.0-edge", async t => {

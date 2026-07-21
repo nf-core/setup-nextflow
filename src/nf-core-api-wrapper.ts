@@ -1,8 +1,10 @@
-import { info } from "@actions/core"
+import { getInput, info } from "@actions/core"
 import { downloadTool } from "@actions/tool-cache"
 import retry from "async-retry"
 import { readFileSync } from "fs"
+import semver from "semver"
 
+import { isExactVersion, releaseFromExactVersion } from "./functions.js"
 import { NextflowRelease } from "./nextflow-release.js"
 
 const MALFORMED_METADATA_ERROR =
@@ -11,6 +13,14 @@ const EMPTY_VERSIONS_ERROR =
   "The nf-co.re/nextflow_version endpoint returned no versions. Partial version aliases require this metadata; use a fully specified version such as 26.04.0 instead."
 const INVALID_LATEST_ERROR =
   "The nf-co.re/nextflow_version endpoint returned malformed metadata: missing or invalid 'latest' entries."
+
+const NEXTFLOW_METADATA_URL = "https://nf-co.re/nextflow_version"
+const GITHUB_RELEASES_URL =
+  "https://api.github.com/repos/nextflow-io/nextflow/releases"
+const GITHUB_RELEASES_PAGE_SIZE = 100
+const GITHUB_RELEASES_PAGE_LIMIT = 5
+const GITHUB_RELEASES_ERROR =
+  "The GitHub Nextflow releases endpoint returned malformed data."
 
 export interface NextflowVersionsPayload {
   versions: NextflowRelease[]
@@ -88,7 +98,7 @@ export function parse_nextflow_versions_payload(
 }
 
 function get_latest_from_map(
-  latest: Record<string, NextflowRelease>,
+  latest: Record<string, unknown>,
   flavor: string
 ): NextflowRelease {
   const release = latest[flavor]
@@ -108,32 +118,125 @@ export function get_latest_from_payload(
   return get_latest_from_map(payload.latest, flavor)
 }
 
-async function fetch_nextflow_versions_data(): Promise<unknown> {
-  // Occasionally the connection is reset for unknown reasons
-  // In those cases, retry the download
-  const versionsFile = await retry(
+type Downloader = (_url: string, _auth?: string) => Promise<string>
+
+let download_json: Downloader = async (url, auth) => {
+  const response_file = await retry(
     async () => {
-      return await downloadTool("https://nf-co.re/nextflow_version")
+      return downloadTool(url, undefined, auth)
     },
     {
       retries: 5,
       onRetry: (err: Error) => {
-        info(`Download of versions.json failed, trying again. Error: ${err}`)
+        info(`Download of ${url} failed, trying again. Error: ${err}`)
       }
     }
   )
+  return readFileSync(response_file).toString()
+}
+
+// Test-only seam: tests call this to stub network downloads, and restore
+// the previous downloader (returned) in a `finally` block.
+export function set_downloader(downloader: Downloader): Downloader {
+  const previous = download_json
+  download_json = downloader
+  return previous
+}
+
+async function fetch_json(
+  url: string,
+  error_message: string,
+  auth?: string
+): Promise<unknown> {
+  const body = await download_json(url, auth)
 
   try {
-    return JSON.parse(readFileSync(versionsFile).toString())
+    return JSON.parse(body)
   } catch {
-    throw new Error(MALFORMED_METADATA_ERROR)
+    throw new Error(error_message)
   }
+}
+
+async function fetch_nextflow_versions_data(): Promise<unknown> {
+  return await fetch_json(NEXTFLOW_METADATA_URL, MALFORMED_METADATA_ERROR)
+}
+
+function github_auth_token(): string | undefined {
+  const token = getInput("token")
+  return token ? `Bearer ${token}` : undefined
+}
+async function get_github_releases(): Promise<NextflowRelease[]> {
+  const releases: NextflowRelease[] = []
+
+  for (let page = 1; page <= GITHUB_RELEASES_PAGE_LIMIT; page++) {
+    const raw = await fetch_json(
+      `${GITHUB_RELEASES_URL}?per_page=${String(GITHUB_RELEASES_PAGE_SIZE)}&page=${String(page)}`,
+      GITHUB_RELEASES_ERROR,
+      github_auth_token()
+    )
+    if (!Array.isArray(raw)) {
+      throw new Error(GITHUB_RELEASES_ERROR)
+    }
+
+    for (const release of raw) {
+      if (!is_record(release) || typeof release.tag_name !== "string") {
+        throw new Error(GITHUB_RELEASES_ERROR)
+      }
+      if (isExactVersion(release.tag_name)) {
+        releases.push(releaseFromExactVersion(release.tag_name))
+      }
+    }
+
+    if (raw.length < GITHUB_RELEASES_PAGE_SIZE) {
+      break
+    }
+  }
+
+  if (releases.length === 0) {
+    throw new Error(GITHUB_RELEASES_ERROR)
+  }
+
+  return releases.sort((left, right) =>
+    semver.rcompare(left.version, right.version, true)
+  )
+}
+
+async function get_github_latest_nextflow_version(
+  flavor: string
+): Promise<NextflowRelease> {
+  const releases = await get_github_releases()
+  let matching_releases: NextflowRelease[]
+  switch (flavor) {
+    case "stable":
+      matching_releases = releases.filter(release => !release.isEdge)
+      break
+    case "edge":
+      matching_releases = releases.filter(release => release.isEdge)
+      break
+    case "everything":
+      matching_releases = releases
+      break
+    default:
+      matching_releases = []
+  }
+
+  if (matching_releases.length === 0) {
+    throw new Error(
+      `The GitHub Nextflow releases endpoint has no latest-${flavor} entry.`
+    )
+  }
+
+  return matching_releases[0]
 }
 
 export async function get_nextflow_versions(): Promise<NextflowRelease[]> {
   const raw = await fetch_nextflow_versions_data()
   if (!is_record(raw)) {
     throw new Error(MALFORMED_METADATA_ERROR)
+  }
+
+  if (Array.isArray(raw.versions) && raw.versions.length === 0) {
+    return await get_github_releases()
   }
 
   return parse_versions_list(raw.versions)
@@ -146,6 +249,13 @@ export async function get_latest_nextflow_version(
   if (!is_record(raw)) {
     throw new Error(MALFORMED_METADATA_ERROR)
   }
+  if (!is_record(raw.latest)) {
+    throw new Error(INVALID_LATEST_ERROR)
+  }
 
-  return get_latest_from_map(parse_latest_map(raw.latest), flavor)
+  if (Object.hasOwn(raw.latest, flavor)) {
+    return get_latest_from_map(raw.latest, flavor)
+  }
+
+  return await get_github_latest_nextflow_version(flavor)
 }
