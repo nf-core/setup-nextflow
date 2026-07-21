@@ -1,0 +1,19 @@
+id: require-js-extension-relative-import
+language: TypeScript
+severity: error
+files:
+  - src/**/*.ts
+  - test/**/*.ts
+message: Relative imports must include the .js extension.
+note: TypeScript emits ESM; keep relative module specifiers executable by Node.js.
+rule:
+  all:
+    - kind: string
+    - regex: ^["']\.\.?/
+    - not:
+        regex: \.js["']$
+    - inside:
+        any:
+          - kind: import_statement
+          - kind: export_statement
+        stopBy: end
