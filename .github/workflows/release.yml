@@ -63,9 +63,11 @@ jobs:
           git commit -m "build: add dist for ${VERSION}"
           git tag "${VERSION}"
           MAJOR="$(echo "${VERSION}" | grep -oE '^v[0-9]+')"
+          MINOR="$(echo "${VERSION}" | grep -oE '^v[0-9]+\.[0-9]+')"
           git tag -f "${MAJOR}"
+          git tag -f "${MINOR}"
           git push origin "refs/tags/${VERSION}"
-          git push -f origin "refs/tags/${MAJOR}"
+          git push -f origin "refs/tags/${MAJOR}" "refs/tags/${MINOR}"
 
       - name: Publish GitHub Release
         env:

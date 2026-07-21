@@ -90,44 +90,20 @@ to have these tools fix the code formatting for you.
 
 GitHub Actions does not have an automated system for building and releasing actions written in TypeScript.[^1]
 Technically speaking, a published GitHub action is not actually a package, but simply a git reference to a complete JavaScript execution tree with an `action.yml` file.
-As such, the process for releasing a new version of `nf-core/setup-nextflow` is as follows:
+`master` is source-only: `dist/` is not committed there. The bundle is built at release time by the [Release workflow](workflows/release.yml), which creates a release commit carrying `dist/` and points the version tags at it.
 
-1. Clone the `nf-core/setup-nextflow` repository locally - releases cannot be made from a fork
-2. Bump the version number within `CHANGELOG.md`, `package.json`, and `package-lock.json`
-3. Commit those changes to a branch of the name `release/vX.Y.Z`
-4. Push that branch to GitHub (`git push -u origin release/vX.Y.Z`) and merge as a regular pull request
-5. Back in the local repo, ensure you still have the `release/vX.Y.Z` branch checked out
-6. Checkout an orphan branch of the name `build/vX.Y.Z` (`git checkout --orphan build/vX.Y.Z`). All changes will be untracked and unstaged.
-7. Run `npm ci` and `npm run all`
-8. Commit the following files/directories:
-   - dist
-   - docs
-   - subaction
-   - CHANGELOG.md
-   - LICENSE
-   - README.md
-   - action.yml
-9. Delete all untracked files
-10. Remove major and major.minor version tags for this version from the remote repository
-    ```bash
-    git push origin :vX
-    git push origin :vX.Y
-    ```
-11. Tag the current commit with the major, major.minor, and major.minor.patch semantic versions. If git prompts you for a tag message, use the full major.minor.patch version string.
-    ```bash
-    git tag vX
-    git tag vX.Y
-    git tag vX.Y.Z
-    ```
-12. Push the tags to GitHub (`git push --tags`)
-13. (Optional) In the GitHub interface, create a [release](https://github.com/nf-core/setup-nextflow/releases) assigned to the tag with content copied from the CHANGELOG, and ensure it is published to the GitHub Marketplace
-14. Delete the release and build branch within the local repo
-    ```bash
-    git checkout master
-    git pull
-    git branch -d release/vX.Y.Z
-    git branch -D build/vX.Y.Z
-    ```
+The process for releasing a new version of `nf-core/setup-nextflow` is as follows:
+
+1. Bump the version number within `CHANGELOG.md`, `package.json`, and `package-lock.json` on a branch, and merge it to `master` as a regular pull request
+2. In the GitHub interface, go to **Actions → Release → Run workflow**, leave the branch set to `master`, and enter the full version string (e.g. `vX.Y.Z`)
+3. The workflow then:
+   - builds and smoke-tests `dist/` from `master` source
+   - creates a release commit containing `dist/` (this commit lives only on the tags, not on `master`)
+   - tags it with `vX.Y.Z` and force-moves the floating `vX` and `vX.Y` tags to it
+   - publishes the [GitHub release](https://github.com/nf-core/setup-nextflow/releases) with generated notes
+4. Edit the published release to copy content from the `CHANGELOG` and ensure it is published to the GitHub Marketplace
+
+Because `dist/` only exists on release tags, `@master` is not a usable action ref; consumers must pin a version tag such as `@vX`.
 
 ## Getting help
 
