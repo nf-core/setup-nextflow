@@ -10,9 +10,11 @@
     "format:check": "prettier --check '**/*.{ts,js,yml,md,json}'",
     "lint": "eslint {src,test}/**/*.ts",
     "lint:fix": "eslint --fix {src,test}/**/*.ts",
+    "ast-grep:test": "ast-grep test --skip-snapshot-tests",
+    "ast-grep:scan": "ast-grep scan",
     "package": "ncc build src/main.ts --source-map --license LICENSE",
     "test": "c8 --reporter=lcov ava",
-    "all": "npm run build && npm run format && npm run lint && npm run package && npm test",
+    "all": "npm run build && npm run format && npm run lint && npm run ast-grep:test && npm run ast-grep:scan && npm run package && npm test",
     "prepare": "husky"
   },
   "repository": {
@@ -47,6 +49,7 @@
     "semver": "^7.7.4"
   },
   "devDependencies": {
+    "@ast-grep/cli": "0.44.1",
     "@ava/typescript": "6.0.0",
     "@tsconfig/node22": "22.0.5",
     "@types/async-retry": "1.4.9",

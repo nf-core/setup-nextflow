@@ -24,6 +24,8 @@ jobs:
       - run: npm run build
       - run: npm run format:check
       - run: npm run lint
+      - run: npm run ast-grep:test
+      - run: npm run ast-grep:scan
       - run: npm run package
       - name: Check dist is up to date
         run: |
