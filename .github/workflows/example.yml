@@ -8,8 +8,6 @@ on:
       - "renovate/**" # branches Renovate creates
   pull_request:
   workflow_dispatch:
-  release:
-    types: [published]
 
 jobs:
   example-usage:

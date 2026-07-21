@@ -135,3 +135,6 @@ lib/**/*
 # Testing garbage
 .tmp
 nxf-v*
+
+# Built action bundle (generated at release time by release.yml)
+dist/

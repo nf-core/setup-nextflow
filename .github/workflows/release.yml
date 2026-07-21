@@ -1,0 +1,78 @@
+name: Release
+
+# Dispatch-driven release: builds dist/ from master source, creates a
+# release commit containing dist/, then creates the version tag, moves
+# the floating major tag (v2), and publishes the GitHub Release — all
+# pointing at the commit that actually carries the bundle.
+#
+# master stays source-only. Users consume @v2 / @vX.Y.Z tags.
+# NOTE: @master is not usable as an action ref since dist/ is not
+# committed to master. README documents @v2 only.
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "Release version (e.g. v2.1.0)"
+        required: true
+
+permissions:
+  contents: write
+
+concurrency:
+  group: release
+  cancel-in-progress: false
+
+jobs:
+  build-tag-release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Validate inputs
+        env:
+          VERSION: ${{ inputs.version }}
+        run: |
+          # Releases must be cut from master
+          [ "${GITHUB_REF}" = "refs/heads/master" ]
+          echo "${VERSION}" | grep -qE '^v[0-9]+\.[0-9]+\.[0-9]+$'
+
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7
+        with:
+          ref: master
+
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7
+        with:
+          node-version: 24
+          cache: "npm"
+
+      - run: npm ci
+      - run: npm run build
+      - run: npm run package
+
+      - name: Smoke test the bundle
+        run: |
+          test -f dist/index.js
+          node --check dist/index.js
+
+      - name: Create release commit and tags
+        env:
+          VERSION: ${{ inputs.version }}
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -f dist/
+          git commit -m "build: add dist for ${VERSION}"
+          git tag "${VERSION}"
+          MAJOR="$(echo "${VERSION}" | grep -oE '^v[0-9]+')"
+          git tag -f "${MAJOR}"
+          git push origin "refs/tags/${VERSION}"
+          git push -f origin "refs/tags/${MAJOR}"
+
+      - name: Publish GitHub Release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          VERSION: ${{ inputs.version }}
+        run: |
+          gh release create "${VERSION}" \
+            --target "$(git rev-parse HEAD)" \
+            --title "${VERSION}" \
+            --generate-notes
