@@ -1,0 +1,46 @@
+name: "Setup Nextflow"
+description: "Install Nextflow and add it to the PATH"
+author: "nf-core"
+inputs:
+  version:
+    description: "The Nextflow version to download (if necessary) and use. Example: 21.10.3"
+    required: false
+    default: "latest-stable"
+  all:
+    description: "Whether to install every Nextflow release via the '-all' distribution."
+    required: false
+    default: "false"
+  java-version:
+    description: "The Java version to install as the required dependency of Nextflow. Passed to the underlying setup-java action."
+    required: false
+    default: "17"
+  java-distribution:
+    description: "The Java distribution to install as the required dependency of Nextflow. Passed to the underlying setup-java action."
+    required: false
+    default: "temurin"
+  secrets:
+    description: "Nextflow secrets to set, in KEY=VALUE format (one per line). See README for usage."
+    required: false
+    default: ""
+  token:
+    description: "GitHub token used to resolve Nextflow version aliases."
+    required: false
+    default: ${{ github.token }}
+runs:
+  using: "composite"
+  steps:
+    - uses: actions/setup-java@1d018f9b8b9b505bb578a83b230fabcce01af93b
+      with:
+        java-version: ${{ inputs.java-version }}
+        distribution: ${{ inputs.java-distribution }}
+    - name: Install Nextflow
+      shell: bash
+      env:
+        INPUT_VERSION: ${{ inputs.version }}
+        INPUT_ALL: ${{ inputs.all }}
+        INPUT_SECRETS: ${{ inputs.secrets }}
+        INPUT_TOKEN: ${{ inputs.token }}
+      run: node ${{ github.action_path }}/dist/index.js
+branding:
+  icon: "shuffle"
+  color: "green"
