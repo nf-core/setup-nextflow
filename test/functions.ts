@@ -1,7 +1,11 @@
 import test from "ava"
 import { execSync } from "child_process"
 
-import { get_nextflow_release, install_nextflow } from "../src/functions.js"
+import {
+  get_nextflow_release,
+  install_nextflow,
+  isExactVersion
+} from "../src/functions.js"
 import { NextflowRelease } from "../src/nextflow-release.js"
 
 // The Nextflow releases we are going to use for testing follow a regular
@@ -95,7 +99,7 @@ test(
   false
 )
 
-test.failing("Exact version resolves without metadata", async t => {
+test("Exact version resolves without metadata", async t => {
   const release = await get_nextflow_release("26.04.0", [])
 
   t.is(release.version, "v26.04.0")
@@ -103,9 +107,18 @@ test.failing("Exact version resolves without metadata", async t => {
     release.downloadUrl,
     "https://github.com/nextflow-io/nextflow/releases/download/v26.04.0/nextflow"
   )
+  t.is(
+    release.downloadUrlAll,
+    "https://github.com/nextflow-io/nextflow/releases/download/v26.04.0/nextflow-26.04.0-all"
+  )
 })
 
-test.failing("Partial version throws when metadata is empty", async t => {
+test("Exact version spellings are case-sensitive", t => {
+  t.false(isExactVersion("V26.04.0"))
+  t.false(isExactVersion("26.04.0-EDGE"))
+})
+
+test("Partial version throws when metadata is empty", async t => {
   const error = await t.throwsAsync(async () => {
     await get_nextflow_release("v21.04", [])
   })
