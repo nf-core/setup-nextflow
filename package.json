@@ -11,7 +11,7 @@
     "lint": "eslint {src,test}/**/*.ts",
     "lint:fix": "eslint --fix {src,test}/**/*.ts",
     "package": "ncc build src/main.ts --source-map --license LICENSE",
-    "test": "c8 --reporter=lcov ava",
+    "test": "vitest run --coverage",
     "all": "npm run build && npm run format && npm run lint && npm run package && npm test",
     "prepare": "husky"
   },
@@ -25,17 +25,6 @@
     "setup"
   ],
   "author": "nf-core",
-  "ava": {
-    "environmentVariables": {
-      "RUNNER_TEMP": "./.tmp"
-    },
-    "files": [
-      "lib/test/**/*.js"
-    ],
-    "concurrency": 1,
-    "serial": true,
-    "timeout": "120s"
-  },
   "license": "MIT",
   "dependencies": {
     "@actions/core": "^3.0.0",
@@ -47,7 +36,6 @@
     "semver": "^7.7.4"
   },
   "devDependencies": {
-    "@ava/typescript": "6.0.0",
     "@tsconfig/node22": "22.0.5",
     "@types/async-retry": "1.4.9",
     "@types/node": "24.13.3",
@@ -55,11 +43,9 @@
     "@typescript-eslint/eslint-plugin": "8.60.1",
     "@typescript-eslint/parser": "8.60.1",
     "@vercel/ncc": "0.38.4",
-    "ava": "7.0.0",
-    "c8": "11.0.0",
+    "@vitest/coverage-v8": "^4.1.10",
     "eslint": "9.39.5",
     "eslint-config-prettier": "10.1.8",
-    "eslint-plugin-ava": "15.1.0",
     "eslint-plugin-github": "6.1.1",
     "eslint-plugin-simple-import-sort": "13.0.0",
     "globals": "17.7.0",
@@ -69,7 +55,8 @@
     "ts-node": "10.9.2",
     "tsx": "4.22.4",
     "typescript": "5.9.3",
-    "typescript-eslint": "8.60.1"
+    "typescript-eslint": "8.60.1",
+    "vitest": "^4.1.10"
   },
   "lint-staged": {
     "*.{js,ts}": "eslint --cache --fix",

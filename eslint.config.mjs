@@ -1,5 +1,4 @@
 import eslint from "@eslint/js"
-import ava from "eslint-plugin-ava"
 import github from "eslint-plugin-github"
 import simpleImportSort from "eslint-plugin-simple-import-sort"
 import tseslint from "typescript-eslint"
@@ -13,19 +12,6 @@ export default tseslint.config(
   ...tseslint.configs.strictTypeChecked,
   ...tseslint.configs.stylisticTypeChecked,
   github.getFlatConfigs().recommended,
-  {
-    files: ["test/**/*.ts"],
-    plugins: {
-      ava: ava
-    },
-    rules: {
-      // Apply AVA rules except no-ignored-test-files
-      ...ava.configs["flat/recommended"].rules,
-      // Disable this rule because we run AVA on compiled JS files (lib/test/**/*.js)
-      // while ESLint analyzes the source TypeScript files (test/**/*.ts)
-      "ava/no-ignored-test-files": "off"
-    }
-  },
   {
     files: ["src/**/*.ts", "test/**/*.ts"],
     plugins: {
