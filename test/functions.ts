@@ -95,6 +95,24 @@ test(
   false
 )
 
+test.failing("Exact version resolves without metadata", async t => {
+  const release = await get_nextflow_release("26.04.0", [])
+
+  t.is(release.version, "v26.04.0")
+  t.is(
+    release.downloadUrl,
+    "https://github.com/nextflow-io/nextflow/releases/download/v26.04.0/nextflow"
+  )
+})
+
+test.failing("Partial version throws when metadata is empty", async t => {
+  const error = await t.throwsAsync(async () => {
+    await get_nextflow_release("v21.04", [])
+  })
+
+  t.regex(error.message, /No Nextflow release found matching 'v21\.04'/)
+})
+
 test("Install Nextflow", async t => {
   const release = nf_release_gen("v23.10.1")
   const install_dir = await install_nextflow(release, false)
