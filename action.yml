@@ -22,6 +22,10 @@ inputs:
     description: "Nextflow secrets to set, in KEY=VALUE format (one per line). See README for usage."
     required: false
     default: ""
+  token:
+    description: "GitHub token used to resolve Nextflow version aliases."
+    required: false
+    default: ${{ github.token }}
 runs:
   using: "composite"
   steps:
@@ -35,6 +39,7 @@ runs:
         INPUT_VERSION: ${{ inputs.version }}
         INPUT_ALL: ${{ inputs.all }}
         INPUT_SECRETS: ${{ inputs.secrets }}
+        INPUT_TOKEN: ${{ inputs.token }}
       run: node ${{ github.action_path }}/dist/index.js
 branding:
   icon: "shuffle"

@@ -34824,7 +34824,35 @@ var lib_default = /*#__PURE__*/__nccwpck_require__.n(lib);
 
 
 
+const EXACT_VERSION_PATTERN = /^v?(\d+)\.(\d{1,2})\.(\d+)(-edge)?$/;
+function isExactVersion(version) {
+    return EXACT_VERSION_PATTERN.test(version.trim());
+}
+function releaseFromExactVersion(version) {
+    const trimmed = version.trim();
+    const match = EXACT_VERSION_PATTERN.exec(trimmed);
+    if (!match) {
+        throw new Error(`Invalid exact Nextflow version '${version}'.`);
+    }
+    const [, major, minor, patch, edge = ""] = match;
+    const tag = `v${major}.${minor.padStart(2, "0")}.${patch}${edge}`;
+    const version_without_v = tag.replace(/^v/, "");
+    const is_edge = tag.endsWith("-edge");
+    const first_dist_version = is_edge ? "24.07.0-edge" : "24.10.0";
+    const archive_suffix = semver_default().gte(version_without_v, first_dist_version, true)
+        ? "dist"
+        : "all";
+    return {
+        version: tag,
+        isEdge: is_edge,
+        downloadUrl: `https://github.com/nextflow-io/nextflow/releases/download/${tag}/nextflow`,
+        downloadUrlAll: `https://github.com/nextflow-io/nextflow/releases/download/${tag}/nextflow-${version_without_v}-${archive_suffix}`
+    };
+}
 async function get_nextflow_release(version, releases) {
+    if (isExactVersion(version)) {
+        return releaseFromExactVersion(version);
+    }
     // The releases are sent in reverse chronological order
     // If we are sent a numbered tag, then back through the list until we find
     // a release that fulfils the requested version number
@@ -34833,8 +34861,7 @@ async function get_nextflow_release(version, releases) {
             return release;
         }
     }
-    // We should never get here, but just in case
-    return {};
+    throw new Error(`No Nextflow release found matching '${version}'. Use a fully specified version such as 26.04.0, or check that the nf-co.re/nextflow_version metadata endpoint is available.`);
 }
 async function install_nextflow(release, get_all) {
     const url = get_all ? release.downloadUrlAll : release.downloadUrl;
@@ -34889,34 +34916,177 @@ function check_cache(version) {
 
 
 
-async function fetch_nextflow_versions_data() {
-    // Occasionally the connection is reset for unknown reasons
-    // In those cases, retry the download
-    const versionsFile = await lib_default()(async () => {
-        return await downloadTool("https://nf-co.re/nextflow_version");
+
+
+const MALFORMED_METADATA_ERROR = "The nf-co.re/nextflow_version endpoint returned malformed metadata.";
+const EMPTY_VERSIONS_ERROR = "The nf-co.re/nextflow_version endpoint returned no versions. Partial version aliases require this metadata; use a fully specified version such as 26.04.0 instead.";
+const INVALID_LATEST_ERROR = "The nf-co.re/nextflow_version endpoint returned malformed metadata: missing or invalid 'latest' entries.";
+const NEXTFLOW_METADATA_URL = "https://nf-co.re/nextflow_version";
+const GITHUB_RELEASES_URL = "https://api.github.com/repos/nextflow-io/nextflow/releases";
+const GITHUB_RELEASES_PAGE_SIZE = 100;
+const GITHUB_RELEASES_PAGE_LIMIT = 5;
+const GITHUB_RELEASES_ERROR = "The GitHub Nextflow releases endpoint returned malformed data.";
+function is_record(value) {
+    return typeof value === "object" && value !== null && !Array.isArray(value);
+}
+function is_nextflow_release(value) {
+    if (!is_record(value)) {
+        return false;
+    }
+    return (typeof value.version === "string" &&
+        typeof value.isEdge === "boolean" &&
+        typeof value.downloadUrl === "string" &&
+        typeof value.downloadUrlAll === "string");
+}
+function parse_versions_list(raw_versions) {
+    if (!Array.isArray(raw_versions)) {
+        throw new Error(MALFORMED_METADATA_ERROR);
+    }
+    if (raw_versions.length === 0) {
+        throw new Error(EMPTY_VERSIONS_ERROR);
+    }
+    const versions = [];
+    for (const element of raw_versions) {
+        if (!is_nextflow_release(element)) {
+            throw new Error(MALFORMED_METADATA_ERROR);
+        }
+        versions.push(element);
+    }
+    return versions;
+}
+function parse_latest_map(raw_latest) {
+    if (!is_record(raw_latest)) {
+        throw new Error(INVALID_LATEST_ERROR);
+    }
+    const latest = {};
+    for (const [flavor, release] of Object.entries(raw_latest)) {
+        if (!is_nextflow_release(release)) {
+            throw new Error(`The nf-co.re/nextflow_version endpoint returned malformed metadata for latest-${flavor}.`);
+        }
+        latest[flavor] = release;
+    }
+    return latest;
+}
+function parse_nextflow_versions_payload(raw) {
+    if (!is_record(raw)) {
+        throw new Error(MALFORMED_METADATA_ERROR);
+    }
+    return {
+        versions: parse_versions_list(raw.versions),
+        latest: parse_latest_map(raw.latest)
+    };
+}
+function get_latest_from_map(latest, flavor) {
+    const release = latest[flavor];
+    if (!is_nextflow_release(release)) {
+        throw new Error(`The nf-co.re/nextflow_version endpoint has no latest-${flavor} entry.`);
+    }
+    return release;
+}
+function get_latest_from_payload(payload, flavor) {
+    return get_latest_from_map(payload.latest, flavor);
+}
+let download_json = async (url, auth) => {
+    const response_file = await lib_default()(async () => {
+        return downloadTool(url, undefined, auth);
     }, {
         retries: 5,
         onRetry: (err) => {
-            info(`Download of versions.json failed, trying again. Error: ${err}`);
+            info(`Download of ${url} failed, trying again. Error: ${err}`);
         }
     });
-    return JSON.parse((0,external_fs_namespaceObject.readFileSync)(versionsFile).toString());
+    return (0,external_fs_namespaceObject.readFileSync)(response_file).toString();
+};
+// Test-only seam: tests call this to stub network downloads, and restore
+// the previous downloader (returned) in a `finally` block.
+function set_downloader(downloader) {
+    const previous = download_json;
+    download_json = downloader;
+    return previous;
+}
+async function fetch_json(url, error_message, auth) {
+    const body = await download_json(url, auth);
+    try {
+        return JSON.parse(body);
+    }
+    catch {
+        throw new Error(error_message);
+    }
+}
+async function fetch_nextflow_versions_data() {
+    return await fetch_json(NEXTFLOW_METADATA_URL, MALFORMED_METADATA_ERROR);
+}
+function github_auth_token() {
+    const token = getInput("token");
+    return token ? `Bearer ${token}` : undefined;
+}
+async function get_github_releases() {
+    const releases = [];
+    for (let page = 1; page <= GITHUB_RELEASES_PAGE_LIMIT; page++) {
+        const raw = await fetch_json(`${GITHUB_RELEASES_URL}?per_page=${String(GITHUB_RELEASES_PAGE_SIZE)}&page=${String(page)}`, GITHUB_RELEASES_ERROR, github_auth_token());
+        if (!Array.isArray(raw)) {
+            throw new Error(GITHUB_RELEASES_ERROR);
+        }
+        for (const release of raw) {
+            if (!is_record(release) || typeof release.tag_name !== "string") {
+                throw new Error(GITHUB_RELEASES_ERROR);
+            }
+            if (isExactVersion(release.tag_name)) {
+                releases.push(releaseFromExactVersion(release.tag_name));
+            }
+        }
+        if (raw.length < GITHUB_RELEASES_PAGE_SIZE) {
+            break;
+        }
+    }
+    if (releases.length === 0) {
+        throw new Error(GITHUB_RELEASES_ERROR);
+    }
+    return releases.sort((left, right) => semver_default().rcompare(left.version, right.version, true));
+}
+async function get_github_latest_nextflow_version(flavor) {
+    const releases = await get_github_releases();
+    let matching_releases;
+    switch (flavor) {
+        case "stable":
+            matching_releases = releases.filter(release => !release.isEdge);
+            break;
+        case "edge":
+            matching_releases = releases.filter(release => release.isEdge);
+            break;
+        case "everything":
+            matching_releases = releases;
+            break;
+        default:
+            matching_releases = [];
+    }
+    if (matching_releases.length === 0) {
+        throw new Error(`The GitHub Nextflow releases endpoint has no latest-${flavor} entry.`);
+    }
+    return matching_releases[0];
 }
 async function get_nextflow_versions() {
-    const version_dataset = await fetch_nextflow_versions_data();
-    const versions = version_dataset.versions;
-    const nextflow_releases = [];
-    for (const element of versions) {
-        const release = element;
-        nextflow_releases.push(release);
+    const raw = await fetch_nextflow_versions_data();
+    if (!is_record(raw)) {
+        throw new Error(MALFORMED_METADATA_ERROR);
     }
-    return nextflow_releases;
+    if (Array.isArray(raw.versions) && raw.versions.length === 0) {
+        return await get_github_releases();
+    }
+    return parse_versions_list(raw.versions);
 }
 async function get_latest_nextflow_version(flavor) {
-    const version_dataset = await fetch_nextflow_versions_data();
-    const latest_versions = version_dataset.latest;
-    const latest_version = latest_versions[flavor];
-    return latest_version;
+    const raw = await fetch_nextflow_versions_data();
+    if (!is_record(raw)) {
+        throw new Error(MALFORMED_METADATA_ERROR);
+    }
+    if (!is_record(raw.latest)) {
+        throw new Error(INVALID_LATEST_ERROR);
+    }
+    if (Object.hasOwn(raw.latest, flavor)) {
+        return get_latest_from_map(raw.latest, flavor);
+    }
+    return await get_github_latest_nextflow_version(flavor);
 }
 
 ;// CONCATENATED MODULE: ./src/main.ts
@@ -34939,13 +35109,16 @@ async function run() {
         return;
     }
     // Get the release info for the desired release
-    let release = {};
-    let resolved_version = "";
+    let release;
+    let resolved_version;
     try {
         if (version.includes("latest")) {
             let flavor = version.split("-")[1];
             flavor = flavor ? flavor : "stable";
             release = await get_latest_nextflow_version(flavor);
+        }
+        else if (isExactVersion(version)) {
+            release = releaseFromExactVersion(version);
         }
         else {
             const nextflow_releases = await get_nextflow_versions();
@@ -34955,9 +35128,8 @@ async function run() {
         info(`Input version '${version}' resolved to Nextflow ${release.version}`);
     }
     catch (e) {
-        if (e instanceof Error) {
-            setFailed(`Could not retrieve Nextflow release matching ${version}.\n${e.message}`);
-        }
+        setFailed(`Could not retrieve Nextflow release matching ${version}.\n${e instanceof Error ? e.message : String(e)}`);
+        return;
     }
     try {
         // Download Nextflow and add it to path

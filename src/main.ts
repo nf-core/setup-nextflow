@@ -7,7 +7,9 @@ import semver from "semver"
 import {
   check_cache,
   get_nextflow_release,
-  install_nextflow
+  install_nextflow,
+  isExactVersion,
+  releaseFromExactVersion
 } from "./functions.js"
 import { NextflowRelease } from "./nextflow-release.js"
 import {
@@ -30,27 +32,29 @@ async function run(): Promise<void> {
   }
 
   // Get the release info for the desired release
-  let release = {} as NextflowRelease
-  let resolved_version = ""
+  let release: NextflowRelease
+  let resolved_version: string
   try {
     if (version.includes("latest")) {
       let flavor = version.split("-")[1]
       flavor = flavor ? flavor : "stable"
       release = await get_latest_nextflow_version(flavor)
+    } else if (isExactVersion(version)) {
+      release = releaseFromExactVersion(version)
     } else {
       const nextflow_releases = await get_nextflow_versions()
       release = await get_nextflow_release(version, nextflow_releases)
     }
+
     resolved_version = release.version
     core.info(
       `Input version '${version}' resolved to Nextflow ${release.version}`
     )
   } catch (e: unknown) {
-    if (e instanceof Error) {
-      core.setFailed(
-        `Could not retrieve Nextflow release matching ${version}.\n${e.message}`
-      )
-    }
+    core.setFailed(
+      `Could not retrieve Nextflow release matching ${version}.\n${e instanceof Error ? e.message : String(e)}`
+    )
+    return
   }
 
   try {

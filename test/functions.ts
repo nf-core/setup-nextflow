@@ -1,7 +1,11 @@
 import test from "ava"
 import { execSync } from "child_process"
 
-import { get_nextflow_release, install_nextflow } from "../src/functions.js"
+import {
+  get_nextflow_release,
+  install_nextflow,
+  isExactVersion
+} from "../src/functions.js"
 import { NextflowRelease } from "../src/nextflow-release.js"
 
 // The Nextflow releases we are going to use for testing follow a regular
@@ -94,6 +98,83 @@ test(
   "v21.03.0-edge",
   false
 )
+
+test("Exact version resolves without metadata", async t => {
+  const release = await get_nextflow_release("26.04.0", [])
+
+  t.is(release.version, "v26.04.0")
+  t.is(
+    release.downloadUrl,
+    "https://github.com/nextflow-io/nextflow/releases/download/v26.04.0/nextflow"
+  )
+  t.is(
+    release.downloadUrlAll,
+    "https://github.com/nextflow-io/nextflow/releases/download/v26.04.0/nextflow-26.04.0-dist"
+  )
+})
+
+test("Unpadded complete version resolves without metadata", async t => {
+  const release = await get_nextflow_release("26.4.0", [])
+
+  t.is(release.version, "v26.04.0")
+  t.is(
+    release.downloadUrlAll,
+    "https://github.com/nextflow-io/nextflow/releases/download/v26.04.0/nextflow-26.04.0-dist"
+  )
+})
+
+test("Legacy release uses all archive", async t => {
+  const release = await get_nextflow_release("24.04.4", [])
+
+  t.is(
+    release.downloadUrlAll,
+    "https://github.com/nextflow-io/nextflow/releases/download/v24.04.4/nextflow-24.04.4-all"
+  )
+})
+
+test("Stable releases use dist archive from 24.10.0", async t => {
+  const release = await get_nextflow_release("24.10.0", [])
+
+  t.is(
+    release.downloadUrlAll,
+    "https://github.com/nextflow-io/nextflow/releases/download/v24.10.0/nextflow-24.10.0-dist"
+  )
+})
+
+test("Three-digit minor version is not treated as exact", t => {
+  t.false(isExactVersion("26.100.0"))
+})
+
+test("Edge releases use all archive before 24.07.0-edge", async t => {
+  const release = await get_nextflow_release("24.06.0-edge", [])
+
+  t.is(
+    release.downloadUrlAll,
+    "https://github.com/nextflow-io/nextflow/releases/download/v24.06.0-edge/nextflow-24.06.0-edge-all"
+  )
+})
+
+test("Edge releases use dist archive from 24.07.0-edge", async t => {
+  const release = await get_nextflow_release("24.07.0-edge", [])
+
+  t.is(
+    release.downloadUrlAll,
+    "https://github.com/nextflow-io/nextflow/releases/download/v24.07.0-edge/nextflow-24.07.0-edge-dist"
+  )
+})
+
+test("Exact version spellings are case-sensitive", t => {
+  t.false(isExactVersion("V26.04.0"))
+  t.false(isExactVersion("26.04.0-EDGE"))
+})
+
+test("Partial version throws when metadata is empty", async t => {
+  const error = await t.throwsAsync(async () => {
+    await get_nextflow_release("v21.04", [])
+  })
+
+  t.regex(error.message, /No Nextflow release found matching 'v21\.04'/)
+})
 
 test("Install Nextflow", async t => {
   const release = nf_release_gen("v23.10.1")
