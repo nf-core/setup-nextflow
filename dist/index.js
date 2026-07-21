@@ -34824,7 +34824,7 @@ var lib_default = /*#__PURE__*/__nccwpck_require__.n(lib);
 
 
 
-const EXACT_VERSION_PATTERN = /^v?\d+\.\d+\.\d+(-edge)?$/;
+const EXACT_VERSION_PATTERN = /^v?(\d+)\.(\d{1,2})\.(\d+)(-edge)?$/;
 function isExactVersion(version) {
     return EXACT_VERSION_PATTERN.test(version.trim());
 }
@@ -34834,14 +34834,19 @@ function releaseFromExactVersion(version) {
     if (!match) {
         throw new Error(`Invalid exact Nextflow version '${version}'.`);
     }
-    const tag = trimmed.startsWith("v") ? trimmed : `v${trimmed}`;
+    const [, major, minor, patch, edge = ""] = match;
+    const tag = `v${major}.${minor.padStart(2, "0")}.${patch}${edge}`;
     const version_without_v = tag.replace(/^v/, "");
     const is_edge = tag.endsWith("-edge");
+    const first_dist_version = is_edge ? "24.07.0-edge" : "24.10.0";
+    const archive_suffix = semver_default().gte(version_without_v, first_dist_version, true)
+        ? "dist"
+        : "all";
     return {
         version: tag,
         isEdge: is_edge,
         downloadUrl: `https://github.com/nextflow-io/nextflow/releases/download/${tag}/nextflow`,
-        downloadUrlAll: `https://github.com/nextflow-io/nextflow/releases/download/${tag}/nextflow-${version_without_v}-all`
+        downloadUrlAll: `https://github.com/nextflow-io/nextflow/releases/download/${tag}/nextflow-${version_without_v}-${archive_suffix}`
     };
 }
 async function get_nextflow_release(version, releases) {
@@ -34964,12 +34969,15 @@ function parse_nextflow_versions_payload(raw) {
         latest: parse_latest_map(raw.latest)
     };
 }
-function get_latest_from_payload(payload, flavor) {
-    const release = payload.latest[flavor];
+function get_latest_from_map(latest, flavor) {
+    const release = latest[flavor];
     if (!is_nextflow_release(release)) {
         throw new Error(`The nf-co.re/nextflow_version endpoint has no latest-${flavor} entry.`);
     }
     return release;
+}
+function get_latest_from_payload(payload, flavor) {
+    return get_latest_from_map(payload.latest, flavor);
 }
 async function fetch_nextflow_versions_data() {
     // Occasionally the connection is reset for unknown reasons
@@ -34998,8 +35006,10 @@ async function get_nextflow_versions() {
 }
 async function get_latest_nextflow_version(flavor) {
     const raw = await fetch_nextflow_versions_data();
-    const payload = parse_nextflow_versions_payload(raw);
-    return get_latest_from_payload(payload, flavor);
+    if (!is_record(raw)) {
+        throw new Error(MALFORMED_METADATA_ERROR);
+    }
+    return get_latest_from_map(parse_latest_map(raw.latest), flavor);
 }
 
 ;// CONCATENATED MODULE: ./src/main.ts

@@ -4,6 +4,7 @@ import { Readable } from "stream"
 import { NextflowRelease } from "../src/nextflow-release.js"
 import {
   get_latest_from_payload,
+  get_latest_nextflow_version,
   get_nextflow_versions,
   parse_nextflow_versions_payload
 } from "../src/nf-core-api-wrapper.js"
@@ -28,7 +29,7 @@ test("null metadata payload throws actionable error", t => {
   t.regex(error.message, /malformed metadata/)
 })
 
-test("invalid downloaded JSON throws actionable error", async t => {
+test.serial("invalid downloaded JSON throws actionable error", async t => {
   Reflect.set(global, "TEST_DOWNLOAD_TOOL_RESPONSE_MESSAGE_FACTORY", () =>
     Readable.from(["not JSON"])
   )
@@ -86,4 +87,25 @@ test("missing latest flavor throws actionable error", t => {
 
   const error = t.throws(() => get_latest_from_payload(payload, "stable"))
   t.regex(error.message, /no latest-stable entry/)
+})
+
+test.serial("latest version resolves when versions are empty", async t => {
+  Reflect.set(global, "TEST_DOWNLOAD_TOOL_RESPONSE_MESSAGE_FACTORY", () =>
+    Readable.from([
+      JSON.stringify({
+        versions: [],
+        latest: { stable: stable_release }
+      })
+    ])
+  )
+
+  try {
+    const release = await get_latest_nextflow_version("stable")
+    t.is(release.version, stable_release.version)
+  } finally {
+    Reflect.deleteProperty(
+      global,
+      "TEST_DOWNLOAD_TOOL_RESPONSE_MESSAGE_FACTORY"
+    )
+  }
 })

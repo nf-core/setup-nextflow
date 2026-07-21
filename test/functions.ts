@@ -109,7 +109,40 @@ test("Exact version resolves without metadata", async t => {
   )
   t.is(
     release.downloadUrlAll,
-    "https://github.com/nextflow-io/nextflow/releases/download/v26.04.0/nextflow-26.04.0-all"
+    "https://github.com/nextflow-io/nextflow/releases/download/v26.04.0/nextflow-26.04.0-dist"
+  )
+})
+
+test("Unpadded complete version resolves without metadata", async t => {
+  const release = await get_nextflow_release("26.4.0", [])
+
+  t.is(release.version, "v26.04.0")
+})
+
+test("Legacy release uses all archive", async t => {
+  const release = await get_nextflow_release("24.04.4", [])
+
+  t.is(
+    release.downloadUrlAll,
+    "https://github.com/nextflow-io/nextflow/releases/download/v24.04.4/nextflow-24.04.4-all"
+  )
+})
+
+test("Edge releases use all archive before 24.07.0-edge", async t => {
+  const release = await get_nextflow_release("24.06.0-edge", [])
+
+  t.is(
+    release.downloadUrlAll,
+    "https://github.com/nextflow-io/nextflow/releases/download/v24.06.0-edge/nextflow-24.06.0-edge-all"
+  )
+})
+
+test("Edge releases use dist archive from 24.07.0-edge", async t => {
+  const release = await get_nextflow_release("24.07.0-edge", [])
+
+  t.is(
+    release.downloadUrlAll,
+    "https://github.com/nextflow-io/nextflow/releases/download/v24.07.0-edge/nextflow-24.07.0-edge-dist"
   )
 })
 

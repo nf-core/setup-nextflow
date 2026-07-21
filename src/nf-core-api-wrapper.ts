@@ -87,11 +87,11 @@ export function parse_nextflow_versions_payload(
   }
 }
 
-export function get_latest_from_payload(
-  payload: NextflowVersionsPayload,
+function get_latest_from_map(
+  latest: Record<string, NextflowRelease>,
   flavor: string
 ): NextflowRelease {
-  const release = payload.latest[flavor]
+  const release = latest[flavor]
   if (!is_nextflow_release(release)) {
     throw new Error(
       `The nf-co.re/nextflow_version endpoint has no latest-${flavor} entry.`
@@ -99,6 +99,13 @@ export function get_latest_from_payload(
   }
 
   return release
+}
+
+export function get_latest_from_payload(
+  payload: NextflowVersionsPayload,
+  flavor: string
+): NextflowRelease {
+  return get_latest_from_map(payload.latest, flavor)
 }
 
 async function fetch_nextflow_versions_data(): Promise<unknown> {
@@ -136,6 +143,9 @@ export async function get_latest_nextflow_version(
   flavor: string
 ): Promise<NextflowRelease> {
   const raw = await fetch_nextflow_versions_data()
-  const payload = parse_nextflow_versions_payload(raw)
-  return get_latest_from_payload(payload, flavor)
+  if (!is_record(raw)) {
+    throw new Error(MALFORMED_METADATA_ERROR)
+  }
+
+  return get_latest_from_map(parse_latest_map(raw.latest), flavor)
 }

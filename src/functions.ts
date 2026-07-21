@@ -6,7 +6,7 @@ import semver from "semver"
 
 import { NextflowRelease } from "./nextflow-release.js"
 
-const EXACT_VERSION_PATTERN = /^v?\d+\.\d+\.\d+(-edge)?$/
+const EXACT_VERSION_PATTERN = /^v?(\d+)\.(\d{1,2})\.(\d+)(-edge)?$/
 
 export function isExactVersion(version: string): boolean {
   return EXACT_VERSION_PATTERN.test(version.trim())
@@ -19,15 +19,20 @@ export function releaseFromExactVersion(version: string): NextflowRelease {
     throw new Error(`Invalid exact Nextflow version '${version}'.`)
   }
 
-  const tag = trimmed.startsWith("v") ? trimmed : `v${trimmed}`
+  const [, major, minor, patch, edge = ""] = match
+  const tag = `v${major}.${minor.padStart(2, "0")}.${patch}${edge}`
   const version_without_v = tag.replace(/^v/, "")
   const is_edge = tag.endsWith("-edge")
+  const first_dist_version = is_edge ? "24.07.0-edge" : "24.10.0"
+  const archive_suffix = semver.gte(version_without_v, first_dist_version, true)
+    ? "dist"
+    : "all"
 
   return {
     version: tag,
     isEdge: is_edge,
     downloadUrl: `https://github.com/nextflow-io/nextflow/releases/download/${tag}/nextflow`,
-    downloadUrlAll: `https://github.com/nextflow-io/nextflow/releases/download/${tag}/nextflow-${version_without_v}-all`
+    downloadUrlAll: `https://github.com/nextflow-io/nextflow/releases/download/${tag}/nextflow-${version_without_v}-${archive_suffix}`
   }
 }
 
