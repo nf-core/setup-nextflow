@@ -5,7 +5,7 @@
   "type": "module",
   "main": "lib/src/main.js",
   "scripts": {
-    "build": "tsc",
+    "build": "tsc && tsc -p tsconfig.test.json",
     "format": "prettier --write '**/*.{ts,js,yml,md,json}'",
     "format:check": "prettier --check '**/*.{ts,js,yml,md,json}'",
     "lint": "eslint {src,test}/**/*.ts",
@@ -43,7 +43,7 @@
     "@typescript-eslint/eslint-plugin": "8.60.1",
     "@typescript-eslint/parser": "8.60.1",
     "@vercel/ncc": "0.38.4",
-    "@vitest/coverage-v8": "^4.1.10",
+    "@vitest/coverage-v8": "4.1.10",
     "eslint": "9.39.5",
     "eslint-config-prettier": "10.1.8",
     "eslint-plugin-github": "6.1.1",
@@ -52,11 +52,9 @@
     "husky": "9.1.7",
     "lint-staged": "16.4.0",
     "prettier": "3.8.3",
-    "ts-node": "10.9.2",
-    "tsx": "4.22.4",
     "typescript": "5.9.3",
     "typescript-eslint": "8.60.1",
-    "vitest": "^4.1.10"
+    "vitest": "4.1.10"
   },
   "lint-staged": {
     "*.{js,ts}": "eslint --cache --fix",
