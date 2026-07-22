@@ -35140,7 +35140,7 @@ async function run() {
             addPath(nf_path);
             info(`Downloaded \`nextflow\` to ${nf_path} and added to PATH`);
             core_debug(`Added Nextflow to cache: ${nf_path}`);
-            external_fs_namespaceObject.rmdirSync(nf_install_path, { recursive: true });
+            external_fs_namespaceObject.rmSync(nf_install_path, { recursive: true });
         }
     }
     catch (e) {
