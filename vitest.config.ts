@@ -11,7 +11,7 @@ export default defineConfig({
     fileParallelism: false,
     coverage: {
       provider: "v8",
-      reporter: ["lcov"]
+      reporter: ["text", "lcov"]
     }
   }
 })

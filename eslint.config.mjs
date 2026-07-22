@@ -19,7 +19,7 @@ export default tseslint.config(
     },
     languageOptions: {
       parserOptions: {
-        projectService: true,
+        project: ["./tsconfig.json", "./tsconfig.test.json"],
         tsconfigRootDir: import.meta.dirname
       },
       globals: globals.node
@@ -48,6 +48,18 @@ export default tseslint.config(
       // Import sorting
       "simple-import-sort/imports": "error",
       "simple-import-sort/exports": "error"
+    }
+  },
+  {
+    files: ["*.config.ts"],
+    languageOptions: {
+      parserOptions: {
+        project: ["./tsconfig.test.json"],
+        tsconfigRootDir: import.meta.dirname
+      }
+    },
+    rules: {
+      "import/no-unresolved": "off"
     }
   }
 )
