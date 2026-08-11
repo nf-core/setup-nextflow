@@ -60,6 +60,34 @@ There are three (technically four) aliases to assist in choosing up-to-date Next
 
 A boolean deciding whether to download the "all versions" distribution of Nextflow. May be useful for running tests against multiple versions downstream.
 
+### `install-java`
+
+> **default: `true`**
+
+Nextflow requires Java, so by default this action installs it using [`actions/setup-java`](https://github.com/actions/setup-java) before installing Nextflow.
+
+Set this to `false` if you provide your own Java installation (for example a pre-installed or self-managed JDK on a self-hosted runner) and want to skip that step:
+
+```yaml
+- uses: nf-core/setup-nextflow@v3
+  with:
+    install-java: false
+```
+
+When skipping the Java installation, it is up to you to make sure that a Java version [supported by Nextflow](https://nextflow.io/docs/latest/install.html#requirements) is on the `PATH` — otherwise Nextflow will fail to run.
+
+### `java-version`
+
+> **default: `17`**
+
+The Java version to install. Passed to the `java-version` input of [`actions/setup-java`](https://github.com/actions/setup-java). Ignored if `install-java` is `false`.
+
+### `java-distribution`
+
+> **default: `temurin`**
+
+The Java distribution to install. Passed to the `distribution` input of [`actions/setup-java`](https://github.com/actions/setup-java). Ignored if `install-java` is `false`.
+
 ### `secrets`
 
 > **default: none**

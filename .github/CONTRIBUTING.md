@@ -10,7 +10,7 @@ Many thanks for taking an interest in improving nf-core/setup-nextflow.
 
 `setup-nextflow` is a [Composite GitHub Action](https://docs.github.com/en/actions/sharing-automations/creating-actions/creating-a-composite-action) that contains two steps:
 
-1. A reference to [actions/setup-java](https://github.com/actions/setup-java) to install an up-to-date JVM
+1. A reference to [actions/setup-java](https://github.com/actions/setup-java) to install an up-to-date JVM (skipped when the `install-java` input is `false`)
 2. A Node.js script (bundled in `dist/index.js`) to install Nextflow itself
 
 The TypeScript source code is compiled and bundled into `dist/index.js` using `@vercel/ncc`. The composite action runs this bundled JavaScript directly.

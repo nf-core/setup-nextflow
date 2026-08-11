@@ -10,6 +10,10 @@ inputs:
     description: "Whether to install every Nextflow release via the '-all' distribution."
     required: false
     default: "false"
+  install-java:
+    description: "Whether to install Java. Set to 'false' to skip the Java installation and use the Java already available on the runner (at your own risk)."
+    required: false
+    default: "true"
   java-version:
     description: "The Java version to install as the required dependency of Nextflow. Passed to the underlying setup-java action."
     required: false
@@ -30,6 +34,7 @@ runs:
   using: "composite"
   steps:
     - uses: actions/setup-java@1d018f9b8b9b505bb578a83b230fabcce01af93b
+      if: ${{ inputs.install-java == 'true' }}
       with:
         java-version: ${{ inputs.java-version }}
         distribution: ${{ inputs.java-distribution }}
