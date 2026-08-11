@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - `install-java` input to skip the Java installation and use the Java already available on the runner (#234)
+- Check that Java is available via `JAVA_HOME` or the `PATH` when `install-java` is not `true`, failing with an actionable error if it is missing (#234)
 
 ## [3.0.1] - 2026-07-21
 

@@ -74,7 +74,7 @@ Set this to `false` if you provide your own Java installation (for example a pre
     install-java: false
 ```
 
-When skipping the Java installation, it is up to you to make sure that a Java version [supported by Nextflow](https://nextflow.io/docs/latest/install.html#requirements) is on the `PATH` — otherwise Nextflow will fail to run.
+When skipping the Java installation, it is up to you to make sure that a Java version [supported by Nextflow](https://nextflow.io/docs/latest/install.html#requirements) is available, either via `JAVA_HOME` or on the `PATH`. The action checks for one before installing Nextflow and fails with an explanatory error if it can't find any, rather than leaving you with a Nextflow installation that breaks the first time it runs. It does not check _which_ version it found, so a Java that is too old for your chosen Nextflow version is still your responsibility.
 
 ### `java-version`
 
