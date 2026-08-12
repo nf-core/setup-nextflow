@@ -53,12 +53,15 @@ function parse_versions_list(raw_versions: unknown): NextflowRelease[] {
     throw new Error(EMPTY_VERSIONS_ERROR)
   }
 
-  const versions: NextflowRelease[] = []
-  for (const element of raw_versions) {
-    if (!is_nextflow_release(element)) {
-      throw new Error(MALFORMED_METADATA_ERROR)
-    }
-    versions.push(element)
+  // Skip malformed entries instead of rejecting the whole payload: the
+  // endpoint mirrors GitHub releases verbatim, and some historical releases
+  // (e.g. pre-v1 ones with a single asset) are missing downloadUrlAll.
+  const versions = raw_versions.filter(is_nextflow_release)
+  const skipped = raw_versions.length - versions.length
+  if (skipped > 0) {
+    info(
+      `Skipped ${String(skipped)} malformed entr${skipped === 1 ? "y" : "ies"} from the nf-co.re/nextflow_version metadata.`
+    )
   }
 
   return versions
@@ -239,7 +242,13 @@ export async function get_nextflow_versions(): Promise<NextflowRelease[]> {
     return await get_github_releases()
   }
 
-  return parse_versions_list(raw.versions)
+  const versions = parse_versions_list(raw.versions)
+  if (versions.length === 0) {
+    // Every entry was malformed: fall back to the GitHub releases API.
+    return await get_github_releases()
+  }
+
+  return versions
 }
 
 export async function get_latest_nextflow_version(

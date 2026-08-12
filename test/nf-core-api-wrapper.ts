@@ -139,6 +139,61 @@ test.serial(
   }
 )
 
+test.serial(
+  "malformed version entries are skipped, valid ones still resolve",
+  async t => {
+    // Mirrors the live endpoint: historical releases with a single asset are
+    // emitted without a downloadUrlAll field.
+    const malformed_release = {
+      version: "v0.12.2",
+      isEdge: false,
+      downloadUrl:
+        "https://github.com/nextflow-io/nextflow/releases/download/v0.12.2/nextflow"
+    }
+    const previous = set_downloader(
+      fixed_downloader({
+        versions: [stable_release, malformed_release],
+        latest: { stable: stable_release }
+      })
+    )
+
+    try {
+      const releases = await get_nextflow_versions()
+      t.deepEqual(
+        releases.map(release => release.version),
+        [stable_release.version]
+      )
+    } finally {
+      set_downloader(previous)
+    }
+  }
+)
+
+test.serial(
+  "all-malformed version entries fall back to GitHub releases",
+  async t => {
+    const previous = set_downloader(
+      routed_downloader([
+        [
+          "nf-co.re",
+          {
+            versions: [{ version: "v0.12.2", isEdge: false }],
+            latest: {}
+          }
+        ],
+        ["&page=1", [{ tag_name: "v26.04.6" }]]
+      ])
+    )
+
+    try {
+      const releases = await get_nextflow_versions()
+      t.true(releases.some(release => release.version === "v26.04.6"))
+    } finally {
+      set_downloader(previous)
+    }
+  }
+)
+
 test.serial("empty metadata falls back to GitHub releases", async t => {
   const previous = set_downloader(
     routed_downloader([

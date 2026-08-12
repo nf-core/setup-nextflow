@@ -5,6 +5,17 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Added
+
+- `install-java` input to skip the Java installation and use the Java already available on the runner (#234)
+- Check that Java is available via `JAVA_HOME` or the `PATH` when `install-java` is not `true`, failing with an actionable error if it is missing (#234)
+
+### Fixed
+
+- Skip malformed entries in the nf-co.re version metadata (e.g. historical releases without a second download asset) instead of failing partial version matching such as `22.04`, falling back to the GitHub releases API if no valid entries remain
+
 ## [3.0.1] - 2026-07-21
 
 ### Fixed

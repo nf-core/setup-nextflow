@@ -10,6 +10,10 @@ inputs:
     description: "Whether to install every Nextflow release via the '-all' distribution."
     required: false
     default: "false"
+  install-java:
+    description: "Whether to install Java. Set to 'false' to skip the Java installation and use the Java already available on the runner (at your own risk)."
+    required: false
+    default: "true"
   java-version:
     description: "The Java version to install as the required dependency of Nextflow. Passed to the underlying setup-java action."
     required: false
@@ -30,9 +34,26 @@ runs:
   using: "composite"
   steps:
     - uses: actions/setup-java@1d018f9b8b9b505bb578a83b230fabcce01af93b
+      if: ${{ inputs.install-java == 'true' }}
       with:
         java-version: ${{ inputs.java-version }}
         distribution: ${{ inputs.java-distribution }}
+    # Java was not installed by this action, so make sure Nextflow will be able
+    # to find one before we get as far as running it
+    - name: Check for an existing Java installation
+      if: ${{ inputs.install-java != 'true' }}
+      shell: bash
+      run: |
+        if [[ -n "${JAVA_HOME:-}" && -x "${JAVA_HOME}/bin/java" ]]; then
+          java_cmd="${JAVA_HOME}/bin/java"
+        elif command -v java > /dev/null 2>&1; then
+          java_cmd="java"
+        else
+          echo "::error title=Java not found::The 'install-java' input is not 'true', so this action did not install Java, but no 'java' executable was found via JAVA_HOME or on the PATH. Install a Java version supported by Nextflow before this step, or drop the 'install-java' input to let this action install one for you."
+          exit 1
+        fi
+        echo "Using the Java already available on the runner: ${java_cmd}"
+        "${java_cmd}" -version
     - name: Install Nextflow
       shell: bash
       env:
