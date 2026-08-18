@@ -67,7 +67,7 @@
     "eslint-plugin-simple-import-sort": "13.0.0",
     "globals": "17.7.0",
     "husky": "9.1.7",
-    "lint-staged": "16.4.0",
+    "lint-staged": "17.3.0",
     "prettier": "3.9.6",
     "ts-node": "10.9.2",
     "tsx": "4.23.12",
