@@ -12,6 +12,15 @@
             "automerge": true,
             "matchUpdateTypes": ["minor", "patch", "pin", "digest"],
             "schedule": ["every weekday before 5am"]
+        },
+        // Order matters: later rules win, so eslint-plugin-ava lands in "test tooling"
+        {
+            "matchPackageNames": ["/eslint/"],
+            "groupName": "eslint"
+        },
+        {
+            "matchPackageNames": ["/ava/", "/^c8$/"],
+            "groupName": "test tooling"
         }
     ]
 }
