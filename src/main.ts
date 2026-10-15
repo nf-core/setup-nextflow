@@ -70,7 +70,7 @@ async function run(): Promise<void> {
       core.addPath(nf_path)
       core.info(`Downloaded \`nextflow\` to ${nf_path} and added to PATH`)
       core.debug(`Added Nextflow to cache: ${nf_path}`)
-      fs.rmdirSync(nf_install_path, { recursive: true })
+      fs.rmSync(nf_install_path, { recursive: true })
     }
   } catch (e: unknown) {
     if (e instanceof Error) {
