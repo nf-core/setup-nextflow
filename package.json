@@ -49,7 +49,7 @@
     "semver": "^7.7.4"
   },
   "devDependencies": {
-    "@ast-grep/cli": "0.45.1",
+    "@ast-grep/cli": "0.51.0",
     "@ava/typescript": "6.0.0",
     "@tsconfig/node22": "22.0.6",
     "@types/async-retry": "1.4.9",
