@@ -20,7 +20,7 @@ export default tseslint.config(
     },
     rules: {
       // Apply AVA rules except no-ignored-test-files
-      ...ava.configs["flat/recommended"].rules,
+      ...ava.configs.recommended.rules,
       // Disable this rule because we run AVA on compiled JS files (lib/test/**/*.js)
       // while ESLint analyzes the source TypeScript files (test/**/*.ts)
       "ava/no-ignored-test-files": "off"
