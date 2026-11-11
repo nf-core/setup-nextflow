@@ -13,6 +13,8 @@ on:
 
 jobs:
   test:
+    # Renovate branches already run on push; skip the duplicate pull_request run
+    if: ${{ !startsWith(github.head_ref, 'renovate/') }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
@@ -30,6 +32,10 @@ jobs:
       - name: Check dist is up to date
         run: |
           git diff --exit-code dist/
+      - uses: actions/setup-java@b843ebf9b913146b38da2eaa7aeddf76074ae1ad # v6
+        with:
+          distribution: temurin
+          java-version: 21
       - run: npm run test
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
