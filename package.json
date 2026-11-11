@@ -50,7 +50,7 @@
   },
   "devDependencies": {
     "@ast-grep/cli": "0.51.1",
-    "@ava/typescript": "6.0.0",
+    "@ava/typescript": "7.0.0",
     "@tsconfig/node24": "24.0.0",
     "@types/async-retry": "1.4.9",
     "@types/node": "24.19.2",
