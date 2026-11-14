@@ -58,7 +58,7 @@ jobs:
       - run: npm run build
       - run: npm run package
       # GitHub-hosted runners ship with Java, act containers do not
-      - uses: actions/setup-java@b843ebf9b913146b38da2eaa7aeddf76074ae1ad # v6
+      - uses: actions/setup-java@d1374f8ac74474200d16ef8ecee22c7ae7a51880 # v6
         if: ${{ env.ACT }}
         with:
           java-version: 25
@@ -103,7 +103,7 @@ jobs:
       - run: npm ci
       - run: npm run build
       - run: npm run package
-      - uses: actions/setup-java@b843ebf9b913146b38da2eaa7aeddf76074ae1ad # v6
+      - uses: actions/setup-java@d1374f8ac74474200d16ef8ecee22c7ae7a51880 # v6
         if: ${{ env.ACT}}
         with:
           java-version: 25
